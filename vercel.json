@@ -69,5 +69,11 @@
         }
       ]
     }
-  ]
+  ],
+  "build": {
+    "env": {
+      "LOANLENS_CANONICAL_ORIGIN": "https://myloanlens.vercel.app",
+      "PUBLIC_ADSENSE_CLIENT": "ca-pub-8177969374546909"
+    }
+  }
 }
