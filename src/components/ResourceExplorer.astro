@@ -17,16 +17,20 @@ interface Props {
   placeholder?: string;
 }
 const { label, items, topics, placeholder='Search by topic or question' } = Astro.props;
+const searchId='resource-search-'+label.toLowerCase().replace(/[^a-z0-9]+/g,'-');
 ---
 <section class="resource-explorer" aria-label={label} data-resource-explorer>
   <div class="resource-filter-bar">
-    <label class="resource-search">
-      <span class="resource-search-label">Find what you need</span>
-      <input type="search" placeholder={placeholder} autocomplete="off" data-resource-search />
-    </label>
+    <div class="resource-search">
+      <label class="resource-search-label" for={searchId}>Find what you need</label>
+      <div class="resource-search-control">
+        <input id={searchId} type="search" placeholder={placeholder} autocomplete="off" data-resource-search />
+        <button class="resource-search-clear" type="button" aria-label="Clear search" data-resource-search-clear hidden>×</button>
+      </div>
+    </div>
     <div class="resource-filter-row" role="group" aria-label="Filter by topic">
-      <button class="resource-filter is-active" type="button" data-topic="all" aria-pressed="true">All topics</button>
-      {topics.map(topic => <button class="resource-filter" type="button" data-topic={topic.value} aria-pressed="false">{topic.label}</button>)}
+      <button class="resource-filter is-active" type="button" data-topic="all" aria-pressed="true" aria-label="All topics">All topics <span class="resource-filter-count" aria-hidden="true">{items.length}</span></button>
+      {topics.map(topic => <button class="resource-filter" type="button" data-topic={topic.value} aria-pressed="false" aria-label={topic.label}>{topic.label} <span class="resource-filter-count" aria-hidden="true">{items.filter(item=>item.topic===topic.value).length}</span></button>)
     </div>
   </div>
   <p class="resource-count" aria-live="polite" data-resource-count>
@@ -62,6 +66,7 @@ const { label, items, topics, placeholder='Search by topic or question' } = Astr
 <script>
   for (const section of document.querySelectorAll<HTMLElement>('[data-resource-explorer]')) {
     const search = section.querySelector<HTMLInputElement>('[data-resource-search]');
+    const clearSearch = section.querySelector<HTMLButtonElement>('[data-resource-search-clear]');
     const buttons = [...section.querySelectorAll<HTMLButtonElement>('.resource-filter')];
     const cards = [...section.querySelectorAll<HTMLElement>('[data-resource-card]')];
     const count = section.querySelector<HTMLElement>('[data-resource-count]');
@@ -70,6 +75,7 @@ const { label, items, topics, placeholder='Search by topic or question' } = Astr
     let active = 'all';
     const apply = () => {
       const term = (search?.value ?? '').trim().toLocaleLowerCase('en-US');
+      if (clearSearch) clearSearch.hidden = term.length === 0;
       let matches = 0;
       for (const card of cards) {
         const visible = (active === 'all' || card.dataset.topic === active) &&
@@ -90,6 +96,11 @@ const { label, items, topics, placeholder='Search by topic or question' } = Astr
       apply();
     }));
     search?.addEventListener('input', apply);
+    clearSearch?.addEventListener('click',()=>{
+      if (search) search.value = '';
+      apply();
+      search?.focus();
+    });
     clear?.addEventListener('click', () => {
       active = 'all';
       if (search) search.value = '';

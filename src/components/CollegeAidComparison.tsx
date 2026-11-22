@@ -99,7 +99,7 @@ export default function CollegeAidComparison() {
             <label class="field aid-school-name" for={`aid-school-name-${index}`}>
               <span>School name <span class="field-optional">(optional)</span></span>
               <input id={`aid-school-name-${index}`} type="text" maxLength={70} placeholder="e.g., North Valley University"
-                value={schoolNames[index]} onInput={event=>setSchoolNames(current=>current.map((name,i)=>i===index?event.currentTarget.value:name))}/>
+                value={schoolNames[index]} onInput={event=>{const value=event.currentTarget.value;setSchoolNames(current=>current.map((name,i)=>i===index?value:name));}}/>
             </label>
             {fields.map(([field, label]) => {
               const id = `aid-${index}-${field}`;

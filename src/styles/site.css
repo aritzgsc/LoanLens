@@ -991,3 +991,18 @@ main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1020px);m
 .field-optional{font-size:.8rem;color:#607b69;font-weight:500}
 .tool-pane .actions{row-gap:.75rem}
 .tool-pane .actions .text-button{color:#4c6758}
+
+/* Search and category filters: clear affordance, useful counts, mobile-safe horizontal chips. */
+.resource-search-control{display:block;position:relative;width:100%;min-width:0}
+.resource-search-control>input{padding-right:3rem}
+.resource-search-clear{position:absolute;right:.3rem;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:40px;height:40px;background:transparent;border:0;border-radius:9px;font-size:1.5rem;font-weight:500;color:#36634f}
+.resource-search-clear:not([hidden]):hover{background:#eaf6ef}
+.resource-search-clear[hidden]{display:none!important}
+.resource-filter{display:inline-flex;align-items:center;justify-content:center;gap:.55rem}
+.resource-filter-count{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:#e7f2ea;color:#285845;padding:0 .35rem;font-size:.75rem;line-height:1;font-weight:800}
+.resource-filter[aria-pressed="true"] .resource-filter-count{background:#ffffff29;color:#fff}
+@media(max-width:650px){
+  .resource-filter-row{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:.35rem;scrollbar-width:thin}
+  .resource-filter{flex:0 0 auto;white-space:nowrap}
+  .resource-search{max-width:none}
+}

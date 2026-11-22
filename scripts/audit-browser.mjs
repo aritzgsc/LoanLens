@@ -377,6 +377,11 @@ try {
             if (await visibleCards.count() !== 1) throw new Error('Resource search did not narrow to one PSLF item on '+route);
             await search.fill('nothing-matches-this-test');
             await page.getByText('No matching resources.').waitFor();
+            if (await page.locator('.resource-filter-count').count() !== await page.locator('.resource-filter').count())
+              throw new Error('Directory topic counts are missing');
+            await page.getByRole('button',{name:'Clear search'}).click();
+            if (await search.inputValue() !== '') throw new Error('Quick search clear did not reset the query');
+            await search.fill('nothing-matches-this-test');
             await page.getByRole('button',{name:'Clear filters'}).click();
             if (await search.inputValue() !== '') throw new Error('Resource clear did not reset search input');
             const matching=await visibleCards.count();
