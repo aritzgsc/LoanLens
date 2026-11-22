@@ -1,5 +1,5 @@
 import { useState } from 'preact/hooks';
-import { calculateAidOffer, parseAidAmount } from '../lib/college-aid';
+import { aidOfferIssue, calculateAidOffer, parseAidAmount } from '../lib/college-aid';
 import { formatUSD } from '../lib/engine';
 
 const schools = ['School A', 'School B'] as const;
@@ -29,6 +29,15 @@ function compare(offers: Offer[]) {
       }
       return amount ?? 0;
     });
+    if (!fields.some(([field]) => errors[`aid-${index}-${field}`])) {
+      const issue = aidOfferIssue(amounts[0], amounts[1], amounts[2], amounts[3]);
+      if (issue === 'gift-aid-exceeds-cost') {
+        errors[`aid-${index}-scholarships`] = 'Grants and scholarships together exceed the annual cost. Check the amounts in the award letter.';
+      }
+      if (issue === 'planned-loans-exceed-net-price') {
+        errors[`aid-${index}-loans`] = 'Planned loans exceed the cost remaining after grants and scholarships. Verify the award letter and borrowing amount.';
+      }
+    }
     return calculateAidOffer(amounts[0], amounts[1], amounts[2], amounts[3]);
   });
   return { errors, results: Object.keys(errors).length ? null : results };
