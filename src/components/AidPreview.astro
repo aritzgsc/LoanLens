@@ -1,0 +1,43 @@
+---
+const annualCost = 30000;
+const initialAid = 12000;
+const dollars = (value: number) => '$' + value.toLocaleString('en-US');
+---
+<section class="aid-lab" data-aid-preview data-cost={annualCost} aria-labelledby="aid-preview-title">
+  <div class="aid-lab-head"><h2 id="aid-preview-title">After financial aid</h2><span>Example</span></div>
+  <div class="aid-visual">
+    <div class="aid-ring" aria-hidden="true" style={`--aid-share: ${100 * initialAid / annualCost}%`}><span>$30k<small>annual cost</small></span></div>
+    <div class="aid-amount">
+      <span>Net price per year</span>
+      <strong data-net>{dollars(annualCost - initialAid)}</strong>
+      <small>What you cover after grants and scholarships.</small>
+    </div>
+  </div>
+  <div class="aid-breakdown"><span>Grants &amp; scholarships</span><strong data-aid>{dollars(initialAid)}</strong></div>
+  <div class="aid-adjust" hidden>
+    <label class="sr-only" for="sample-award">Change the example grant and scholarship amount in dollars</label>
+    <input id="sample-award" type="range" min="0" max={annualCost} step="500" value={initialAid} aria-valuetext={dollars(initialAid)} aria-describedby="aid-explanation" />
+    <p id="aid-explanation">Move the slider to try a different aid offer.</p>
+  </div>
+</section>
+<script>
+  const preview = document.querySelector<HTMLElement>('[data-aid-preview]');
+  if (preview) {
+    const cost = Number(preview.dataset.cost);
+    const slider = preview.querySelector<HTMLInputElement>('input')!;
+    const ring = preview.querySelector<HTMLElement>('.aid-ring')!;
+    const amount = preview.querySelector<HTMLElement>('[data-aid]')!;
+    const net = preview.querySelector<HTMLElement>('[data-net]')!;
+    const currency = new Intl.NumberFormat('en-US', {style:'currency', currency:'USD', maximumFractionDigits:0});
+    function update() {
+      const aid = slider.valueAsNumber;
+      amount.textContent = currency.format(aid);
+      net.textContent = currency.format(cost - aid);
+      slider.setAttribute('aria-valuetext', currency.format(aid) + ' in aid, annual net price ' + net.textContent);
+      ring.style.setProperty('--aid-share', (100 * aid / cost) + '%');
+    }
+    slider.addEventListener('input', update);
+    update();
+    preview.querySelector<HTMLElement>('.aid-adjust')!.hidden = false;
+  }
+</script>

@@ -1,5 +1,6 @@
 import { readdir, readFile, access } from 'node:fs/promises';
 import { join } from 'node:path';
+import { siteSettings } from './site-settings.mjs';
 import { loadEnvFile } from 'node:process';
 try { loadEnvFile(); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 const dist = 'dist';
@@ -16,10 +17,10 @@ const files=await walk(dist);
 const errors=[];
 const titles = new Set();
 const descriptions = new Set();
-const origin = new URL(process.env.PUBLIC_SITE_URL || 'https://loanlens.example');
-const preview = process.env.PUBLISH_DRAFTS === 'true';
-const indexable = !preview && Boolean(process.env.PUBLIC_SITE_URL) && !origin.hostname.endsWith('.example');
-const resultsAdsConfigured = /^ca-pub-\d+$/.test(process.env.PUBLIC_ADSENSE_CLIENT || '')
+const settings = siteSettings(process.env);
+const origin = new URL(settings.origin);
+const indexable = !settings.noindex;
+const resultsAdsConfigured = /^ca-pub-\d{16}$/.test(process.env.PUBLIC_ADSENSE_CLIENT || '')
   && /^\d+$/.test(process.env.PUBLIC_ADSLOT_RESULTS || '');
 const sitemapUrls = new Set();
 for(const file of files) {

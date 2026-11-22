@@ -120,7 +120,7 @@ export default function Calculator() {
   const low = rows.find(r=>r.badges.includes('Lowest monthly'));
   return <div class="calculator">
     <div class="wizard card" id="wizard">
-    <div class="wizard-top"><button type="button" class="primary" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');}}>Use example borrower</button></div>
+    <div class="wizard-top"><p><strong>Step {step + 1} of {steps.length}</strong> · {steps[step]}</p><button type="button" class="secondary" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');requestAnimationFrame(()=>resultHeading.current?.focus());}}>Use example borrower</button></div>
       <nav aria-label="Calculator steps" class="steps">{steps.map((label,i)=><button type="button" key={label} class={step===i?'current':''} aria-current={step===i?'step':undefined} onClick={()=>go(i)}><span>{i+1}</span>{label}</button>)}</nav>
       <form key={version} onSubmit={e=>{e.preventDefault();if(e.currentTarget.querySelector('[aria-invalid="true"]')) {setMessage('Correct the highlighted values before continuing.');return;}
         if(step===0&&!hasBalance) {setMessage('Enter at least one positive loan balance.');return;}
@@ -152,7 +152,7 @@ export default function Calculator() {
         {step===2 && <><p>Choose a projection start and include any already confirmed payment credit.</p>
           <label class="check"><input type="checkbox" checked={input.pslf} onChange={e=>update('pslf',e.currentTarget.checked)}/> I expect to keep working for a PSLF-eligible employer</label>
           {input.pslf && <NumberField label="Certified PSLF payments shared by these loans" max={rules.pslfMonths.value} integer value={input.certified} onChange={n=>update('certified',n)}/>}
-          <details open><summary>Assumptions you can edit</summary><div class="fields">
+          <details><summary>Adjust projection assumptions (optional)</summary><div class="fields">
             <Field label="First projected payment month"><input type="month" min="2000-01" max="2099-12" required value={input.start} onChange={e=>{if(monthOk(e.currentTarget.value))update('start',e.currentTarget.value);}}/></Field>
             <NumberField label="Expected annual AGI growth" suffix="%" value={input.growth*100} min={-99} max={100} onChange={n=>update('growth',n/100)}/>
             <NumberField label="Debt at entry to repayment (0 uses current debt)" prefix="$" value={input.initialDebt} onChange={n=>update('initialDebt',n)}/>
@@ -173,7 +173,7 @@ export default function Calculator() {
           : <>{low?.title} has the lowest starting payment ({money(low?.starting ?? 0)}). {cost?.title} has the lowest projected out-of-pocket payments ({money(cost?.paid ?? 0)}) before any forgiveness tax.</>}</div>
       {rows.length>0 && <>
       <section class="best-plans" aria-labelledby="best-plans-title">
-        <h3 id="best-plans-title">Best for you</h3>
+        <h3 id="best-plans-title">Repayment comparison highlights</h3>
         <ul>{[
           ['Lowest monthly', 'Lowest starting payment'],
           ['Lowest total cost', 'Lowest total paid'],

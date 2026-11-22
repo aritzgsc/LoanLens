@@ -74,6 +74,11 @@ try {
             violations: axe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
           });
           if (route === '/') {
+            const aid = page.getByRole('slider', {name: /example grant/});
+            await aid.press('End');
+            await page.locator('[data-net]').getByText('$0', {exact:true}).waitFor();
+            await aid.press('Home');
+            await page.locator('[data-net]').getByText('$30,000', {exact:true}).waitFor();
             await page.getByRole('link', { name: 'Estimate loan payments', exact: true }).press('Enter');
             await page.waitForURL(url => url.hash === '#repayment-estimator');
             await page.getByRole('heading', { name: 'Student loan repayment calculator', exact: true }).waitFor();

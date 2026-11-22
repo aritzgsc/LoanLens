@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import { readdirSync, readFileSync } from 'node:fs';
 import { loadEnv } from 'vite';
+import { siteSettings } from './scripts/site-settings.mjs';
 import mdx from '@astrojs/mdx';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
@@ -8,6 +9,7 @@ import tailwind from '@tailwindcss/vite';
 
 const mode = process.env.NODE_ENV === 'production' ? 'production' : 'development';
 const env = { ...loadEnv(mode, process.cwd(), ''), ...process.env };
+const { origin, noindex } = siteSettings(env);
 const contentDir = new URL('./src/content/pages/', import.meta.url);
 const draftPaths = new Set();
 for (const file of readdirSync(contentDir).filter(name => name.endsWith('.mdx'))) {
@@ -23,12 +25,12 @@ for (const file of readdirSync(contentDir).filter(name => name.endsWith('.mdx'))
   }
 }
 export default defineConfig({
-  site: env.PUBLIC_SITE_URL || 'https://loanlens.example',
+  site: origin,
   output: 'static',
   trailingSlash: 'always',
   integrations: [preact(), mdx(), sitemap({ filter: page => {
     const pathname = new URL(page).pathname;
     return pathname !== '/404/' && !draftPaths.has(pathname);
   } })],
-  vite: { plugins: [tailwind()], define: { __PUBLISH_DRAFTS__: JSON.stringify(env.PUBLISH_DRAFTS === 'true') } }
+  vite: { plugins: [tailwind()], define: { __ROBOTS_NOINDEX__: JSON.stringify(noindex), __PUBLISH_DRAFTS__: JSON.stringify(env.PUBLISH_DRAFTS === 'true') } }
 });

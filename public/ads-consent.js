@@ -1,4 +1,7 @@
 (() => {
+  // Shared scenarios can contain personal financial inputs. The calculator removes
+  // the fragment after importing it, so use the pre-hydration decision in <head>.
+  if (window.loanLensPrivateScenario || location.hash.startsWith('#scenario=')) return;
   let interacted = false;
   let tcfConsent = false;
   let gppConsent = false;
@@ -28,7 +31,7 @@
       window.gtag('consent','update',{ad_storage:setting,ad_user_data:setting,ad_personalization:setting,analytics_storage:'denied'});
     }
     if (!allowedNow) {
-      for (const slot of handled) slot.querySelector('ins')?.remove();
+      for (const slot of handled) slot.replaceChildren();
       handled.clear();
       return;
     }
@@ -53,7 +56,10 @@
         ad.style.display = 'block';
         ad.dataset.adClient = slot.dataset.adClient;
         ad.dataset.adSlot = slot.dataset.adUnit;
-        slot.replaceChildren(ad);
+        const label = document.createElement('span');
+        label.className = 'ad-label';
+        label.textContent = 'Advertisement';
+        slot.replaceChildren(label, ad);
         try { (window.adsbygoogle ||= []).push({}); } catch { ad.remove(); slot.removeAttribute('data-ad-active'); }
       }
     }).catch(()=>{

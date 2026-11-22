@@ -7,7 +7,7 @@ interface Props { title: string; description?: string; embedded?: boolean; }
 const { title, embedded = false } = Astro.props;
 const entries = await visible();
 const nextSteps = [
-  { href:'/tools/compare-college-aid-offers/', title:'Compare college aid offers', description:'See what each college costs after grants, scholarships, and loans.' },
+  { href:'/tools/compare-college-aid-offers/', title:'Compare college aid offers', description:'Compare the price after grants and scholarships, then see how much you may need to borrow.' },
   { href:'/guides/compare-student-loan-repayment/', title:'Compare repayment costs', description:'Understand monthly payments, repayment length, and total paid before choosing a plan.' },
   { href:'/deadlines/', title:'Repayment deadlines', description:'Find which dates apply to your loans and repayment plan.' },
   ...[
@@ -21,7 +21,7 @@ const nextSteps = [
 ---
 <header id={embedded ? 'repayment-estimator' : undefined} class="hero hero-calculator">
   {embedded ? <h2>{title}</h2> : <h1>{title}</h1>}
-  <p>Compare monthly payments, total costs, and forgiveness.</p>
+  <p>Start with your balance and interest rate, or try an example to see payments and total costs side by side.</p>
 </header>
 <Calculator client:load />
 <AdSlot kind="results" />

@@ -2,7 +2,7 @@ export const siteName = import.meta.env.PUBLIC_SITE_NAME?.trim() || 'LoanLens';
 export const author = {name:'{{AUTHOR_NAME}}',bio:'{{AUTHOR_BIO}}'};
 export const contact = '{{CONTACT_EMAIL}}';
 export const publisher = import.meta.env.PUBLIC_ADSENSE_CLIENT || '';
-export const validPublisher = /^ca-pub-\d+$/.test(publisher);
+export const validPublisher = /^ca-pub-\d{16}$/.test(publisher);
 export const partnerOffersEnabled = import.meta.env.PUBLIC_PARTNER_OFFERS === 'true';
 export const partnerOfferUrl = import.meta.env.PUBLIC_PARTNER_OFFER_URL || '';
 export const publishDrafts = __PUBLISH_DRAFTS__;
@@ -19,4 +19,4 @@ export const toolLinks = [
   ['/tools/pslf-payment-tracker/','PSLF payment tracker','Estimate when you could reach the payment requirement.'],
   ['/rap-payment-by-income/','RAP payments by income','Explore payment ranges by income and dependents.']
 ] as const;
-export const robotsNoIndex = publishDrafts || !import.meta.env.PUBLIC_SITE_URL || import.meta.env.PUBLIC_SITE_URL.endsWith('.example');
+export const robotsNoIndex = __ROBOTS_NOINDEX__;
