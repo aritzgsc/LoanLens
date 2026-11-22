@@ -17,7 +17,7 @@ const suggestions=(relatedEntries.length?relatedEntries:entries).slice(0,3);
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
   <header class="hero"><h1>{title}</h1><p>{description}</p>
-  {guide && <p>{(draft || !author.name.includes('{{')) && <>By {author.name} · </>}Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
+  {guide && <p>{!author.name.includes('{{') && <>By {author.name} · </>}Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
     {reviewed && <p>Reviewed <time>{reviewed}</time></p>}
     {draft && <p class="warning">Editorial draft awaiting review.</p>}
   </header>

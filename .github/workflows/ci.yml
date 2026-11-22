@@ -8,19 +8,58 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     env:
-      PUBLIC_SITE_URL: https://loanlens.example
+      PUBLIC_SITE_URL: https://loanlens.invalid
+      STRICT_PUBLISH: 'true'
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - run: npm install --no-audit --no-fund
+      - run: npm ci --no-audit --no-fund
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
       - run: npm run verify-data
-      - run: npm run build
+      - name: Build production output
+        id: production
+        run: npm run build
       - run: npm run check:links
       - run: npx lhci autorun
-      - run: PUBLISH_DRAFTS=true npm run build
-      - run: PUBLISH_DRAFTS=true npm run check:links
+      - name: Build draft preview
+        if: ${{ !cancelled() && steps.production.outcome == 'success' }}
+        id: preview
+        run: PUBLISH_DRAFTS=true npm run build
+      - name: Check preview links and metadata
+        if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
+        run: PUBLISH_DRAFTS=true npm run check:links
+  browser:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      PUBLIC_SITE_URL: https://loanlens.invalid
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+      - run: npm install --no-save --package-lock=false --no-audit --no-fund playwright@1.65.1 @axe-core/playwright@4
+      - name: Audit the built site in Chrome
+        run: |
+          npm run preview -- --host 127.0.0.1 --port 4321 > /tmp/loanlens-preview.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for attempt in {1..20}; do
+            if curl --fail --silent http://127.0.0.1:4321/ >/dev/null; then break; fi
+            sleep 1
+          done
+          curl --fail --silent http://127.0.0.1:4321/ >/dev/null
+          AUDIT_BROWSER_CHANNEL=chrome node scripts/audit-browser.mjs http://127.0.0.1:4321
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: loanlens-browser-audit
+          path: audit-artifacts/
+          retention-days: 7

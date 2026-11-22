@@ -1,7 +1,7 @@
 import { writeFile, mkdir, readdir } from 'node:fs/promises';
 import { join, resolve } from 'node:path';
 import { chromium } from 'playwright';
-import AxeBuilder from '@axe-core/playwright';
+import { AxeBuilder } from '@axe-core/playwright';
 
 const [origin = 'http://localhost:4321', output = 'audit-artifacts', dist = 'dist'] = process.argv.slice(2);
 const reportDir = resolve(output);
@@ -9,7 +9,7 @@ const widths = [390, 768, 1280];
 const heights = { 390: 844, 768: 1024, 1280: 800 };
 const routes = ['/', '/calculator/', '/deadlines/', '/tools/', '/tools/married-rap-impact/',
   '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
-  '/guides/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
+  '/guides/', '/guides/compare-student-loan-repayment/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
 const routeName = path => path === '/' ? 'home' : path.slice(1, -1).replaceAll('/', '--');
 const allPages = (await readdir(resolve(dist), { recursive: true }))
   .map(path => path.replaceAll('\\', '/'))
@@ -18,7 +18,7 @@ const allPages = (await readdir(resolve(dist), { recursive: true }))
   .sort();
 
 await mkdir(reportDir, { recursive: true });
-const browser = await chromium.launch();
+const browser = await chromium.launch({ channel: process.env.AUDIT_BROWSER_CHANNEL });
 const report = { origin, urls: allPages, pages: [], screenshots: [], failures: [] };
 const textMetrics = () => {
   const { document, innerHeight } = globalThis;
@@ -54,16 +54,11 @@ const visit = async (page, route) => {
 try {
   for (const colorScheme of ['light', 'dark']) {
     for (const width of widths) {
-      const page = await browser.newPage({ colorScheme, viewport: { width, height: heights[width] }, reducedMotion: 'reduce' });
-      for (const route of new Set([...allPages, ...routes])) {
+      const context = await browser.newContext({ colorScheme, viewport: { width, height: heights[width] }, reducedMotion: 'reduce' });
+      const page = await context.newPage();
+      for (const route of allPages) {
         try {
           await visit(page, route);
-          const axe = await new AxeBuilder({ page }).analyze();
-          const metrics = await page.evaluate(textMetrics);
-          report.pages.push({ route, width, colorScheme, ...metrics,
-            violations: axe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
-          });
-          if (!routes.includes(route)) continue;
           const prefix = [routeName(route), colorScheme, width].join('-');
           const capture = async label => {
             for (const [view, fullPage] of [['fold', false], ['full', true]]) {
@@ -72,9 +67,14 @@ try {
               report.screenshots.push(file);
             }
           };
-          await capture(prefix);
+          if (routes.includes(route)) await capture(prefix);
+          const metrics = await page.evaluate(textMetrics);
+          const axe = await new AxeBuilder({ page }).analyze();
+          report.pages.push({ route, width, colorScheme, ...metrics,
+            violations: axe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
+          });
           if (route === '/') {
-            await page.getByRole('button', { name: 'Use example borrower' }).click();
+            await page.getByRole('button', { name: 'Use example borrower' }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor();
             await page.evaluate(() => globalThis.scrollTo(0, 0));
             await capture(prefix + '-example');
@@ -82,12 +82,14 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
+            await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
           }
         } catch (error) {
           report.failures.push({ route, width, colorScheme, message: String(error) });
         }
       }
-      await page.close();
+      await context.close();
     }
   }
 } finally {
@@ -96,4 +98,6 @@ try {
 }
 const highImpact = report.pages.flatMap(page => page.violations.filter(issue => issue.impact === 'serious' || issue.impact === 'critical'));
 console.log('Captured ' + report.screenshots.length + ' screenshots; ' + highImpact.length + ' serious/critical axe findings; ' + report.failures.length + ' audit errors.');
+for (const message of new Set(report.failures.map(failure => failure.message))) console.error(message);
+for (const id of new Set(highImpact.map(issue => issue.id))) console.error('Accessibility finding: ' + id);
 if (report.failures.length || highImpact.length) process.exitCode = 1;

@@ -70,7 +70,7 @@ function Chart({rows,metric}:{rows:Result[];metric:'balance'|'payment'}) {
     </svg>
     <ul class="legend chart-legend">{rows.map((row,i) => <li key={row.plan}><svg viewBox="0 0 26 8" aria-hidden="true" focusable="false"><path d="M0 4H26" stroke={colors[i]} stroke-dasharray={dash[i]} stroke-width="3"/></svg>{row.title}</li>)}</ul>
     <p class="muted">Each line ends at the projected payoff or forgiveness date.</p>
-    <details><summary>View chart data</summary><div class="table-wrap"><table><thead><tr><th scope="col">Plan</th><th scope="col">Month</th><th scope="col">Amount</th></tr></thead>
+    <details><summary>View chart data</summary><div class="table-wrap" role="region" tabIndex={0} aria-label={title + " data"}><table><thead><tr><th scope="col">Plan</th><th scope="col">Month</th><th scope="col">Amount</th></tr></thead>
       <tbody>{rows.flatMap(row=>row.points.filter(p=>p.month===1 || p.month===row.months || (p.month % 12 === 0 && metric==='balance')).map(p=><tr key={row.plan+p.month}><th scope="row">{row.title}</th><td>{p.month}</td><td>{money(p[metric])}</td></tr>))}</tbody></table></div></details>
   </figure>;
 }

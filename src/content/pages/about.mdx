@@ -1,6 +1,6 @@
 ---
 title: "About LoanLens"
-description: "Learn who publishes LoanLens and what its federal student loan estimates cover."
+description: "Learn how LoanLens estimates federal student loan payments and what its tools cover."
 category: "trust"
 status: "draft"
 verified: "2026-11-22"
@@ -13,10 +13,6 @@ import { author } from "../../lib/site";
 
 LoanLens publishes a calculator, repayment tools and guides for U.S. federal student loan borrowers. The calculator compares modeled payments and includes assumptions that can change the result.
 
-## Publisher
-
-**{author.name}**
-
-{author.bio}
+{!author.name.includes('{{') && <section aria-labelledby="publisher"><h2 id="publisher">Publisher</h2><p><strong>{author.name}</strong></p>{!author.bio.includes('{{') && <p>{author.bio}</p>}</section>}
 
 For corrections or publisher questions, use the <EditorialLink slug="contact">contact page</EditorialLink>.
