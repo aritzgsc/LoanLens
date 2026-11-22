@@ -3,5 +3,36 @@ import Base from '../../layouts/Base.astro';
 import { visible, entryPath } from '../../lib/content';
 const entries = (await visible()).filter(entry=>entry.data.category==='guide');
 ---
-<Base title="Student loan repayment guides" description="Explore student loan repayment, borrower eligibility, plan transitions and forgiveness." og="guides"><div class="hero"><h1>Repayment guides</h1><p>Read about eligibility, repayment choices and what to check with your servicer.</p></div>
-{entries.length?<div class="guide-grid">{entries.map(entry=><a href={entryPath(entry)} class="guide-link"><strong>{entry.data.title}</strong><span>{entry.data.description}</span></a>)}</div>:<p>Guides will appear here after editorial review. You can use the <a href="/tools/">repayment tools</a> now.</p>}</Base>
+<Base title="Student Loan Repayment & Financial Aid Guides" description="Understand student loan repayment costs, financial aid offers, monthly payment estimates, and the questions to ask your servicer." og="guides">
+  <header class="hero">
+    <span class="eyebrow">Learn before you decide</span>
+    <h1>Student loan and college aid guides</h1>
+    <p>Clear, practical explanations to help you compare borrowing and repayment choices. Start with the fundamentals, then check account-specific details with an official source.</p>
+    <div class="page-intro-links">
+      <a href="/calculator/">Estimate repayment costs</a>
+      <a href="/tools/compare-college-aid-offers/">Compare college aid offers</a>
+    </div>
+  </header>
+  {entries.length ? <section class="tool-directory" aria-label="Published student loan and college aid guides">
+    <h2>Start with a question you want to answer</h2>
+    <div class="guide-grid">
+      {entries.map(entry=><a href={entryPath(entry)} class="guide-link">
+        <strong>{entry.data.title}</strong>
+        <span>{entry.data.description}</span>
+      </a>)}
+    </div>
+  </section> : <p>Guides will appear here after editorial review. You can use the <a href="/tools/">planning tools</a> now.</p>}
+  <section class="home-explain" aria-labelledby="guides-how-to">
+    <div class="home-section-intro">
+      <span class="eyebrow">How to use these resources</span>
+      <h2 id="guides-how-to">Keep the big picture in view.</h2>
+      <p>Read a short explanation, try the relevant calculator using hypothetical or verified figures, and compare what you see with the latest information from Federal Student Aid and your loan servicer.</p>
+    </div>
+    <div class="home-note">
+      <div>
+        <strong>Financial aid and repayment rules can change.</strong>
+        <p>LoanLens is independent and does not determine eligibility. Check <a href="https://studentaid.gov/manage-loans/repayment/plans">Federal Student Aid's repayment information</a> before taking action on your own loans.</p>
+      </div>
+    </div>
+  </section>
+</Base>
