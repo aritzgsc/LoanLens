@@ -19,7 +19,7 @@
         slot.removeAttribute('data-ad-active');
       } else {
         slot.setAttribute('data-ad-active', '');
-        if (slot.clientWidth < 300) slot.removeAttribute('data-ad-active');
+        if (slot.clientWidth < 250) slot.removeAttribute('data-ad-active');
       }
     }
     if (tagged !== allowedNow) {
