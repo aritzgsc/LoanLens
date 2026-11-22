@@ -25,7 +25,13 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
       // Switch to the editable raw value synchronously. Avoid scheduling a
       // focus-state rerender that can overwrite a quick paste before onInput.
       onFocus={event => { event.currentTarget.value = String(value); }}
-      onBlur={() => setEditing(null)}
+      onBlur={event => {
+        // If the user only focused and left, restore the formatted display
+        // without relying on a state change that React/Preact may skip.
+        if (editing === null) event.currentTarget.value =
+          currency ? formatUSD(value, Number.isInteger(value) ? 'whole' : 'exact') : String(value);
+        setEditing(null);
+      }}
       onInput={event => {
         const raw = event.currentTarget.value;
         setEditing(raw);
