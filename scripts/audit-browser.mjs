@@ -74,6 +74,10 @@ try {
             violations: axe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
           });
           if (route === '/') {
+            await page.getByRole('link', { name: 'Estimate loan payments', exact: true }).press('Enter');
+            await page.waitForURL(url => url.hash === '#repayment-estimator');
+            await page.getByRole('heading', { name: 'Student loan repayment calculator', exact: true }).waitFor();
+            await page.getByRole('link', { name: /Choosing a college/ }).waitFor();
             await page.getByRole('button', { name: 'Use example borrower' }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor();
             await page.evaluate(() => globalThis.scrollTo(0, 0));

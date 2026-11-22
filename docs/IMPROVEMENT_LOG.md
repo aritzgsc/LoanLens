@@ -18,3 +18,9 @@
 
 - [PR #1](https://github.com/aritzgsc/LoanLens/pull/1) was merged into `main` as `dc0884c1acb77348184f41618d26541931843fec`. Its [final CI](https://github.com/aritzgsc/LoanLens/actions/runs/45028861335) passed and the browser audit produced 132 screenshots with zero serious or critical findings.
 - The local offer comparison was still unavailable through the Windows runner. This change implements it against the shared design, adds a guide sourced from Federal Student Aid, and covers integer-cent calculations, misleading inputs, keyboard operation, and reset in CI.
+
+## Vercel migration and homepage
+
+- Reshaped the homepage around choosing a college, estimating payments, and checking repayment deadlines. The embedded estimator and its dedicated page use the shared calculator.
+- Grouped tools by when borrowers need them, marked the active navigation, and brought over routing and security headers in Vercel configuration. The legacy SAVE guide path temporarily points at the published deadlines tool while the guide is in editorial review.
+- Documented the canonical environment, Google verification and AdSense activation order. No publisher identifiers or ad settings were added.

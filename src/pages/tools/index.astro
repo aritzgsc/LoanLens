@@ -1,5 +1,22 @@
 ---
 import Base from '../../layouts/Base.astro';
 import { toolLinks } from '../../lib/site';
+
+const aidPath = '/tools/compare-college-aid-offers/';
+const toolGroups = [
+  { title: 'Before you borrow', tools: toolLinks.filter(([url]) => url === aidPath) },
+  { title: 'While you repay', tools: [
+    ['/calculator/', 'Compare repayment plans', 'Estimate monthly payments, lifetime costs, and potential forgiveness.'],
+    ...toolLinks.filter(([url]) => url !== aidPath),
+  ] },
+];
 ---
-<Base title="Student loan tools" description="Check repayment deadlines, married RAP payments, Parent PLUS pathways, and PSLF progress." og="tools"><div class="hero"><h1>Student loan tools</h1><p>Answer a specific repayment question or explore a new scenario.</p></div><div class="guide-grid">{toolLinks.map(([url,title,description])=><a class="guide-link" href={url}><strong>{title}</strong><span>{description}</span></a>)}</div></Base>
+<Base title="Student loan tools" description="Compare college financial aid offers, estimate repayment costs, and check federal student loan deadlines and forgiveness progress." og="tools">
+  <header class="hero"><h1>Student loan tools</h1><p>Choose a tool for the decision you are making today.</p></header>
+  {toolGroups.map(group => <section class="tool-directory">
+    <h2>{group.title}</h2>
+    <div class="guide-grid">
+      {group.tools.map(([url, title, description]) => <a class="guide-link" href={url}><strong>{title}</strong><span>{description}</span></a>)}
+    </div>
+  </section>)}
+</Base>

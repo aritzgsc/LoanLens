@@ -11,6 +11,8 @@ const noindex = draft || robotsNoIndex || Astro.url.pathname.startsWith('/404');
 const guides = await visible();
 const trust = trustLinks.filter(([slug])=>guides.some(entry=>entry.id===slug && entry.data.category==='trust'));
 const segments = Astro.url.pathname.split('/').filter(Boolean);
+const slug = segments[0];
+const navigation = [['/calculator/','Calculator'], ['/deadlines/','Deadlines'], ['/tools/','Tools'], ['/guides/','Guides']] as const;
 const groups: Record<string,string> = {guides:'Guides',tools:'Tools'};
 const crumbs = segments.length > 1 && groups[segments[0]] ? [{title:groups[segments[0]],url:'/'+segments[0]+'/'}] : [];
 const breadcrumb = [{title:'Home',url:'/'},...crumbs,{title,url:Astro.url.pathname}];
@@ -72,7 +74,9 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
   <a class="skip" href="#main">Skip to content</a>
   <header class="site-head"><div class="shell">
     <a class="brand" href="/"><img src="/icon.svg" width="34" height="34" alt="" />{siteName}</a>
-    <nav class="site-nav" aria-label="Main navigation"><a href="/calculator/">Calculator</a><a href="/deadlines/">Deadlines</a><a href="/tools/">Tools</a><a href="/guides/">Guides</a></nav>
+    <nav class="site-nav" aria-label="Main navigation">
+      {navigation.map(([url, label]) => <a href={url} aria-current={Astro.url.pathname === url ? 'page' : slug && url === '/' + slug + '/' ? 'location' : undefined}>{label}</a>)}
+    </nav>
   </div></header>
   <main id="main" class="shell">
     {segments.length>0 && <nav class="crumbs" aria-label="Breadcrumb"><ol>{breadcrumb.map((b,i)=><li>{i===breadcrumb.length-1?<span aria-current="page">{b.title}</span>:<a href={b.url}>{b.title}</a>}</li>)}</ol></nav>}

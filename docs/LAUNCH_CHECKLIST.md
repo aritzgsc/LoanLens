@@ -1,14 +1,14 @@
 # LoanLens launch checklist
 
-Keep the GitHub repository private. Use Node 22.12 or later in CI and Cloudflare Pages. Use `npm run build` and publish `dist`. Keep `PUBLISH_DRAFTS=true` on private preview builds only.
+Keep the GitHub repository private. Use Node 22.12 or later in CI and hosting. Use `npm run build` and publish `dist`. Keep `PUBLISH_DRAFTS=true` on private preview builds only.
 
 ## Do these in order
 
-1. **Connect the repository and set the site origin.** In Cloudflare Pages, connect the private `aritzgsc/LoanLens` repository, use `main` as the production branch, run `npm run build`, and publish `dist`. Set `PUBLIC_SITE_URL` in the Production environment to the stable HTTPS hostname assigned by Pages, or to an existing custom domain after it is attached. Keep production indexable and verify canonical URLs, `robots.txt`, and alternate-host redirects. See [Cloudflare's Pages Git integration guide](https://developers.cloudflare.com/pages/get-started/git-integration/).
+1. **Connect the repository and set the site origin.** Import the private `aritzgsc/LoanLens` repository in Vercel with the Astro preset. Build `main` using `npm run build`, publish `dist`, and set `PUBLIC_SITE_URL` for Production to the final HTTPS domain. Set `PUBLISH_DRAFTS=false`, redeploy after environment changes, and check the canonical, sitemap, robots.txt, and legacy redirects.
 2. **Check publisher information.** Publisher and contact blocks are hidden while their values are placeholders. Verify the generated pages show only confirmed details.
 3. **Review and approve content.** Follow [REVIEW_PACKET.md](REVIEW_PACKET.md). Compare real matching scenarios using [SIMULATOR_CASES.md](SIMULATOR_CASES.md). Run `npm run review:approve -- <slug>` to print the checks, then repeat with `--yes` after completing them. For launch, enable `STRICT_PUBLISH=true` and run the production verification in [RUN_ME.md](RUN_ME.md). Check that the about, contact, privacy and other approved pages are live.
 4. **Create the Search Console property.** Verify domain ownership, submit the production sitemap and inspect representative pages for indexability.
-5. **Apply for AdSense.** Submit the real domain using your actual publisher account. Leave Auto ads off. Set up at most three manual placements per page, with fewer on short pages. Put none between inputs and results or next to primary action buttons.
+5. **Apply for AdSense.** Use Vercel Pro or Enterprise for commercial hosting. In AdSense, add the final domain, choose meta tag verification, and set `PUBLIC_ADSENSE_CLIENT` to the publisher ID in Vercel Production. Redeploy, verify, and request review. Wait for the site to be Ready and configure the consent integration before enabling units. Leave Auto ads off. Set up at most three manual placements per page, with fewer on short pages. Put none between inputs and results or next to primary action buttons.
 6. **Configure and verify the CMP.** Use the consent configuration provided for your account. Test acceptance, refusal, revocation, Global Privacy Control and consent not available in the affected regions. Verify that eligible ads load lazily after consent and interaction, and that no calculator data is sent to the ad provider.
 7. **Configure ads.txt.** Use the record from your AdSense account and confirm the production `/ads.txt` response. Verify a configured live unit on narrow and wide screens before enabling monetization.
 

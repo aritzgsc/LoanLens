@@ -1,7 +1,27 @@
 ---
 import Base from '../layouts/Base.astro';
 import CalculatorPage from '../components/CalculatorPage.astro';
-const title='Student loan repayment calculator 2026';
-const description='Compare monthly payments, lifetime costs, and forgiveness under U.S. student loan repayment plans.';
+
+const title = 'Student loan calculators and college aid comparison';
+const description = 'Compare college financial aid offers and estimate monthly payments, total costs, and potential forgiveness for U.S. student loans.';
 ---
-<Base {title} {description} kind="WebApplication"><CalculatorPage {title} {description}/></Base>
+<Base {title} {description} kind="WebApplication">
+  <header class="decision-hero">
+    <div class="decision-intro">
+      <h1>Understand what college and student loans will cost.</h1>
+      <p>Compare two financial aid offers or estimate what you might pay on your federal loans, month by month and over time.</p>
+      <a class="primary button-link" href="#repayment-estimator">Estimate loan payments</a>
+    </div>
+    <section class="decision-options" aria-label="Find the right tool">
+      <a class="decision-option" href="/tools/compare-college-aid-offers/">
+        <div><strong>Choosing a college?</strong><span>Compare net price and what you still need to cover after aid.</span></div>
+        <span class="decision-arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="decision-option" href="/deadlines/">
+        <div><strong>Already repaying loans?</strong><span>Check the deadlines and next steps that may apply to you.</span></div>
+        <span class="decision-arrow" aria-hidden="true">↗</span>
+      </a>
+    </section>
+  </header>
+  <CalculatorPage title="Student loan repayment calculator" embedded />
+</Base>
