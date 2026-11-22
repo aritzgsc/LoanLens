@@ -1,14 +1,15 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ResourceExplorer from '../../components/ResourceExplorer.astro';
+import GoalFinder from '../../components/GoalFinder.astro';
 const resources = [
-  {href:'/tools/compare-college-aid-offers/',title:'Compare two college aid offers',description:'Place costs, grants, scholarships and planned loans side by side. See the gap left after borrowing.',kind:'College costs',detail:'Side-by-side comparison',topic:'college',featured:true},
-  {href:'/calculator/',title:'Compare student loan repayment plans',description:'Model payments, total paid, loan balances and repayment time from a single scenario.',kind:'Repayment',detail:'Three-step calculator',topic:'repayment',featured:true},
-  {href:'/rap-payment-by-income/',title:'Explore RAP payments by income',description:'See how income ranges and claimed dependents affect illustrative starting RAP payments.',kind:'Repayment',detail:'Income reference table',topic:'repayment'},
-  {href:'/tools/married-rap-impact/',title:'Estimate married RAP payment impact',description:'Explore household AGI, separate and joint filing, and eligible debt allocation.',kind:'Household',detail:'Two-scenario estimate',topic:'repayment'},
-  {href:'/deadlines/',title:'Check repayment transition dates',description:'Review important plan timelines and estimate a date from your actual notice.',kind:'Timeline',detail:'Date helper',topic:'repayment'},
-  {href:'/tools/pslf-payment-tracker/',title:'Track remaining PSLF payments',description:'Use an official qualifying-payment count to estimate a milestone month.',kind:'Forgiveness',detail:'Milestone tracker',topic:'forgiveness'},
-  {href:'/tools/parent-plus-consolidation-checker/',title:'Explore Parent PLUS options',description:'Follow a question-based check of consolidation timing and what to confirm with your servicer.',kind:'Special cases',detail:'Guided checklist',topic:'special'},
+  {href:'/tools/compare-college-aid-offers/',title:'Which college will cost me less?',description:'Compare two offer letters without treating loans as free aid.',forYou:'You have offers from two schools.',outcome:'Annual net price, loans and funding gap side by side.',kind:'College costs',detail:'Side-by-side comparison',topic:'college',featured:true},
+  {href:'/calculator/',title:'What might my monthly payment be?',description:'Compare projected payments and full repayment cost—not just the starting amount.',forYou:'You have a loan balance and interest rate.',outcome:'Estimated payments, total paid, time and assumptions.',kind:'Repayment',detail:'Three-step calculator',topic:'repayment',featured:true},
+  {href:'/rap-payment-by-income/',title:'How does income affect RAP estimates?',description:'See sample payments across income ranges and dependent counts.',forYou:'You want to understand the RAP formula.',outcome:'A sample-income table with monthly estimates.',kind:'Repayment',detail:'Income reference table',topic:'repayment'},
+  {href:'/tools/married-rap-impact/',title:'Does my spouse’s income change this estimate?',description:'Compare illustrative RAP payments under different household assumptions.',forYou:'You and your spouse have income or loan debt.',outcome:'A side-by-side modeled household comparison.',kind:'Household',detail:'Two-scenario estimate',topic:'repayment'},
+  {href:'/deadlines/',title:'What deadline should I check?',description:'Use the date from your repayment notice to explore a possible deadline.',forYou:'You received a notice or are changing plans.',outcome:'A calculated date to verify in your real notice.',kind:'Timeline',detail:'Date helper',topic:'repayment'},
+  {href:'/tools/pslf-payment-tracker/',title:'How far am I from 120 PSLF payments?',description:'See a projected milestone using an official count for one loan.',forYou:'You already have a certified PSLF count.',outcome:'Remaining payment periods and target month.',kind:'Forgiveness',detail:'Milestone tracker',topic:'forgiveness'},
+  {href:'/tools/parent-plus-consolidation-checker/',title:'Which Parent PLUS questions should I ask?',description:'Understand what consolidation dates and payment history to verify.',forYou:'You have Parent PLUS or consolidation history.',outcome:'A practical checklist for your loan servicer.',kind:'Special cases',detail:'Guided checklist',topic:'special'},
 ];
 const topics=[
   {value:'college',label:'Before college'},
@@ -18,31 +19,25 @@ const topics=[
 ];
 ---
 <Base title="Free Student Loan Tools and College Cost Calculators" description="Choose the right free LoanLens tool: compare college costs, student loan repayment plans, RAP payments, deadlines or PSLF progress." og="tools">
-  <header class="resource-hero">
+  <header class="resource-hero resource-hero-slim">
     <div class="resource-hero-copy">
       <span class="eyebrow">LoanLens toolkit</span>
-      <h1>Make the numbers easier to understand.</h1>
-      <p>Every tool answers a practical question. Pick your goal, enter the information you know, and see what it means—with the assumptions kept visible.</p>
+      <h1>Start with your question. Find the right tool.</h1>
+      <p>You don't need to know what RAP, PSLF or net price means. Tell us what you are trying to work out, then go straight to the right calculator and explanation.</p>
       <div class="hero-actions">
-        <a class="primary button-link" href="#browse-tools">Find a tool</a>
+        <a class="primary button-link" href="#find-a-tool">Help me choose</a>
         <a class="secondary button-link" href="/guides/">Learn the basics first</a>
       </div>
       <p class="hero-microcopy">Free · No account required · Independent educational estimates</p>
     </div>
-    <div class="resource-hero-aside" aria-label="How to use LoanLens tools">
-      <span class="resource-aside-kicker">A clear path from question to action</span>
-      <ol class="resource-steps">
-        <li><span>01</span><div><strong>Choose your question</strong><p>Compare costs, estimate repayment or check a milestone.</p></div></li>
-        <li><span>02</span><div><strong>Try real or example numbers</strong><p>Look at the result and check the warnings.</p></div></li>
-        <li><span>03</span><div><strong>Verify before acting</strong><p>Confirm eligibility and account details with official sources.</p></div></li>
-      </ol>
-    </div>
   </header>
+
+  <GoalFinder id="find-a-tool" mode="tools"/>
 
   <section id="browse-tools" class="resource-section" aria-labelledby="browse-tools-title">
     <div class="resource-section-head">
-      <div><span class="eyebrow">Explore the tools</span><h2 id="browse-tools-title">Find the right starting point</h2></div>
-      <p>Search by goal or filter by topic. Each tool explains the inputs it needs and what its result can tell you.</p>
+      <div><span class="eyebrow">All calculators and helpers</span><h2 id="browse-tools-title">Browse every tool</h2></div>
+      <p>Already know what you want? Search by question or filter by topic. Each card tells you who it is for and what you will see.</p>
     </div>
     <ResourceExplorer label="Browse LoanLens planning tools" items={resources} topics={topics} placeholder="Try: aid offers, monthly payment, PSLF…" />
   </section>

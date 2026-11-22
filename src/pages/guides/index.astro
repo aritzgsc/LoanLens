@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import ResourceExplorer from '../../components/ResourceExplorer.astro';
+import GoalFinder from '../../components/GoalFinder.astro';
 import { visible, entryPath } from '../../lib/content';
 const entries = (await visible()).filter(entry=>entry.data.category==='guide');
 const topicsById:Record<string,string>={
@@ -19,38 +20,70 @@ const order=[
   'prepare-for-student-loan-repayment',
   'pslf-payment-count-checklist'
 ];
+const introductions:Record<string,{title:string;forYou:string;outcome:string}>={
+  'compare-college-financial-aid-offers':{
+    title:'Which college offer will cost me less?',
+    forYou:'You have costs and award letters for two schools.',
+    outcome:'A practical net-price comparison and what to ask each school.'
+  },
+  'understand-college-aid-types':{
+    title:'Which parts of my aid offer are grants, loans or work-study?',
+    forYou:'An award letter has terms you do not recognize.',
+    outcome:'A simple breakdown and a worked $32,000 example.'
+  },
+  'compare-student-loan-repayment':{
+    title:'Is the lowest monthly payment the cheapest option?',
+    forYou:'You are considering different repayment scenarios.',
+    outcome:'Four figures to compare and an easy cost example.'
+  },
+  'student-loan-interest-explained':{
+    title:'Why am I paying interest on my student loan?',
+    forYou:'You see interest or APR on a statement and are unsure what it means.',
+    outcome:'A daily-interest example and what affects the actual amount.'
+  },
+  'prepare-for-student-loan-repayment':{
+    title:'What should I do before my first loan bill?',
+    forYou:'You are starting repayment or checking your account.',
+    outcome:'A step-by-step checklist and which documents to collect.'
+  },
+  'pslf-payment-count-checklist':{
+    title:'How do I check which PSLF payments count?',
+    forYou:'You have public-service employment or an official PSLF count.',
+    outcome:'What 120 means, how to read your count and when to seek review.'
+  },
+};
 const resources=entries.map(entry=>({
   href:entryPath(entry),
-  title:entry.data.title,
+  title:introductions[entry.id]?.title??entry.data.title,
   description:entry.data.description,
+  forYou:introductions[entry.id]?.forYou??'You want an explanation of this topic.',
+  outcome:introductions[entry.id]?.outcome??'Context, examples and links to official sources.',
   topic:topicsById[entry.id]??'repayment',
   kind:topicsById[entry.id]==='college'?'College costs':topicsById[entry.id]==='forgiveness'?'Forgiveness':'Repayment',
-  detail:'Practical guide',
+  detail:'Step-by-step guide',
   featured:order.slice(0,3).includes(entry.id),
-})).sort((a,b)=>order.indexOf(a.href.split('/').filter(Boolean).at(-1)??'')-order.indexOf(b.href.split('/').filter(Boolean).at(-1)??''));
+})).sort((a,b)=>{
+  const aIndex=order.indexOf(a.href.split('/').filter(Boolean).at(-1)??'');
+  const bIndex=order.indexOf(b.href.split('/').filter(Boolean).at(-1)??'');
+  return (aIndex<0?999:aIndex)-(bIndex<0?999:bIndex);
+});
 const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',label:'Paying back loans'},{value:'forgiveness',label:'Forgiveness'}];
 ---
 <Base title="Student Loan and College Financial Aid Guides" description="Browse practical guides about college financial aid, loan interest, repayment costs, PSLF progress and decisions to verify with official sources." og="guides">
-  <header class="resource-hero">
+  <header class="resource-hero resource-hero-slim">
     <div class="resource-hero-copy">
       <span class="eyebrow">LoanLens learning center</span>
-      <h1>Understand your choices, not just the numbers.</h1>
-      <p>Short, practical explanations with examples, checklists and links to official sources. Read at your own pace, then use the tool that fits your question.</p>
+      <h1>Clear answers to the questions you actually have.</h1>
+      <p>No jargon required. Tell us what confuses you—interest, financial aid, monthly bills or PSLF—and find an explanation you can use today.</p>
       <div class="hero-actions">
-        <a class="primary button-link" href="#browse-guides">Browse guides</a>
+        <a class="primary button-link" href="#find-my-guide">Help me choose a guide</a>
         <a class="secondary button-link" href="/tools/">Explore tools instead</a>
       </div>
       <p class="hero-microcopy">Plain language · Worked examples · Sources you can check</p>
     </div>
-    <div class="resource-hero-aside" aria-label="Suggested learning path">
-      <span class="resource-aside-kicker">A sensible place to start</span>
-      <ol class="resource-steps">
-        <li><span>01</span><div><strong>Learn what the figure means</strong><p>Net price, interest, monthly payment or qualifying count.</p></div></li>
-        <li><span>02</span><div><strong>Follow an example</strong><p>Check the assumptions before applying it to your situation.</p></div></li>
-        <li><span>03</span><div><strong>Try a matching tool</strong><p>Move from an explanation to an estimate in one click.</p></div></li>
-      </ol>
-    </div>
   </header>
+
+  <GoalFinder id="find-my-guide" mode="guides"/>
 
   <section class="resource-section" aria-labelledby="learning-paths">
     <div class="resource-section-head">
@@ -66,8 +99,8 @@ const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',la
 
   <section id="browse-guides" class="resource-section" aria-labelledby="browse-guides-title">
     <div class="resource-section-head">
-      <div><span class="eyebrow">All published guides</span><h2 id="browse-guides-title">Find a clear answer.</h2></div>
-      <p>Search for a term or filter by topic. Each guide includes a practical next step and links to the original sources.</p>
+      <div><span class="eyebrow">Explore all explanations</span><h2 id="browse-guides-title">Browse every guide</h2></div>
+      <p>Already know your topic? Search the whole library. Every card tells you whether it fits your question and what you will learn.</p>
     </div>
     <ResourceExplorer label="Search LoanLens guides" items={resources} topics={topics} placeholder="Try: interest, scholarships, monthly cost, PSLF…" />
   </section>
