@@ -3,7 +3,8 @@
 - [x] Research primary sources and record confirmed and unresolved rules.
 - [x] Implement the repayment engine and Vitest coverage.
 - [x] Confirm baseline GitHub Actions ran lint, typecheck, tests, and the Astro build on `bfcb4b6`.
-- [ ] Confirm all checks pass for the release changes. The baseline link check failed on two unconfigured ad slots.
+- [x] Confirm lint, types, tests, production build and link checks in release branch CI with a reserved test origin.
+- [ ] Confirm the latest pull request checks and browser artifacts. See the pull request for the latest results.
 - [ ] Recover the local college aid comparison tool and test the examples, invalid amounts, keyboard, mobile, and reset.
 - [ ] Verify a production Cloudflare Pages project and canonical domain, then confirm its deployed commit and public routes.
 - [ ] Verify the Search Console property, sitemap, URL inspection, and U.S. search data.

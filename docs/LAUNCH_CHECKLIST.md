@@ -5,7 +5,7 @@ Keep the GitHub repository private. Use Node 22.12 or later in CI and Cloudflare
 ## Do these in order
 
 1. **Set the domain.** Attach the real HTTPS domain to Cloudflare Pages and set `PUBLIC_SITE_URL` to that origin. The example host forces noindex. Check canonical URLs, `robots.txt` and alternate-host redirects.
-2. **Fill publisher placeholders.** Replace `{{AUTHOR_NAME}}`, `{{AUTHOR_BIO}}` and `{{CONTACT_EMAIL}}` with real publisher information. Confirm the contact mailbox works.
+2. **Check publisher information.** Publisher and contact blocks are hidden while their values are placeholders. Verify the generated pages show only confirmed details.
 3. **Review and approve content.** Follow [REVIEW_PACKET.md](REVIEW_PACKET.md). Compare real matching scenarios using [SIMULATOR_CASES.md](SIMULATOR_CASES.md). Run `npm run review:approve -- <slug>` to print the checks, then repeat with `--yes` after completing them. For launch, enable `STRICT_PUBLISH=true` and run the production verification in [RUN_ME.md](RUN_ME.md). Check that the about, contact, privacy and other approved pages are live.
 4. **Create the Search Console property.** Verify domain ownership, submit the production sitemap and inspect representative pages for indexability.
 5. **Apply for AdSense.** Submit the real domain using your actual publisher account. Leave Auto ads off. Set up at most three manual placements per page, with fewer on short pages. Put none between inputs and results or next to primary action buttons.
