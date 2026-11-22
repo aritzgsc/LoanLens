@@ -582,3 +582,14 @@ a.button-link:focus-visible, button:focus-visible,
   .article-toc ol {grid-template-columns:1fr}
 }
 @media(prefers-reduced-motion:reduce){.resource-card{transition:none}.resource-card:hover{transform:none}}
+
+/* Clearer college-aid results: explain comparisons without presenting a 'winner'. */
+.aid-insights {margin-block:1rem 1.7rem;padding:clamp(1.1rem,3vw,1.8rem);background:#f3fbf5;border:1px solid #cce4d5;border-radius:18px;display:grid;gap:.85rem}
+.aid-insights h3 {color:#214c3a;font-size:1.45rem}
+.aid-insight-grid {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.85rem}
+.aid-insight {background:#fff;border:1px solid #deeadf;border-radius:13px;padding:1rem;min-width:0;display:grid;align-content:start;gap:.45rem}
+.aid-insight strong {color:#0c6b59;font-weight:780;font-size:.84rem;text-transform:capitalize}
+.aid-insight p {font-size:.95rem;line-height:1.55;color:#314b3e}
+.aid-insights-note {max-width:85ch;color:#4c6657;font-size:.91rem}
+.aid-insights>a{font-weight:750}
+@media(max-width:700px){.aid-insight-grid{grid-template-columns:minmax(0,1fr)}}
