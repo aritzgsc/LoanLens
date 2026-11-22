@@ -254,10 +254,15 @@ try {
             if (await income.inputValue() !== '$45,000')
               throw new Error('Untouched currency field did not restore its formatted value');
             await income.fill('56000');
+            const beforeBlur = await income.inputValue();
+            const beforeNotice = await page.locator('.notice').first().innerText();
             await income.press('Tab');
             const formattedIncome = await income.inputValue();
+            const afterNotice = await page.locator('.notice').first().innerText();
             if (Number(formattedIncome.replace(/[^0-9.]/g, '')) !== 56000)
-              throw new Error('Edited income did not retain $56,000: ' + formattedIncome);
+              throw new Error('Edited income did not retain $56,000; beforeBlur=' + beforeBlur +
+                ' afterBlur=' + formattedIncome + ' beforeNotice=' + beforeNotice.slice(0,130) +
+                ' afterNotice=' + afterNotice.slice(0,130));
             const issues = await page.evaluate(fieldRowAlignment);
             if (issues.length) throw new Error('Married RAP: ' + issues.join('; '));
             if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-edited');
