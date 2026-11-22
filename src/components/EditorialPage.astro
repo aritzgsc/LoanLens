@@ -3,7 +3,7 @@ import { render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import AdSlot from './AdSlot.astro';
-import { author } from '../lib/site';
+import { author, trustLinks } from '../lib/site';
 import { entryPath, visible } from '../lib/content';
 interface Props { entry:CollectionEntry<'pages'>; }
 const {entry}=Astro.props;
@@ -24,14 +24,34 @@ const nextTools:Record<string,{href:string;title:string;description:string}>={
   'pslf-payment-count-checklist':{href:'/tools/pslf-payment-tracker/',title:'Track a PSLF milestone',description:'Enter a certified count for one loan to estimate a target month.'},
 };
 const nextTool=nextTools[entry.id]??{href:'/tools/',title:'Explore related tools',description:'Find the next planning step for this topic.'};
+const trustSummaries:Record<string,{eyebrow:string;summary:string;focus:string}> = {
+  about:{eyebrow:'About this project',summary:'Free student loan and college aid tools built to help you compare options without marketing pressure.',focus:'Independent information, not a loan provider.'},
+  contact:{eyebrow:'Feedback and corrections',summary:'Report broken links, incorrect calculations or confusing explanations through the public issue tracker.',focus:'Never post personal financial details in a public issue.'},
+  privacy:{eyebrow:'Privacy at LoanLens',summary:'Know what stays in your browser, how shared scenario links work and what hosting or ads may process.',focus:'Avoid placing private information in shared links.'},
+  sources:{eyebrow:'Research and references',summary:'See the official publications and documented assumptions used to build LoanLens estimates.',focus:'Account-specific decisions still require official verification.'},
+  'editorial-policy':{eyebrow:'How our content is reviewed',summary:'How calculations are sourced, tested, updated and corrected when a problem is reported.',focus:'Tests reduce errors but cannot guarantee every outcome.'},
+  advertising:{eyebrow:'Ads and independence',summary:'Understand how advertising is kept separate from the estimates and what privacy controls may appear.',focus:'Advertisements are never a repayment recommendation.'},
+  disclaimer:{eyebrow:'Scope and limitations',summary:'What your estimate can show—and why it cannot replace your loan servicer or an official eligibility decision.',focus:'Always verify amounts and deadlines before acting.'},
+  terms:{eyebrow:'Use of this site',summary:'The basic conditions for using educational estimates and third-party links.',focus:'LoanLens does not change or manage any loan account.'},
+  accessibility:{eyebrow:'Accessibility support',summary:'How to report an accessibility barrier, and how to find readable alternatives to chart data.',focus:'Public bug reports should never include private account information.'}
+};
+const trustInfo=trustSummaries[entry.id]??{eyebrow:'LoanLens information',summary:description,focus:'Check official sources for account-specific decisions.'};
+const publishedTrustIds=new Set((await visible()).filter(e=>e.data.category==='trust').map(e=>e.id));
+const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustIds.has(id)).slice(0,5);
+
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
-  <header class="hero"><h1>{title}</h1><p>{description}</p>
+  <header class:list={['hero',{'trust-hero':!guide}]}>
+    {!guide && <span class="eyebrow">{trustInfo.eyebrow}</span>}
+    <h1>{title}</h1>
+    <p>{guide?description:trustInfo.summary}</p>
   {guide && <p>{!author.name.includes('{{') && <>By {author.name} · </>}Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
     {reviewed && <p>Reviewed <time>{reviewed}</time></p>}
     {draft && <p class="warning">Editorial draft awaiting review.</p>}
   </header>
-  <div class="article-columns"><article class="article-body">
+  <div class:list={['article-columns',{'trust-columns':!guide}]}>
+    <article class:list={['article-body',{'trust-article':!guide}]}>
+    {!guide && <div class="trust-key-point"><span aria-hidden="true">✓</span><p>{trustInfo.focus}</p></div>}
     {guide && shortAnswer && <section class="short-answer notice" aria-labelledby="short-answer"><h2 id="short-answer">Short answer</h2><p>{shortAnswer}</p></section>}
     {guide && contents.length>2 && <nav class="article-toc" aria-label="On this page">
       <strong>In this guide</strong>
@@ -46,6 +66,18 @@ const nextTool=nextTools[entry.id]??{href:'/tools/',title:'Explore related tools
     </div>}
   </article>
     {guide && <aside><AdSlot kind="sidebar"/></aside>}
+    {!guide && <aside class="trust-sidebar" aria-label="More about LoanLens">
+      <div class="trust-sidebar-block">
+        <strong>Project information</strong>
+        <p>LoanLens publishes independent educational tools. It is not a loan servicer, lender or government website.</p>
+        <a href="/tools/">Explore the calculators</a>
+      </div>
+      <nav class="trust-sidebar-block" aria-label="Useful policies and information">
+        <strong>Related pages</strong>
+        <ul>{trustNavigation.map(([id,label])=><li><a href={'/'+id+'/'}>{label}</a></li>)}</ul>
+      </nav>
+      <div class="trust-reviewed">Content last reviewed <time datetime={reviewed??updated}>{reviewed??updated}</time></div>
+    </aside>}
   </div>
   {guide && <section class="support"><h2>Related tools and guides</h2><div class="guide-grid">
   <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong><span>See your estimated monthly payments and total costs.</span></a>

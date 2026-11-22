@@ -1,0 +1,15 @@
+name: Check public LoanLens indexability
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  seo-healthcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Check the deployed public domain
+        run: node scripts/seo-live-check.mjs

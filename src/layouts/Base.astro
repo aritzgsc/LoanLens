@@ -19,6 +19,9 @@ const breadcrumb = [{title:'Home',url:'/'},...crumbs,{title,url:Astro.url.pathna
 const schema = {'@context':'https://schema.org','@graph':[
   {'@type':'WebSite','@id':new URL('/#website',root).href,name:siteName,url:root.href},
   {'@type':'Organization','@id':new URL('/#organization',root).href,name:siteName,url:root.href,logo:new URL('/icon.svg',root).href},
+  {'@type':'WebPage','@id':canonical.href+'#webpage',url:canonical.href,name:title,description,
+    inLanguage:'en-US',isPartOf:{'@id':new URL('/#website',root).href},
+    primaryImageOfPage:{'@type':'ImageObject',url:ogImage.href}},
   ...(segments.length?[{'@type':'BreadcrumbList',itemListElement:breadcrumb.map((b,i)=>({'@type':'ListItem',position:i+1,name:b.title,item:new URL(b.url,root).href}))}]:[]),
   ...(kind?[{'@type':kind,name:title,headline:title,description,url:canonical.href,image:ogImage.href,
       ...(kind==='Article'?{dateModified:updated,...(!author.name.includes('{{') && {author:{'@type':'Person',name:author.name}}),publisher:{'@id':new URL('/#organization',root).href}}:
@@ -44,6 +47,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
   <meta property="og:title" content={title} />
   <meta property="og:description" content={description} />
   <meta property="og:site_name" content={siteName} />
+  <meta property="og:locale" content="en_US" />
   <meta property="og:url" content={canonical.href} />
   <meta property="og:image" content={ogImage.href} />
   <meta name="twitter:card" content="summary_large_image" />
@@ -83,7 +87,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
     <slot />
   </main>
   <footer class="site-footer"><div class="shell">
-    <nav aria-label="Footer" class="footer-links">{trust.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
+    <nav aria-label="Footer" class="footer-links"><a href="/guides/faq/">Questions &amp; answers</a>{trust.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
       {cmpUrl && <button class="text-button" type="button" data-ad-privacy>Advertising privacy choices</button>}
     </nav>
     <p>{siteName} is an independent educational resource. Estimates are for planning and do not constitute financial, tax, or legal advice.</p>

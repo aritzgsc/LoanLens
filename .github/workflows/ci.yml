@@ -8,7 +8,7 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     env:
-      PUBLIC_SITE_URL: https://loanlens.invalid
+      PUBLIC_SITE_URL: https://myloanlens.vercel.app
       STRICT_PUBLISH: 'true'
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     env:
-      PUBLIC_SITE_URL: https://loanlens.invalid
+      PUBLIC_SITE_URL: https://myloanlens.vercel.app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
