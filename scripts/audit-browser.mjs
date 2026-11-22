@@ -46,6 +46,51 @@ const textMetrics = () => {
     })),
   };
 };
+
+// Validate centered form geometry in every viewport, including hidden-initially wizard steps.
+// Labels remain left aligned intentionally; form blocks and field grids must be balanced.
+const formGeometry = () => {
+  const problems = [];
+  const visible = el => el && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden';
+  const box = el => el.getBoundingClientRect();
+  if (document.documentElement.scrollWidth > innerWidth + 2)
+    problems.push('horizontal document overflow: ' + document.documentElement.scrollWidth + ' > ' + innerWidth);
+  for (const [selector, reference] of [
+    ['.calculator .wizard', 'main'],
+    ['.calculator .wizard form', '.calculator .wizard'],
+    ['.calculator .steps', '.calculator .wizard'],
+    ['.aid-form', 'main'],
+    ['.aid-form .result-grid', '.aid-form'],
+    ['.aid-results', 'main'],
+    ['.aid-results .result-grid', '.aid-results'],
+    ['.tool-app', 'main'],
+    ['.tool-app > .tool-pane.card', '.tool-app'],
+  ]) {
+    const element = document.querySelector(selector);
+    const parent = document.querySelector(reference);
+    if (!visible(element) || !visible(parent)) continue;
+    const child = box(element), outer = box(parent);
+    if (child.left < -1 || child.right > innerWidth + 1)
+      problems.push(selector + ' exceeds the viewport');
+    const left = child.left - outer.left, right = outer.right - child.right;
+    if (outer.width - child.width > 35 && Math.abs(left - right) > 16)
+      problems.push(selector + ' is off-center by ' + Math.round(left - right) + 'px');
+  }
+  for (const element of document.querySelectorAll('.calculator .fields, .aid-form .fields, .tool-app .fields')) {
+    if (!visible(element) || !visible(element.parentElement)) continue;
+    const child = box(element), parent = box(element.parentElement);
+    const left = child.left - parent.left, right = parent.right - child.right;
+    if (parent.width - child.width > 35 && Math.abs(left - right) > 16)
+      problems.push('field grid is off-center by ' + Math.round(left - right) + 'px');
+  }
+  for (const element of document.querySelectorAll('.calculator input, .calculator select, .aid-form input, .aid-form select, .tool-app input, .tool-app select')) {
+    if (!visible(element)) continue;
+    const rect = box(element);
+    if (rect.width > 0 && (rect.left < -1 || rect.right > innerWidth + 1))
+      problems.push('input/control extends outside the viewport: ' + element.outerHTML.slice(0, 130));
+  }
+  return problems.slice(0, 16);
+};
 const visit = async (page, route) => {
   const response = await page.goto(new URL(route, origin).href, { waitUntil: 'load' });
   if (response?.status() !== 200) throw new Error(route + ' returned HTTP ' + response?.status());
@@ -87,6 +132,8 @@ try {
               }).filter(item => item && item.ratio < 4.5);
           });
           if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
+          const geometryProblems = await page.evaluate(formGeometry);
+          if (geometryProblems.length) throw new Error('Form layout: ' + geometryProblems.join('; '));
           const metrics = await page.evaluate(textMetrics);
           const axe = await new AxeBuilder({ page }).analyze();
           report.pages.push({ route, width, colorScheme, ...metrics,
@@ -101,6 +148,16 @@ try {
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor();
             await page.evaluate(() => globalThis.scrollTo(0, 0));
             await capture(prefix + '-example');
+            // Cover the additional form states that are not present in the initial screenshots.
+            await page.getByRole('button', { name: /Income and household/ }).click();
+            const incomeGeometry = await page.evaluate(formGeometry);
+            if (incomeGeometry.length) throw new Error('Income step layout: ' + incomeGeometry.join('; '));
+            if (colorScheme === 'light' && width !== 768) await capture(prefix + '-income-step');
+            await page.getByRole('button', { name: /Goals/ }).click();
+            const goalGeometry = await page.evaluate(formGeometry);
+            if (goalGeometry.length) throw new Error('Goal step layout: ' + goalGeometry.join('; '));
+            if (colorScheme === 'light' && width !== 768) await capture(prefix + '-goals-step');
+            await page.getByRole('button', { name: /Loans/ }).click();
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
@@ -117,6 +174,8 @@ try {
             await page.getByRole('region', { name: 'School B', exact: true })
               .getByText('$13,000.00', { exact: true }).waitFor();
             await capture(prefix + '-example');
+            const resultGeometry = await page.evaluate(formGeometry);
+            if (resultGeometry.length) throw new Error('Aid comparison layout: ' + resultGeometry.join('; '));
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),

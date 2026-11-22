@@ -120,5 +120,5 @@ function Income() {
 }
 export default function Tools({kind}:{kind:Tool}) {
   const Pane = {deadlines:Deadlines,married:Married,parent:Parent,pslf:Pslf,income:Income}[kind];
-  return <div class="tool-pane"><Pane/></div>;
+  return <div class="tool-pane tool-app"><Pane/></div>;
 }
