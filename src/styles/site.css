@@ -374,16 +374,19 @@ p.support > a.button-link {
   .site-head .site-nav {
     display: grid;
     width: 100%;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: .1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .3rem .5rem;
     white-space: nowrap;
   }
   .site-head .site-nav a {
     min-width: 0;
-    min-height: 44px;
-    padding: .35rem .12rem;
-    font-size: .84rem;
+    min-height: 42px;
+    padding: .4rem .55rem;
+    font-size: .88rem;
     justify-content: center;
+    border: 1px solid #e4eee8;
+    background: #f8fbf9;
+    border-radius: 9px;
   }
 }
 
@@ -417,4 +420,8 @@ a.button-link:focus-visible, button:focus-visible,
 }
 @media (max-width: 520px) {
   p.support > a.button-link { width: 100%; }
+}
+
+@media (max-width: 375px) {
+  .site-head .site-nav a[aria-current] {background: var(--accent-bg);border-color: #b9dec9}
 }
