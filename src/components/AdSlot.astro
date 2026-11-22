@@ -2,7 +2,8 @@
 import { publisher, robotsNoIndex, validPublisher } from '../lib/site';
 interface Props { kind:'results'|'article'|'sidebar'; }
 const {kind} = Astro.props;
-const unit = {results:import.meta.env.PUBLIC_ADSLOT_RESULTS,article:import.meta.env.PUBLIC_ADSLOT_ARTICLE,sidebar:import.meta.env.PUBLIC_ADSLOT_SIDEBAR}[kind];
+// Fallback keeps the approved results unit configured on deploys without a slot override.
+const unit = {results:import.meta.env.PUBLIC_ADSLOT_RESULTS || '8951943585',article:import.meta.env.PUBLIC_ADSLOT_ARTICLE,sidebar:import.meta.env.PUBLIC_ADSLOT_SIDEBAR}[kind];
 const configured = !robotsNoIndex && validPublisher && /^\d+$/.test(unit || '');
 ---
 {configured && <div class="ad-slot" data-slot-kind={kind} data-ad-client={publisher} data-ad-unit={unit}></div>}

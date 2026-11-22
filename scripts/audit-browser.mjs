@@ -125,4 +125,9 @@ const highImpact = report.pages.flatMap(page => page.violations.filter(issue => 
 console.log('Captured ' + report.screenshots.length + ' screenshots; ' + highImpact.length + ' serious/critical axe findings; ' + report.failures.length + ' audit errors.');
 for (const message of new Set(report.failures.map(failure => failure.message))) console.error(message);
 for (const id of new Set(highImpact.map(issue => issue.id))) console.error('Accessibility finding: ' + id);
+// Print a short, actionable sample of offending selectors in CI; the full report is saved to browser.json.
+const examples = new Set(report.pages.flatMap(page => page.violations
+  .filter(issue => ['serious','critical'].includes(issue.impact))
+  .flatMap(issue => issue.targets.slice(0,5).map(target => issue.id + ': ' + target.join(' > ')))));
+for (const target of [...examples].slice(0,25)) console.error('Failing element: ' + target);
 if (report.failures.length || highImpact.length) process.exitCode = 1;

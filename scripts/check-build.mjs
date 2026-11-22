@@ -19,8 +19,11 @@ const descriptions = new Set();
 const origin = new URL(process.env.PUBLIC_SITE_URL || 'https://loanlens.example');
 const preview = process.env.PUBLISH_DRAFTS === 'true';
 const indexable = !preview && Boolean(process.env.PUBLIC_SITE_URL) && !origin.hostname.endsWith('.example');
-const resultsAdsConfigured = /^ca-pub-\d+$/.test(process.env.PUBLIC_ADSENSE_CLIENT || '')
-  && /^\d+$/.test(process.env.PUBLIC_ADSLOT_RESULTS || '');
+// Match the public defaults in src/lib/site.ts and src/components/AdSlot.astro.
+const adClient = /^ca-pub-\d+$/.test(process.env.PUBLIC_ADSENSE_CLIENT || '')
+  ? process.env.PUBLIC_ADSENSE_CLIENT : 'ca-pub-8177969374546909';
+const resultSlot = process.env.PUBLIC_ADSLOT_RESULTS || '8951943585';
+const resultsAdsConfigured = /^ca-pub-\d+$/.test(adClient) && /^\d+$/.test(resultSlot);
 const sitemapUrls = new Set();
 for(const file of files) {
   const html=await readFile(file,'utf8');
