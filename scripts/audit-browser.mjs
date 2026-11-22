@@ -141,6 +141,22 @@ try {
               }).filter(item => item && item.ratio < 4.5);
           });
           if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
+          if (route === '/') {
+            const menu = page.locator('[data-mobile-nav]');
+            if (width <= 720) {
+              if (!(await menu.isVisible()) || await page.locator('.site-nav').isVisible())
+                throw new Error('Compact navigation is not active on small screens');
+              await menu.locator('summary').click();
+              await menu.getByRole('navigation',{name:'Mobile navigation'}).getByRole('link',{name:'Guides',exact:true}).waitFor();
+              if (await menu.locator('a:visible').count() < 5)
+                throw new Error('Mobile navigation is missing destinations');
+              await menu.locator('summary').press('Escape');
+              if (await menu.evaluate(element=>element.open))
+                throw new Error('Escape did not dismiss the mobile navigation');
+            } else if (await menu.isVisible()) {
+              throw new Error('Mobile navigation should be hidden at desktop widths');
+            }
+          }
           const visualIssues = await page.evaluate(visualGeometry);
           if (visualIssues.length) throw new Error('Visual layout: ' + visualIssues.join('; '));
           // Validate the actual generated social images and icons from the local build.

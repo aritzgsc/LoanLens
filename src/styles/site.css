@@ -353,43 +353,6 @@ p.support > a.button-link {
   text-align: center;
 }
 
-/* Preserve the compact single-row header on ordinary phones, but give very
-   narrow phones a clear two-row layout with usable navigation tap targets. */
-@media (max-width: 375px) {
-  .site-head .shell {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    gap: .3rem;
-    padding-block: .45rem .6rem;
-    width: calc(100% - 1.25rem);
-  }
-  .site-head .brand {
-    justify-self: center;
-    gap: .45rem;
-    font-size: 1.07rem;
-    min-height: 36px;
-  }
-  .site-head .brand img { display: block; width: 27px; height: 27px; }
-  .site-head .site-nav {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .3rem .5rem;
-    white-space: nowrap;
-  }
-  .site-head .site-nav a {
-    min-width: 0;
-    min-height: 42px;
-    padding: .4rem .55rem;
-    font-size: .88rem;
-    justify-content: center;
-    border: 1px solid #e4eee8;
-    background: #f8fbf9;
-    border-radius: 9px;
-  }
-}
-
 /* Long guidance/labels should wrap normally rather than forcing a mobile
    horizontal scrollbar. Tables remain explicitly scrollable in .table-wrap. */
 main, .wizard, .loan-row, .tool-pane, .plan, .chart, .article-body,
@@ -422,9 +385,6 @@ a.button-link:focus-visible, button:focus-visible,
   p.support > a.button-link { width: 100%; }
 }
 
-@media (max-width: 375px) {
-  .site-head .site-nav a[aria-current] {background: var(--accent-bg);border-color: #b9dec9}
-}
 
 
 /* Tools + Guides experience: deliberately scoped, preserving calculator layout. */
@@ -950,3 +910,49 @@ main:has(> .trust-page) > .crumbs{width:min(100%,1050px);margin-inline:auto}
   .trust-mobile-toc ol,.footer-menu:last-child{grid-template-columns:minmax(0,1fr)}
 }
 @media(prefers-reduced-motion:reduce){.trust-next-grid a:hover{transform:none}}
+
+/* Site-wide navigation and reading-layout polish: a compact accessible mobile menu. */
+.site-head .shell{position:relative}
+.mobile-nav{display:none}
+@media(max-width:720px){
+  .site-head .shell{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:.8rem;min-height:64px;width:calc(100% - 1.4rem);padding-block:.45rem}
+  .site-head .brand{font-size:1.12rem;min-height:44px;gap:.55rem;flex:0 1 auto}
+  .site-head .brand img{display:block;width:30px;height:30px}
+  .site-head .site-nav{display:none}
+  .mobile-nav{display:block;flex:0 0 auto}
+  .mobile-nav>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:44px;padding:.5rem .8rem;border:1px solid #cbded3;border-radius:11px;background:#fff;color:#254b3b;font-size:.9rem;font-weight:760;cursor:pointer;user-select:none}
+  .mobile-nav>summary::-webkit-details-marker{display:none}
+  .mobile-nav[open]>summary,.mobile-nav>summary:hover{background:#eaf7f0;border-color:#7cbea2;color:#075b52}
+  .mobile-nav-icon{display:flex;flex-direction:column;gap:4px}
+  .mobile-nav-icon>span{width:17px;height:2px;border-radius:1px;background:currentColor;transition:transform .15s ease,opacity .15s ease}
+  .mobile-nav[open] .mobile-nav-icon>span:first-child{transform:translateY(6px) rotate(45deg)}
+  .mobile-nav[open] .mobile-nav-icon>span:nth-child(2){opacity:0}
+  .mobile-nav[open] .mobile-nav-icon>span:last-child{transform:translateY(-6px) rotate(-45deg)}
+  .mobile-nav-panel{position:absolute;left:0;right:0;top:calc(100% + .2rem);z-index:20;padding:.55rem;border:1px solid #dce8de;border-radius:16px;background:#fff;box-shadow:0 18px 45px #1d443022;display:grid;gap:.16rem;max-height:calc(100dvh - 85px);overflow:auto}
+  .mobile-nav-panel a{display:flex;align-items:center;min-height:46px;padding:.7rem .9rem;border-radius:9px;text-decoration:none;font-size:1rem;font-weight:680;color:#284f3d}
+  .mobile-nav-panel a:hover,.mobile-nav-panel a:focus-visible,.mobile-nav-panel a[aria-current]{background:#eaf7f0;color:#086b60}
+  .mobile-nav-panel .mobile-nav-extra{border-top:1px solid #e5eee7;margin-top:.35rem;border-radius:0;padding-top:.8rem;font-size:.91rem;color:#466a57}
+}
+@media(prefers-reduced-motion:reduce){.mobile-nav-icon>span{transition:none}}
+/* Guide articles use the same centered rhythm as our information pages, without changing ad behavior. */
+main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1020px);margin-inline:auto}
+.editorial-frame:not(.trust-page){width:min(100%,1020px);min-width:0;margin-inline:auto}
+.editorial-frame:not(.trust-page) .hero{margin:1.2rem auto 1rem;max-width:none}
+.editorial-frame:not(.trust-page) .hero h1{max-width:24ch;text-wrap:balance;font-size:clamp(2.05rem,4vw,3.15rem)}
+.editorial-frame:not(.trust-page) .hero p{max-width:65ch;line-height:1.75}
+.editorial-frame:not(.trust-page) .article-columns{width:100%;margin:1.15rem auto 0;justify-items:center}
+.editorial-frame:not(.trust-page) .article-body{width:100%;max-width:780px;margin-inline:auto}
+.editorial-frame:not(.trust-page) .article-columns:has(.ad-slot[data-active]) .article-body{max-width:none}
+@media(max-width:650px){
+  .editorial-frame:not(.trust-page) .hero{margin-top:.85rem}
+  .editorial-frame:not(.trust-page) .article-body{border-radius:16px;padding:1.25rem 1.05rem}
+}
+/* Open/closed FAQ is apparent at a glance and remains usable with native details behavior. */
+.home-question-list summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;list-style:none;min-height:44px;cursor:pointer}
+.home-question-list summary::-webkit-details-marker{display:none}
+.home-question-list summary::after{content:"+";display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:#eaf6ee;color:#096c55;font-size:1.4rem;line-height:1;font-weight:600}
+.home-question-list details[open]>summary::after{content:"−";background:#dceee3}
+.home-question-list details[open]{background:#fbfefa}
+.home-question-list details p{padding:.65rem 2rem .35rem 0;line-height:1.7}
+.home-question-list details summary:hover{color:#086b60}
+@media(max-width:480px){.home-question-list details{padding:.8rem 1rem}.home-question-list details p{padding-right:0}}
