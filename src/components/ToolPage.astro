@@ -7,4 +7,4 @@ interface Props { kind:Tool; }
 const {kind}=Astro.props;
 const {title,description}=toolTitles[kind];
 ---
-<Base {title} {description} og={kind}><header class="hero"><h1>{title}</h1><p>{description}</p><p class="stamp">Rules last verified: <time>{rules.rapBands.retrieved}</time></p></header><Tools client:load {kind}/><p class="support"><a class="primary button-link" href="/calculator/">Compare all repayment plans</a></p></Base>
+<Base {title} {description} og={kind}><header class="hero hero-tool"><h1>{title}</h1><p>{description}</p><p class="stamp">Rules last verified: <time>{rules.rapBands.retrieved}</time></p></header><Tools client:load {kind}/><p class="support tool-footer-cta"><a class="primary button-link" href="/calculator/">Compare all repayment plans</a></p></Base>
