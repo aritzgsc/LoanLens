@@ -16,7 +16,8 @@
     "verify-data": "node --experimental-strip-types scripts/verify-data.ts",
     "review:list": "node scripts/review-list.mjs",
     "review:approve": "node scripts/review-approve.mjs",
-    "check:links": "node scripts/check-build.mjs"
+    "check:links": "node scripts/check-build.mjs",
+    "seo:live": "node scripts/seo-live-check.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^4.3.0",
