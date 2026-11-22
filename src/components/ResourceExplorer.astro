@@ -3,6 +3,8 @@ interface Resource {
   href: string;
   title: string;
   description: string;
+  forYou?: string;
+  outcome?: string;
   topic: string;
   kind: string;
   detail?: string;
@@ -36,7 +38,7 @@ const { label, items, topics, placeholder='Search by topic or question' } = Astr
       class:list={['resource-card', {'resource-card-featured':item.featured}]}
       data-resource-card
       data-topic={item.topic}
-      data-search={`${item.title} ${item.description} ${item.kind} ${item.detail??''}`.toLowerCase()}
+      data-search={`${item.title} ${item.description} ${item.forYou??''} ${item.outcome??''} ${item.kind} ${item.detail??''}`.toLowerCase()}
     >
       <span class="resource-card-top">
         <span class="resource-card-type">{item.kind}</span>
@@ -44,6 +46,10 @@ const { label, items, topics, placeholder='Search by topic or question' } = Astr
       </span>
       <strong>{item.title}</strong>
       <span class="resource-card-description">{item.description}</span>
+      {(item.forYou || item.outcome) && <span class="resource-card-answers">
+        {item.forYou && <span><b>Good fit if</b>{item.forYou}</span>}
+        {item.outcome && <span><b>You will see</b>{item.outcome}</span>}
+      </span>}
       <span class="resource-card-open">Explore resource <span aria-hidden="true">↗</span></span>
     </a>)}
   </div>
