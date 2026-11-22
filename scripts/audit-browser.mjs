@@ -9,7 +9,7 @@ const widths = [390, 768, 1280];
 const heights = { 390: 844, 768: 1024, 1280: 800 };
 const routes = ['/', '/calculator/', '/deadlines/', '/tools/', '/tools/married-rap-impact/',
   '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
-  '/guides/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
+  '/guides/', '/guides/compare-student-loan-repayment/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
 const routeName = path => path === '/' ? 'home' : path.slice(1, -1).replaceAll('/', '--');
 const allPages = (await readdir(resolve(dist), { recursive: true }))
   .map(path => path.replaceAll('\\', '/'))
@@ -18,7 +18,7 @@ const allPages = (await readdir(resolve(dist), { recursive: true }))
   .sort();
 
 await mkdir(reportDir, { recursive: true });
-const browser = await chromium.launch();
+const browser = await chromium.launch({ channel: process.env.AUDIT_BROWSER_CHANNEL });
 const report = { origin, urls: allPages, pages: [], screenshots: [], failures: [] };
 const textMetrics = () => {
   const { document, innerHeight } = globalThis;
@@ -55,7 +55,7 @@ try {
   for (const colorScheme of ['light', 'dark']) {
     for (const width of widths) {
       const page = await browser.newPage({ colorScheme, viewport: { width, height: heights[width] }, reducedMotion: 'reduce' });
-      for (const route of new Set([...allPages, ...routes])) {
+      for (const route of allPages) {
         try {
           await visit(page, route);
           const axe = await new AxeBuilder({ page }).analyze();
@@ -74,7 +74,7 @@ try {
           };
           await capture(prefix);
           if (route === '/') {
-            await page.getByRole('button', { name: 'Use example borrower' }).click();
+            await page.getByRole('button', { name: 'Use example borrower' }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor();
             await page.evaluate(() => globalThis.scrollTo(0, 0));
             await capture(prefix + '-example');
@@ -82,6 +82,8 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
+            await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
           }
         } catch (error) {
           report.failures.push({ route, width, colorScheme, message: String(error) });
