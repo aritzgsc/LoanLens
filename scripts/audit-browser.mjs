@@ -249,6 +249,10 @@ try {
           }
           if (route === '/tools/married-rap-impact/') {
             const income = page.getByLabel('Your adjusted gross income');
+            await income.focus();
+            await income.press('Tab');
+            if (await income.inputValue() !== '$45,000')
+              throw new Error('Untouched currency field did not restore its formatted value');
             await income.fill('56000');
             await income.press('Tab');
             const formattedIncome = await income.inputValue();
