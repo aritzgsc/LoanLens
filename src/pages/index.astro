@@ -2,31 +2,100 @@
 import Base from '../layouts/Base.astro';
 import CalculatorPage from '../components/CalculatorPage.astro';
 
-const title = 'Student loan calculators and college aid comparison';
-const description = 'Compare college financial aid offers and estimate monthly payments, total costs, and potential forgiveness for U.S. student loans.';
+const title = 'Student Loan Payment Calculator & College Aid Tools';
+const description = 'Estimate federal student loan payments, compare repayment costs, and calculate college net price after grants and scholarships. Free planning tools from LoanLens.';
 ---
 <Base {title} {description} kind="WebApplication">
   <header class="decision-hero">
     <div class="decision-intro">
-      <span class="decision-eyebrow">Clarity for your next decision</span>
-      <h1>Understand what student loans could cost before you decide.</h1>
-      <p>Explore federal student loan payment estimates and compare college aid offers in one calm, easy-to-use place.</p>
+      <span class="decision-eyebrow">Free, independent planning tools</span>
+      <h1>Make sense of student loan payments, one step at a time.</h1>
+      <p>Explore your estimated monthly payment, understand the long-term cost, and compare college financial aid before making a decision.</p>
       <div class="hero-actions">
         <a class="primary button-link" href="#repayment-estimator">Estimate loan payments</a>
-        <a class="secondary button-link" href="/guides/">Explore the guides</a>
+        <a class="secondary button-link" href="/tools/compare-college-aid-offers/">Compare aid offers</a>
       </div>
-      <p class="hero-microcopy">Free educational tools · No account required · Estimates, not financial advice</p>
+      <p class="hero-microcopy">No account required · Runs in your browser · Estimates for planning</p>
     </div>
     <section class="decision-options" aria-label="Find the right tool">
       <a class="decision-option" href="/tools/compare-college-aid-offers/">
-        <div><strong>Choosing a college?</strong><span>Compare net price and what you still need to cover after aid.</span></div>
+        <div><strong>Choosing a college?</strong><span>Compare the real cost of two schools after grants, scholarships, and planned loans.</span></div>
         <span class="decision-arrow" aria-hidden="true">↗</span>
       </a>
       <a class="decision-option" href="/deadlines/">
-        <div><strong>Already repaying loans?</strong><span>Check the deadlines and next steps that may apply to you.</span></div>
+        <div><strong>Already repaying loans?</strong><span>Explore repayment timelines and the questions to check with your loan servicer.</span></div>
+        <span class="decision-arrow" aria-hidden="true">↗</span>
+      </a>
+      <a class="decision-option" href="/guides/compare-student-loan-repayment/">
+        <div><strong>Not sure what to compare?</strong><span>Learn why a lower payment can still lead to a higher overall cost.</span></div>
         <span class="decision-arrow" aria-hidden="true">↗</span>
       </a>
     </section>
   </header>
+
   <CalculatorPage title="Student loan repayment calculator" embedded />
+
+  <section class="home-explain" aria-labelledby="understand-results">
+    <div class="home-section-intro">
+      <span class="eyebrow">Understand your estimate</span>
+      <h2 id="understand-results">A monthly payment is only part of the picture.</h2>
+      <p>Compare the same loan information across options. LoanLens helps organize the numbers, while official sources and your servicer confirm which choices are available to you.</p>
+    </div>
+    <div class="home-cards">
+      <article class="home-info-card">
+        <span class="card-index" aria-hidden="true">01</span>
+        <h3>Monthly payment</h3>
+        <p>Check the estimated amount due each month and whether a changing income could affect future payments.</p>
+        <a href="/calculator/">Explore repayment estimates</a>
+      </article>
+      <article class="home-info-card">
+        <span class="card-index" aria-hidden="true">02</span>
+        <h3>Overall repayment cost</h3>
+        <p>Look beyond the first payment to the amount paid across the projection, including the effect of time and interest.</p>
+        <a href="/guides/compare-student-loan-repayment/">Learn how to compare costs</a>
+      </article>
+      <article class="home-info-card">
+        <span class="card-index" aria-hidden="true">03</span>
+        <h3>College net price</h3>
+        <p>Subtract grants and scholarships from the annual cost of attendance, then see how planned borrowing changes the remaining gap.</p>
+        <a href="/tools/compare-college-aid-offers/">Compare two college offers</a>
+      </article>
+    </div>
+    <div class="home-note">
+      <div>
+        <strong>Built for clearer decisions, not official eligibility checks.</strong>
+        <p>Your figures are modeled estimates. LoanLens cannot access your student loan account, confirm repayment eligibility, or enroll you in a plan. Cross-check repayment choices with <a href="https://studentaid.gov/loan-simulator/">Federal Student Aid's official calculator</a> and your loan servicer.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-questions" aria-labelledby="common-questions">
+    <div class="home-section-intro">
+      <span class="eyebrow">Quick answers</span>
+      <h2 id="common-questions">Questions worth asking before you choose.</h2>
+      <p>Understand the limits of the estimate and follow a useful next step. No sales pressure, just practical context.</p>
+      <div class="page-intro-links">
+        <a href="/guides/">Read repayment guides</a>
+        <a href="/tools/">Browse all tools</a>
+      </div>
+    </div>
+    <div class="home-question-list">
+      <details>
+        <summary>Can this calculator see my student loan account?</summary>
+        <p>No. Enter a loan balance and rate yourself. The calculator processes your scenario in your browser; it does not sign in to Federal Student Aid or contact your servicer. Be careful with shared scenario links, which contain the values you entered. See our <a href="/privacy/">privacy policy</a>.</p>
+      </details>
+      <details>
+        <summary>Is the lowest monthly payment always the cheapest plan?</summary>
+        <p>Not necessarily. A smaller payment over a longer period can add up to more paid overall. Compare the estimated monthly amount, number of months, total paid, and any forgiveness assumptions using the <a href="/guides/compare-student-loan-repayment/">repayment comparison guide</a>.</p>
+      </details>
+      <details>
+        <summary>What's the difference between net price and the amount left after loans?</summary>
+        <p>Net price is a college's annual cost after grants and scholarships. Loans may reduce the amount you need to cover immediately, but they remain money you must repay. Use the <a href="/guides/compare-college-financial-aid-offers/">financial aid comparison guide</a> for an example.</p>
+      </details>
+      <details>
+        <summary>Can I apply for a repayment plan on LoanLens?</summary>
+        <p>No. LoanLens is an independent educational resource. Verify eligibility and complete any repayment application through <a href="https://studentaid.gov/manage-loans/repayment/plans">Federal Student Aid</a> or your loan servicer.</p>
+      </details>
+    </div>
+  </section>
 </Base>
