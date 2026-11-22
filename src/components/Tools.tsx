@@ -29,8 +29,9 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
   return <label class="field"><span>{label}</span>
     <input inputMode={currency ? 'decimal' : 'numeric'}
       value={editing ?? formatted(value)}
-      // No focus-state re-render: it could overwrite a quick paste.
-      onFocus={event => { event.currentTarget.value = String(value); }}
+      // Select instead of mutating the value on focus: DOM value changes during
+      // focus can invalidate the browser's "select all" in a quick paste/fill.
+      onFocus={event => { event.currentTarget.select(); }}
       onBlur={event => {
         // Read the DOM value before formatting so fast edits are committed
         // even if Preact has not rendered the last input event yet.
