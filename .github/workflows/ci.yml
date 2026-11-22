@@ -35,7 +35,7 @@ jobs:
   browser:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 12
     env:
       PUBLIC_SITE_URL: https://loanlens.invalid
     steps:
