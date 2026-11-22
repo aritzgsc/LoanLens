@@ -50,7 +50,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
   <meta name="twitter:image" content={ogImage.href} />
   {import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION && <meta name="google-site-verification" content={import.meta.env.PUBLIC_GOOGLE_SITE_VERIFICATION}/>}
   {import.meta.env.PUBLIC_BING_SITE_VERIFICATION && <meta name="msvalidate.01" content={import.meta.env.PUBLIC_BING_SITE_VERIFICATION}/>}
-  {validPublisher && <meta name="google-adsense-account" content={publisher}/>}
+  {!noindex && validPublisher && <meta name="google-adsense-account" content={publisher}/>}
   <script type="application/ld+json" set:html={JSON.stringify(schema).replaceAll('<','\\u003c')} />
   {cmpUrl && <>
     <script is:inline>

@@ -9,6 +9,6 @@ updated: "2026-11-22"
 
 import { contact } from "../../lib/site";
 
-Email <a href={'mailto:' + contact}>{contact}</a> to report an error or request an accessibility fix. Include the page link and describe the issue. For a calculator error, include the plan, the result and a hypothetical example that reproduces it.
+{!contact.includes('{{') && <p>Email <a href={'mailto:' + contact}>{contact}</a> to report an error or request an accessibility fix. Include the page link and describe the issue. For a calculator error, include the plan, the result, and a hypothetical example that reproduces it.</p>}
 
 Keep student aid credentials, identity numbers, tax returns and loan account details out of your message. Contact your servicer for account-specific actions.
