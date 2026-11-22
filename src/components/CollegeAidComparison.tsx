@@ -57,7 +57,7 @@ export default function CollegeAidComparison() {
   }
 
   return <>
-    <form class="tool-pane card aid-form" noValidate onSubmit={event => {
+    <form class="tool-pane card" noValidate onSubmit={event => {
       event.preventDefault();
       calculate(offers);
     }} onReset={event => {
@@ -104,7 +104,7 @@ export default function CollegeAidComparison() {
         <button class="text-button" type="reset">Reset</button>
       </div>
     </form>
-    <section class="support aid-results" aria-labelledby="aid-results-heading">
+    <section class="support" aria-labelledby="aid-results-heading">
       <h2 id="aid-results-heading">Annual cost comparison</h2>
       <div aria-live="polite">
         {results ? <div class="result-grid">
