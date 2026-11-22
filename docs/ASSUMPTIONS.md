@@ -8,7 +8,7 @@
 - Show supported numerical comparisons for clean Direct Loan portfolios. Parent PLUS, FFEL, uncertain or mixed eligibility, and consolidated legacy history route to authoritative checks when the data entered cannot support a responsible estimate.
 - Total cost means undiscounted out-of-pocket scheduled payments before any tax on forgiveness. Badges compare eligible modeled results and ties may share badges.
 - Ad requests require CMP consent, first interaction, and an in-view manual placement. Strict consent uses a fail-closed signal and Global Privacy Control. Ads remain disabled without publisher and unit IDs.
-- Editorial articles and trust pages start in draft. Preview builds show drafts with noindex and disallow crawling. Core tool and utility pages are independently indexed on a configured production host.
+- Unreviewed editorial articles and trust pages remain draft with noindex in authorized preview builds. Reviewed About, Contact (public issues only), Editorial Policy, Sources, and Disclaimer may be published without a public personal name; private personal information is not collected via these pages.
 - Supporting articles use build-time examples from editable scenarios. No author or organizational credentials are inferred.
 - A valid incoming anonymous scenario fragment is removed after browser restoration. The separate CMP does not bootstrap on an incoming scenario link. Validate dashboard-injected analytics separately for fragment and data avoidance before enabling it.
-- Cloudflare Web Analytics uses dashboard-managed injection after deployment. Website hosting remains under the user's Cloudflare account.
+- The public site is deployed through Vercel. Any optional analytics or advertising must have appropriate consent/privacy checks and may require a verified private contact method; no site analytics is implied by the loan engine.
