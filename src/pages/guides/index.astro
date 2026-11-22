@@ -1,38 +1,91 @@
 ---
 import Base from '../../layouts/Base.astro';
+import ResourceExplorer from '../../components/ResourceExplorer.astro';
 import { visible, entryPath } from '../../lib/content';
 const entries = (await visible()).filter(entry=>entry.data.category==='guide');
+const topicsById:Record<string,string>={
+  'compare-college-financial-aid-offers':'college',
+  'understand-college-aid-types':'college',
+  'compare-student-loan-repayment':'repayment',
+  'student-loan-interest-explained':'repayment',
+  'prepare-for-student-loan-repayment':'repayment',
+  'pslf-payment-count-checklist':'forgiveness',
+};
+const order=[
+  'compare-college-financial-aid-offers',
+  'understand-college-aid-types',
+  'compare-student-loan-repayment',
+  'student-loan-interest-explained',
+  'prepare-for-student-loan-repayment',
+  'pslf-payment-count-checklist'
+];
+const resources=entries.map(entry=>({
+  href:entryPath(entry),
+  title:entry.data.title,
+  description:entry.data.description,
+  topic:topicsById[entry.id]??'repayment',
+  kind:topicsById[entry.id]==='college'?'College costs':topicsById[entry.id]==='forgiveness'?'Forgiveness':'Repayment',
+  detail:'Practical guide',
+  featured:order.slice(0,3).includes(entry.id),
+})).sort((a,b)=>order.indexOf(a.href.split('/').filter(Boolean).at(-1)??'')-order.indexOf(b.href.split('/').filter(Boolean).at(-1)??''));
+const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',label:'Paying back loans'},{value:'forgiveness',label:'Forgiveness'}];
 ---
-<Base title="Student Loan Repayment & Financial Aid Guides" description="Understand student loan repayment costs, financial aid offers, monthly payment estimates, and the questions to ask your servicer." og="guides">
-  <header class="hero">
-    <span class="eyebrow">Learn before you decide</span>
-    <h1>Student loan and college aid guides</h1>
-    <p>Clear, practical explanations to help you compare borrowing and repayment choices. Start with the fundamentals, then check account-specific details with an official source.</p>
-    <div class="page-intro-links">
-      <a href="/calculator/">Estimate repayment costs</a>
-      <a href="/tools/compare-college-aid-offers/">Compare college aid offers</a>
+<Base title="Student Loan and College Financial Aid Guides" description="Browse practical guides about college financial aid, loan interest, repayment costs, PSLF progress and decisions to verify with official sources." og="guides">
+  <header class="resource-hero">
+    <div class="resource-hero-copy">
+      <span class="eyebrow">LoanLens learning center</span>
+      <h1>Understand your choices, not just the numbers.</h1>
+      <p>Short, practical explanations with examples, checklists and links to official sources. Read at your own pace, then use the tool that fits your question.</p>
+      <div class="hero-actions">
+        <a class="primary button-link" href="#browse-guides">Browse guides</a>
+        <a class="secondary button-link" href="/tools/">Explore tools instead</a>
+      </div>
+      <p class="hero-microcopy">Plain language · Worked examples · Sources you can check</p>
+    </div>
+    <div class="resource-hero-aside" aria-label="Suggested learning path">
+      <span class="resource-aside-kicker">A sensible place to start</span>
+      <ol class="resource-steps">
+        <li><span>01</span><div><strong>Learn what the figure means</strong><p>Net price, interest, monthly payment or qualifying count.</p></div></li>
+        <li><span>02</span><div><strong>Follow an example</strong><p>Check the assumptions before applying it to your situation.</p></div></li>
+        <li><span>03</span><div><strong>Try a matching tool</strong><p>Move from an explanation to an estimate in one click.</p></div></li>
+      </ol>
     </div>
   </header>
-  {entries.length ? <section class="tool-directory" aria-label="Published student loan and college aid guides">
-    <h2>Start with a question you want to answer</h2>
-    <div class="guide-grid">
-      {entries.map(entry=><a href={entryPath(entry)} class="guide-link">
-        <strong>{entry.data.title}</strong>
-        <span>{entry.data.description}</span>
-      </a>)}
+
+  <section class="resource-section" aria-labelledby="learning-paths">
+    <div class="resource-section-head">
+      <div><span class="eyebrow">Guided paths</span><h2 id="learning-paths">Start where you are.</h2></div>
+      <p>These paths connect one useful explanation to the next action. You do not need to know loan terminology to begin.</p>
     </div>
-  </section> : <p>Guides will appear here after editorial review. You can use the <a href="/tools/">planning tools</a> now.</p>}
-  <section class="home-explain" aria-labelledby="guides-how-to">
-    <div class="home-section-intro">
-      <span class="eyebrow">How to use these resources</span>
-      <h2 id="guides-how-to">Keep the big picture in view.</h2>
-      <p>Read a short explanation, try the relevant calculator using hypothetical or verified figures, and compare what you see with the latest information from Federal Student Aid and your loan servicer.</p>
+    <div class="resource-path-grid">
+      <a class="resource-path" href="/guides/understand-college-aid-types/"><span class="resource-path-index">01 / Before borrowing</span><strong>Reading a financial aid letter</strong><span>Understand what is free aid, earned aid and money to repay.</span><span class="resource-path-arrow">Start learning ↗</span></a>
+      <a class="resource-path" href="/guides/compare-student-loan-repayment/"><span class="resource-path-index">02 / Repaying</span><strong>Choosing how to compare plans</strong><span>Look beyond the first monthly payment to the total projected cost.</span><span class="resource-path-arrow">Start learning ↗</span></a>
+      <a class="resource-path" href="/guides/pslf-payment-count-checklist/"><span class="resource-path-index">03 / Forgiveness</span><strong>Checking PSLF progress</strong><span>Understand what your official count does—and does not—confirm.</span><span class="resource-path-arrow">Start learning ↗</span></a>
     </div>
-    <div class="home-note">
-      <div>
-        <strong>Financial aid and repayment rules can change.</strong>
-        <p>LoanLens is independent and does not determine eligibility. Check <a href="https://studentaid.gov/manage-loans/repayment/plans">Federal Student Aid's repayment information</a> before taking action on your own loans.</p>
-      </div>
+  </section>
+
+  <section id="browse-guides" class="resource-section" aria-labelledby="browse-guides-title">
+    <div class="resource-section-head">
+      <div><span class="eyebrow">All published guides</span><h2 id="browse-guides-title">Find a clear answer.</h2></div>
+      <p>Search for a term or filter by topic. Each guide includes a practical next step and links to the original sources.</p>
     </div>
+    <ResourceExplorer label="Search LoanLens guides" items={resources} topics={topics} placeholder="Try: interest, scholarships, monthly cost, PSLF…" />
+  </section>
+
+  <section class="resource-split" aria-labelledby="guides-apply-title">
+    <div>
+      <span class="eyebrow">Turn learning into action</span>
+      <h2 id="guides-apply-title">An explanation is more useful with the right tool.</h2>
+      <p>Work through a hypothetical example first. Use your actual records only when you understand what the input means.</p>
+    </div>
+    <div class="resource-prep-grid">
+      <article class="resource-prep"><strong>Compare two colleges</strong><p>See annual net price, how much you plan to borrow and the remaining funding gap.</p><a href="/tools/compare-college-aid-offers/">Open college aid comparison</a></article>
+      <article class="resource-prep"><strong>Compare repayment costs</strong><p>Model starting payments, timelines and long-term costs with consistent inputs.</p><a href="/calculator/">Open repayment calculator</a></article>
+    </div>
+  </section>
+
+  <section class="resource-note">
+    <strong>Information, not official loan advice.</strong>
+    <p>Student loan rules and your personal eligibility can change. These articles explain concepts and the limitations of the estimates; verify decisions using <a href="https://studentaid.gov/">Federal Student Aid</a> or your loan servicer.</p>
   </section>
 </Base>
