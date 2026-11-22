@@ -12,3 +12,9 @@
 - [Release quality CI](https://github.com/aritzgsc/LoanLens/actions/runs/45028302197/job/137226053731) passed 14 Vitest tests, lint, type checks, Astro builds and link checks for 13 production HTML pages and 31 preview HTML pages, and Lighthouse thresholds across five routes. The existing data verifier issued 10 unverified-rule warnings.
 - [Chrome and axe audit](https://github.com/aritzgsc/LoanLens/actions/runs/45028533367/artifacts/14756766930) captured 132 screenshots. It found two `scrollable-region-focusable` issues and completed the scripted example and reset checks without harness errors. The table wrappers now expose labeled focus targets for keyboard scrolling.
 - Waiting for production evidence before submitting a sitemap or requesting an AdSense review. Search performance, page RPM, ads served, and revenue are unverified.
+
+
+## Launch integration
+
+- [PR #1](https://github.com/aritzgsc/LoanLens/pull/1) was merged into `main` as `dc0884c1acb77348184f41618d26541931843fec`. Its [final CI](https://github.com/aritzgsc/LoanLens/actions/runs/45028861335) passed and the browser audit produced 132 screenshots with zero serious or critical findings.
+- The local offer comparison was still unavailable through the Windows runner. This change implements it against the shared design, adds a guide sourced from Federal Student Aid, and covers integer-cent calculations, misleading inputs, keyboard operation, and reset in CI.
