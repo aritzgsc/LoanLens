@@ -189,6 +189,23 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            // Exercise the actual add/remove controls, rather than only static screenshots.
+            await page.getByRole('button', { name: /Add another loan/ }).click();
+            await page.getByRole('group', { name: 'Loan 2' }).waitFor();
+            const loanStepIssues = await page.evaluate(fieldRowAlignment);
+            if (loanStepIssues.length) throw new Error('Multiple-loan fields: ' + loanStepIssues.join('; '));
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-two-loans');
+            await page.getByRole('button', { name: /Remove loan 2/ }).click();
+            await page.getByRole('group', { name: 'Loan 2' }).waitFor({ state: 'detached' });
+            await page.getByRole('button', { name: /Income and household/ }).click();
+            await page.getByLabel('Tax filing status').selectOption('joint');
+            await page.getByText('Spouse’s share of joint AGI').waitFor();
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-joint-income');
+            await page.getByRole('button', { name: /Goals/ }).click();
+            await page.getByLabel(/I expect to keep working/).check();
+            await page.getByText('Certified PSLF payments shared by these loans').waitFor();
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-pslf-goals');
+            await page.getByRole('button', { name: /Loans/ }).click();
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
           }
@@ -205,6 +222,14 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            // View responsive feedback/error state and validate semantic focus.
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) {
+              await cost.fill('-40');
+              await page.getByRole('button', { name: 'Compare offers' }).click();
+              await page.getByRole('alert').waitFor();
+              await capture(prefix + '-validation');
+              await cost.fill('30,000');
+            }
             await cost.fill('-40');
             await page.getByRole('button', { name: 'Compare offers' }).press('Enter');
             await page.getByRole('alert').getByText('Check the highlighted amounts before comparing.').waitFor();
@@ -212,6 +237,49 @@ try {
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             if (await cost.inputValue() !== '') throw new Error('Aid comparison reset did not clear the cost field');
             await page.getByText('Compare two offers to see what you may have left to cover.').waitFor();
+          }
+          // Exercise every independent interactive tool and capture meaningful state.
+          if (route === '/deadlines/') {
+            await page.getByLabel('Notice date').fill('2026-11-05');
+            await page.getByText(/Estimated deadline/).waitFor();
+            await page.getByLabel('Current plan or situation').selectOption('paye');
+            await page.getByText(/Choose an eligible replacement/).waitFor();
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-plan-changed');
+          }
+          if (route === '/tools/married-rap-impact/') {
+            const income = page.getByLabel('Your adjusted gross income');
+            await income.fill('56000');
+            await income.blur();
+            await page.getByText('$56,000').waitFor();
+            const issues = await page.evaluate(fieldRowAlignment);
+            if (issues.length) throw new Error('Married RAP: ' + issues.join('; '));
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-edited');
+          }
+          if (route === '/tools/parent-plus-consolidation-checker/') {
+            await page.getByLabel(/When was your Parent PLUS consolidation loan disbursed/).selectOption('before');
+            await page.getByLabel(/Made an ICR payment/).selectOption('yes');
+            await page.getByText(/Ask your servicer to confirm/).waitFor();
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-eligible-path');
+          }
+          if (route === '/tools/pslf-payment-tracker/') {
+            const certified = page.getByLabel(/Certified qualifying payments for one loan/);
+            await certified.fill('120');
+            await certified.blur();
+            await page.getByText(/Payment count reached/).waitFor();
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-completed');
+          }
+          if (route === '/rap-payment-by-income/') {
+            const dependents = page.getByLabel(/Dependents claimed on your return/);
+            await dependents.fill('2');
+            await dependents.blur();
+            if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
+          }
+          if (route === '/') {
+            const item = page.locator('.home-question-list details').first();
+            await item.locator('summary').click();
+            if (!(await item.evaluate(el => el.open))) throw new Error('Homepage question did not expand');
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-faq-expanded');
           }
         } catch (error) {
           report.failures.push({ route, width, colorScheme, message: String(error) });
