@@ -301,245 +301,34 @@ a.button-link.primary:hover,a.button-link.primary:focus-visible{color:#fff;backg
 button.secondary,button.secondary:hover{color:#203632}
 button.primary,button.primary:hover{color:#fff}
 
-
-/* Balanced form geometry: center the FORM and CONTROLS, not long descriptive labels.
-   Works for repayment, college-aid comparison, and all five small tools. */
-.calculator,.aid-form,.aid-results,.tool-app{
-  width:100%;
-  min-width:0;
-  max-width:1040px;
-  margin-inline:auto;
-}
-.calculator .wizard,.aid-form{padding:clamp(1.2rem,3.2vw,2.3rem)}
-.calculator .wizard-top,
-.calculator .wizard form{
-  width:min(100%,920px);
-  margin-inline:auto;
-}
-.calculator .wizard-top{justify-content:center;margin-bottom:.45rem}
-.calculator .wizard form{justify-items:stretch;gap:1.25rem}
-.calculator .wizard form>h2{
-  width:100%;
-  margin-inline:auto;
-  text-align:center;
-  text-wrap:balance;
-}
-.calculator .wizard form>p:not(.notice-line){
-  margin-inline:auto;
-  text-align:center;
-  max-width:65ch;
-}
-.calculator .steps{
-  width:min(100%,760px);
-  margin:1rem auto 1.5rem;
-  gap:.65rem;
-}
-.calculator .steps button{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:.55rem;
-  min-width:0;
-  padding:.7rem .55rem;
-  text-align:center;
-  line-height:1.3;
-}
-.calculator .steps button span{flex:0 0 1.5rem;margin:0}
-.calculator .loan-row{
-  width:100%;
-  max-width:920px;
-  min-width:0;
-  margin-inline:auto;
-  padding:clamp(1rem,2.5vw,1.6rem);
-  border-radius:17px;
-}
-.calculator .loan-row legend,.aid-form .loan-row legend{
-  float:none;
-  margin-inline:auto;
-  padding-inline:.65rem;
-  color:#254d3f;
-  font-size:1rem;
-  text-align:center;
-}
-.calculator .fields,.aid-form .fields,.tool-app .fields{
-  width:100%;
-  max-width:860px;
-  margin-inline:auto;
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(min(215px,100%),1fr));
-  gap:1.15rem;
-  align-items:start;
-}
-.calculator .field,.aid-form .field,.tool-app .field{
-  min-width:0;
-  width:100%;
-  text-align:left;
-  line-height:1.45;
-}
-.calculator .field :is(input,select),
-.aid-form .field :is(input,select),
-.tool-app .field :is(input,select),
-.calculator .numeric{
-  min-height:50px;
-  border-radius:12px;
-  font-size:1rem;
-}
-.calculator .numeric{gap:.5rem}
-.calculator .numeric input{
-  text-align:center;
-  font-variant-numeric:tabular-nums;
-  min-width:0;
-}
-.aid-form input,.tool-app input:not([type="checkbox"]){
-  text-align:center;
-  font-variant-numeric:tabular-nums;
-}
-.calculator .field select,.tool-app .field select{
-  text-align:start;
-  overflow:hidden;
-  text-overflow:ellipsis;
-}
-.calculator .check{
-  width:fit-content;
-  max-width:100%;
-  margin-inline:auto;
-  text-align:left;
-}
-.calculator .wizard form>details{width:100%;max-width:920px;margin-inline:auto}
-.calculator .wizard form>details .fields{margin-block:1.2rem}
-.calculator .wizard .actions,
-.aid-form .actions,
-.tool-app .actions{
-  justify-content:center;
-  gap:.75rem;
-}
-.calculator .wizard .actions button,
-.aid-form .actions button{
-  text-align:center;
-}
-.calculator .notice-line{text-align:center}
-.calculator .results{width:100%;margin-inline:auto}
-.calculator .results-head{
-  justify-content:center;
-  text-align:center;
-  gap:.7rem 1.5rem;
-}
-.calculator .results-head>div{width:100%}
-.calculator .results-head h2{max-width:none}
-.calculator .results>.notice{margin-inline:auto;width:100%}
-.calculator .result-grid,.calculator .chart-grid{
-  width:100%;
-  margin-inline:auto;
-  grid-template-columns:repeat(auto-fit,minmax(min(275px,100%),1fr));
-  gap:1.15rem;
-}
-.calculator .chart{min-width:0}
-.calculator .best-plans>h3{text-align:center}
-.calculator .results>.actions{justify-content:center}
-.calculator .results>.muted:last-child{text-align:center;max-width:none}
-.hero-calculator{
-  justify-items:center;
-  text-align:center;
-  max-width:1040px;
-  margin-inline:auto;
-}
-.hero-calculator :is(h1,h2,p){
-  max-width:70ch;
-  margin-inline:auto;
-}
-.hero-calculator :is(h1,h2){text-wrap:balance}
-.hero-tool{
-  max-width:1040px;
-  margin-inline:auto;
-  justify-items:center;
-  text-align:center;
-}
-.hero-tool :is(h1,p){margin-inline:auto}
-.hero-tool h1{max-width:24ch;text-wrap:balance}
-.tool-app{padding:0}
-.tool-app>.tool-pane.card{
-  width:100%;
-  min-width:0;
-  padding:clamp(1.3rem,3.5vw,2.3rem);
-  border-radius:22px;
-}
-.tool-app>.tool-pane.card>.field{
-  max-width:570px;
-  margin-inline:auto;
-}
-.tool-app .fields:has(> :only-child){
-  grid-template-columns:minmax(0,440px);
-  justify-content:center;
-}
-.tool-app .table-wrap{max-width:100%;min-width:0}
-.tool-app .notice{width:100%;max-width:860px;margin-inline:auto}
-.tool-app .tool-pane.card>p,
-.tool-app .tool-pane.card>a{
-  max-width:75ch;
-  margin-inline:auto;
-}
-.tool-footer-cta{
-  display:flex;
-  justify-content:center;
-  padding-block:1.5rem;
-}
-.aid-form{display:grid;justify-items:stretch;gap:1.5rem}
-.aid-form>p:first-child{
-  text-align:center;
-  max-width:65ch;
-  margin-inline:auto;
-}
-.aid-form .result-grid{
-  width:100%;
-  max-width:960px;
-  margin-inline:auto;
-  grid-template-columns:repeat(auto-fit,minmax(min(290px,100%),1fr));
-  align-items:start;
-  gap:1.2rem;
-}
-.aid-form .loan-row{width:100%;min-width:0;margin:0;padding:1.3rem}
-.aid-form .loan-row .tool-pane{padding:.4rem 0 0;gap:1.05rem}
-.aid-form .loan-row .field{max-width:100%;margin-inline:auto}
-.aid-results{gap:1.4rem}
-.aid-results>h2{text-align:center}
-.aid-results .result-grid{
-  width:100%;
-  max-width:960px;
-  margin-inline:auto;
-  grid-template-columns:repeat(auto-fit,minmax(min(290px,100%),1fr));
-  gap:1.2rem;
-}
-.aid-results .result-grid>.card{min-width:0}
-@media(max-width:640px){
-  .calculator .wizard,.aid-form,.tool-app>.tool-pane.card{
-    padding:1.15rem;
-    border-radius:18px;
+/*
+ * Vertical field alignment, preserving the original layout:
+ * all label, input, and optional hint/error rows share their height within
+ * each visual grid row. A two-line label no longer pushes its input lower
+ * than a one-line label beside it.
+ * No changes to column count, overall centering, input width or text alignment.
+ */
+@media (min-width: 601px) {
+  @supports (grid-template-rows: subgrid) {
+    .fields {
+      align-items: stretch;
+      row-gap: .55rem;
+    }
+    .fields > .field {
+      display: grid;
+      grid-row: span 3;
+      grid-template-rows: subgrid;
+      min-width: 0;
+      align-content: stretch;
+    }
+    .fields > .field > span:first-child:not(.numeric) {
+      align-self: center;
+    }
+    .fields > .field > :is(input, select, .numeric) {
+      align-self: center;
+    }
+    .fields > .field > small {
+      align-self: start;
+    }
   }
-  .calculator .steps{gap:.35rem}
-  .calculator .steps button{
-    flex-direction:column;
-    gap:.35rem;
-    padding:.7rem .3rem;
-    font-size:.82rem;
-    overflow-wrap:anywhere;
-  }
-  .calculator .fields,.aid-form .fields,.tool-app .fields{
-    grid-template-columns:minmax(0,1fr);
-    gap:.95rem;
-  }
-  .calculator .loan-row,.aid-form .loan-row{padding:1rem}
-  .calculator .wizard .actions button,.aid-form .actions button{flex:1 1 140px}
-  .calculator .wizard .actions .text-button,.aid-form .actions .text-button{flex:0 0 auto}
-  .tool-app .fields:has(> :only-child){grid-template-columns:minmax(0,1fr)}
-  .calculator .results-head>div{width:100%}
-}
-@media(max-width:380px){
-  .calculator .steps button{font-size:.74rem}
-  .calculator .wizard,.aid-form,.tool-app>.tool-pane.card{padding:.9rem}
-  .calculator .loan-row,.aid-form .loan-row{padding:.8rem}
-  .calculator .wizard .actions,.aid-form .actions{gap:.4rem}
-}
-@media print{
-  .calculator .wizard,.tool-app{box-shadow:none}
-  .calculator .results-head{text-align:left}
 }
