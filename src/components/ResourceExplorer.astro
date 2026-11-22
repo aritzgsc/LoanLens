@@ -37,7 +37,7 @@ const searchId='resource-search-'+label.toLowerCase().replace(/[^a-z0-9]+/g,'-')
     Showing {items.length} {items.length===1?'resource':'resources'}
   </p>
   <div class="resource-grid" data-resource-grid>
-    {items.map(item => <a
+    {items.map((item,index) => <a
       href={item.href}
       class:list={['resource-card', {'resource-card-featured':item.featured}]}
       data-resource-card
@@ -45,16 +45,16 @@ const searchId='resource-search-'+label.toLowerCase().replace(/[^a-z0-9]+/g,'-')
       data-search={`${item.title} ${item.description} ${item.forYou??''} ${item.outcome??''} ${item.kind} ${item.detail??''}`.toLowerCase()}
     >
       <span class="resource-card-top">
-        <span class="resource-card-type">{item.kind}</span>
+        <span class="resource-card-type"><span class="resource-card-number" aria-hidden="true">{String(index+1).padStart(2,'0')}</span>{item.kind}</span>
         {item.detail && <span class="resource-card-detail">{item.detail}</span>}
       </span>
       <strong>{item.title}</strong>
       <span class="resource-card-description">{item.description}</span>
       {(item.forYou || item.outcome) && <span class="resource-card-answers">
-        {item.forYou && <span><b>Good fit if</b>{item.forYou}</span>}
-        {item.outcome && <span><b>You will see</b>{item.outcome}</span>}
+        {item.forYou && <span><b>For you</b>{item.forYou}</span>}
+        {item.outcome && <span><b>You get</b>{item.outcome}</span>}
       </span>}
-      <span class="resource-card-open">Explore resource <span aria-hidden="true">↗</span></span>
+      <span class="resource-card-open">Open {item.detail?.toLowerCase().includes('guide')?'guide':'resource'} <span aria-hidden="true">↗</span></span>
     </a>)}
   </div>
   <div class="resource-empty" data-resource-empty hidden>

@@ -1,5 +1,6 @@
 ---
 import '../styles/site.css';
+import '../styles/ui-system.css';
 import { author, publisher, robotsNoIndex, siteName, trustLinks, validPublisher } from '../lib/site';
 import { visible } from '../lib/content';
 interface Props { title:string; description:string; kind?:'WebApplication'|'Article'; draft?:boolean; updated?:string; og?:string; }
@@ -103,7 +104,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
           <a class="footer-brand" href="/" aria-label="LoanLens home">
             <img src="/icon.svg" width="38" height="38" alt="" /><span>{siteName}</span>
           </a>
-          <p>Student loan decisions become clearer when the numbers make sense. Free calculators, practical guides and transparent assumptions.</p>
+          <p>Independent tools that turn complicated student loan numbers into understandable estimates.</p>
           <a href="/calculator/" class="footer-action">Open loan calculator <span aria-hidden="true">↗</span></a>
         </div>
         <div class="footer-menus">
@@ -127,7 +128,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
         </div>
       </div>
       <div class="footer-bottom">
-        <p>Independent educational information, not financial, tax or legal advice. LoanLens is not a government service or lender.</p>
+        <p>Independent educational information—not financial, tax or legal advice. LoanLens is not a lender, loan servicer or government website.</p>
         <a href="https://studentaid.gov/loan-simulator/" rel="noopener noreferrer">Official Federal Student Aid simulator <span aria-hidden="true">↗</span></a>
       </div>
     </div>
