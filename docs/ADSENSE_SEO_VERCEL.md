@@ -26,7 +26,7 @@ En Project > Settings > Environment Variables introduce:
 | `PUBLIC_SITE_URL` | `https://TU-DOMINIO-REAL` | Exactamente el dominio HTTPS de producción. Obligatorio para permitir indexación. |
 | `PUBLIC_SITE_NAME` | `LoanLens` | Nombre de marca. |
 | `PUBLIC_ADSENSE_CLIENT` | `ca-pub-8177969374546909` | Ya incorporado como valor público por defecto; la variable es opcional si usas esta cuenta. |
-| `PUBLIC_ADSLOT_RESULTS` | `1234567890` | ID numérico del bloque situado bajo los resultados. |
+| `PUBLIC_ADSLOT_RESULTS` | `8951943585` | Ya incorporado como valor por defecto; variable opcional. |
 | `PUBLIC_ADSLOT_ARTICLE` | `2345678901` | Bloque bajo contenido editorial, cuando exista una inserción. |
 | `PUBLIC_ADSLOT_SIDEBAR` | `3456789012` | Bloque lateral para guías de escritorio. |
 | `PUBLIC_GOOGLE_CMP_URL` | `https://fundingchoicesmessages.google.com/...` | **URL exacta** del script de Privacy & messaging de la cuenta, una vez configurado, publicado y probado el mensaje. |
