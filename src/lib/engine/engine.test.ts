@@ -75,3 +75,68 @@ describe('repayment estimates', () => {
     expect(compare({...example,loans:[{...example.loans[0],type:'parent-plus'}]})).toEqual([]);
   });
 });
+
+describe('independent arithmetic and projection invariants', () => {
+  it('uses the standard fixed-payment amortization formula for one 6% loan', () => {
+    expect(paymentAtRate(30000, .06, 120)).toBeCloseTo(333.0615, 3);
+    const rows = compare({...example, loans:[{balance:30000,rate:.06,type:'unsubsidized'}]});
+    const fixed = rows.find(row => row.plan === 'standard');
+    expect(fixed).toBeDefined();
+    expect(fixed?.starting).toBeCloseTo(333.06,2);
+    expect(fixed?.months).toBe(120);
+    expect(fixed?.forgiven).toBe(0);
+    expect(fixed?.paid).toBeGreaterThan(30000);
+    expect(fixed?.paid).toBeCloseTo(30000+(fixed?.interest||0),1);
+  });
+  it('does not invent interest on a zero-rate loan or charge more than principal', () => {
+    const rows = compare({...example,loans:[{balance:1200,rate:0,type:'unsubsidized'}]});
+    for(const row of rows) {
+      expect(row.interest).toBe(0);
+      expect(row.paid).toBeLessThanOrEqual(1200);
+      expect(row.forgiven).toBeGreaterThanOrEqual(0);
+    }
+    const fixed = rows.find(row => row.plan==='standard');
+    expect(fixed?.paid).toBe(1200);
+    expect(fixed?.forgiven).toBe(0);
+  });
+  it('applies RAP percentages at the correct inclusive income boundaries', () => {
+    expect(rapPayment(10000,0)).toBe(10);
+    expect(rapPayment(20000,0)).toBe(16.67);
+    expect(rapPayment(30000,0)).toBe(50);
+    expect(rapPayment(40000,0)).toBe(100);
+    expect(rapPayment(50000,0)).toBe(166.67);
+    expect(rapPayment(60000,0)).toBe(250);
+    expect(rapPayment(70000,0)).toBe(350);
+    expect(rapPayment(80000,0)).toBe(466.67);
+    expect(rapPayment(90000,0)).toBe(600);
+    expect(rapPayment(100000,0)).toBe(750);
+    expect(rapPayment(100001,0)).toBe(833.34);
+  });
+  it('keeps all modeled balances and cash payments finite and nonnegative', () => {
+    const scenarios = [
+      {...example, income:0,loans:[{balance:27000,rate:.06,type:'unsubsidized' as const}]},
+      {...example, income:85000,loans:[{balance:12000,rate:0,type:'subsidized' as const}]},
+      {...example, income:75000,filing:'joint' as const,spouseIncome:20000,spouseBalance:15000,dependents:2},
+      {...example, income:45000,loans:[{balance:7000,rate:.04,type:'subsidized' as const},{balance:30000,rate:.075,type:'unsubsidized' as const}]},
+    ];
+    for (const scenario of scenarios) for (const row of compare(scenario)) {
+      expect(row.months).toBeGreaterThanOrEqual(0);
+      expect(row.months).toBeLessThanOrEqual(360);
+      expect(row.paid).toBeGreaterThanOrEqual(0);
+      expect(row.interest).toBeGreaterThanOrEqual(0);
+      expect(row.forgiven).toBeGreaterThanOrEqual(0);
+      for(const point of row.points) {
+        expect(Number.isFinite(point.balance)).toBe(true);
+        expect(Number.isFinite(point.payment)).toBe(true);
+        expect(point.balance).toBeGreaterThanOrEqual(0);
+        expect(point.payment).toBeGreaterThanOrEqual(0);
+      }
+    }
+  });
+  it('does not pretend mixed or unsupported loan types have confirmed plan eligibility', () => {
+    expect(compare({...example,loans:[{balance:10000,rate:.06,type:'private'}]})).toEqual([]);
+    expect(compare({...example,loans:[{balance:10000,rate:.06,type:'parent-plus'}]})).toEqual([]);
+    expect(compare({...example,vintage:'unknown'})).toEqual([]);
+    expect(compare({...example,loans:[{balance:0,rate:0,type:'unsubsidized'}]})).toEqual([]);
+  });
+});

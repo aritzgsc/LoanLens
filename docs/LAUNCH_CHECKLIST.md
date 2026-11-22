@@ -25,5 +25,5 @@ The GitHub repository is currently public. Never commit secrets, individual loan
 - The AdSense site must be approved (`Ready`) independently of Vercel build status.
 - The production URL is set in Vercel; verify public `robots.txt`, `ads.txt` and canonical after redeploy.
 - The real Google-certified CMP URL is not configured. The existing consent-gated ad loader deliberately shows no advertising until consent can be validated. Configure and test before enabling ads.
-- About, Contact, Editorial Policy and other draft trust pages need real owner contact and review. Do not invent identity details.
+- About, Contact (public issues only), Editorial Policy, Sources and Disclaimer have been reviewed and published with project-level transparency, not a fictitious company or personal identity. Legal/private contact requirements for monetization remain an external review item; other guides and legal pages may still be drafts.
 - Commercial hosting entitlements and the AdSense account holder's eligibility cannot be inferred from a successful deployment.

@@ -173,18 +173,18 @@ export default function Calculator() {
           : <>{low?.title} has the lowest starting payment ({money(low?.starting ?? 0)}). {cost?.title} has the lowest projected out-of-pocket payments ({money(cost?.paid ?? 0)}) before any forgiveness tax.</>}</div>
       {rows.length>0 && <>
       <section class="best-plans" aria-labelledby="best-plans-title">
-        <h3 id="best-plans-title">Best for you</h3>
+        <h3 id="best-plans-title">Highlights from these modeled estimates</h3>
         <ul>{[
           ['Lowest monthly', 'Lowest starting payment'],
-          ['Lowest total cost', 'Lowest total paid'],
-          ['Fastest', 'Fastest payoff'],
-          ['Best for PSLF', 'Best for PSLF'],
+          ['Lowest total cost', 'Lowest modeled total paid'],
+          ['Fastest', 'Fastest projected payoff'],
+          ['Best for PSLF', 'Lowest modeled PSLF payments'],
         ].map(([badge,label]) => {
           const winners = rows.filter(row => row.badges.includes(badge));
           return <li key={badge}><strong>{label}</strong><span>{winners.map(row => row.title).join(' / ') || 'No match in this estimate'}</span></li>;
         })}</ul>
       </section>
-      <p class="muted">Estimates only, not financial or legal advice. Not affiliated with the U.S. Department of Education.</p>
+      <p class="muted">Educational estimates only. These highlights compare the scenarios entered, not your eligibility or which plan you should choose. Verify choices with Federal Student Aid and your servicer.</p>
       {alerts.length>0 && <section class="assumptions" aria-label="Unverified projection assumptions">
         <p>Planning estimate. {alerts.length} {alerts.length === 1 ? 'assumption applies' : 'assumptions apply'}.</p>
         <details><summary>See assumptions <span class="muted">(unverified)</span></summary>
@@ -194,7 +194,7 @@ export default function Calculator() {
         <div class="result-grid">{rows.map((row,i)=><article key={row.plan} class="plan card" style={{'--series':colors[i]}}>
           <h3>{row.title}</h3><p class="amount">{money(row.starting)} <small>/ month to start</small></p>
           <dl><div><dt>Total you pay</dt><dd>{money(row.paid)}</dd></div><div><dt>Interest you pay</dt><dd>{money(row.interest)}</dd></div><div><dt>Estimated forgiveness</dt><dd>{money(row.forgiven)}</dd></div><div><dt>{row.outcome==='paid'?'Estimated payoff':row.outcome==='pslf'?'Estimated PSLF':'Estimated IDR forgiveness'}</dt><dd>{dateLabel(row.end)}</dd></div>
-          {row.pslfSavings!==null && <div><dt>PSLF payment savings</dt><dd>{money(row.pslfSavings)}</dd></div>}</dl>
+          {row.pslfSavings!==null && <div><dt>Modeled PSLF payment difference</dt><dd>{money(row.pslfSavings)}</dd></div>}</dl>
         </article>)}</div>
         <div class="chart-grid"><Chart rows={rows} metric="balance"/><Chart rows={rows} metric="payment"/></div>
         <div class="actions no-print"><button type="button" class="secondary" onClick={share}>Copy scenario link</button><button type="button" class="secondary" onClick={()=>window.print()}>Print or save as PDF</button><button type="button" class="text-button" onClick={()=>{go(2);requestAnimationFrame(()=>heading.current?.focus());}}>Edit assumptions</button></div>

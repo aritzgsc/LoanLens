@@ -19,3 +19,12 @@ export function calculateAidOffer(cost: number, grants: number, scholarships: nu
     borrowed: loans,
   };
 }
+
+// Check internally consistent annual aid figures before producing a potentially misleading comparison.
+// Amounts are integer cents, as returned by parseAidAmount.
+export function aidOfferIssue(cost: number, grants: number, scholarships: number, loans: number):
+  'gift-aid-exceeds-cost' | 'planned-loans-exceed-net-price' | null {
+  if (grants + scholarships > cost) return 'gift-aid-exceeds-cost';
+  if (loans > cost - grants - scholarships) return 'planned-loans-exceed-net-price';
+  return null;
+}

@@ -291,3 +291,12 @@ body{background:linear-gradient(180deg,#f6fbf8 0,#fafcfb 480px,#fff 100%);min-he
 @media(max-width:720px){.decision-hero{padding:1.5rem}.decision-intro h1{font-size:clamp(2.25rem,8vw,3rem)}.hero-calculator{padding-top:1.8rem}}
 @media(max-width:560px){.home-cards{grid-template-columns:1fr}.home-info-card{min-height:0}.site-nav{column-gap:.2rem}.site-nav a{font-size:.79rem;padding-inline:.32rem}.brand{font-size:1rem}.decision-hero{margin-top:.8rem;padding:1.2rem}.hero-actions a{width:100%}.hero-microcopy{font-size:.78rem!important}.hero:not(.hero-calculator){padding:1.3rem;border-radius:19px}.article-body{padding:1.1rem;border-radius:18px}.home-explain{padding-top:2rem}.home-note{display:block}.shell{width:calc(100% - 1.4rem)}}
 @media print{.home-explain,.home-questions{display:none!important}.article-body{border:0;box-shadow:none;padding:0}}
+
+/* Explicit button contrast for anchor CTAs: .button-link used to override .secondary text white. */
+a.button-link.secondary,
+a.button-link.secondary:visited{color:#184e40;background:#fff;border:1px solid #afcfc0;text-decoration:none}
+a.button-link.secondary:hover,a.button-link.secondary:focus-visible{color:#103f33;background:#ecf7f0;border-color:#6cac91}
+a.button-link.primary,a.button-link.primary:visited{color:#fff;background:#086b60}
+a.button-link.primary:hover,a.button-link.primary:focus-visible{color:#fff;background:#075749}
+button.secondary,button.secondary:hover{color:#203632}
+button.primary,button.primary:hover{color:#fff}

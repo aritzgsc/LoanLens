@@ -68,6 +68,25 @@ try {
             }
           };
           if (routes.includes(route)) await capture(prefix);
+          // Check CTA contrast explicitly. Automated accessibility audits may miss styles that
+          // are hidden behind interactive states or an anchor overriding a button class.
+          const badButtons = await page.evaluate(() => {
+            const toRgb = (value) => (value.match(/[0-9.]+/g) ?? []).slice(0,3).map(Number);
+            const luminance = (rgb) => rgb.map((n) => {
+              const channel = n / 255;
+              return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
+            }).reduce((a,n,i) => a + n * [.2126,.7152,.0722][i],0);
+            return [...document.querySelectorAll('a.button-link,button.primary,button.secondary')]
+              .filter(element => element.getClientRects().length)
+              .map(element => {
+                const style = getComputedStyle(element);
+                const fg = toRgb(style.color), bg = toRgb(style.backgroundColor);
+                if (fg.length !== 3 || bg.length !== 3 || style.backgroundColor.includes('0, 0, 0, 0')) return null;
+                const light = luminance(fg), dark = luminance(bg);
+                return {label:element.textContent.trim().slice(0,70),ratio:(Math.max(light,dark)+.05)/(Math.min(light,dark)+.05)};
+              }).filter(item => item && item.ratio < 4.5);
+          });
+          if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
           const metrics = await page.evaluate(textMetrics);
           const axe = await new AxeBuilder({ page }).analyze();
           report.pages.push({ route, width, colorScheme, ...metrics,

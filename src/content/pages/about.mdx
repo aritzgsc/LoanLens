@@ -1,18 +1,27 @@
 ---
-title: "About LoanLens"
-description: "Learn how LoanLens estimates federal student loan payments and what its tools cover."
+title: "About LoanLens: Independent Student Loan Tools"
+description: "Learn who LoanLens is for, what its student loan estimates can and cannot do, and how the project handles corrections."
 category: "trust"
-status: "draft"
+status: "reviewed"
+reviewed: "2026-11-22"
 verified: "2026-11-22"
 updated: "2026-11-22"
 ---
 
-import EditorialLink from "../../components/EditorialLink.astro";
+LoanLens is an **independent educational website** offering free tools and plain-language guides about United States student loans and college financial aid. It is a small project published under the LoanLens name, **not a bank, lender, loan servicer, school or government agency**. It does not claim to be a registered company.
 
-import { author } from "../../lib/site";
+## What LoanLens does
 
-LoanLens publishes a calculator, repayment tools and guides for U.S. federal student loan borrowers. The calculator compares modeled payments and includes assumptions that can change the result.
+The [student loan calculator](/calculator/) produces model-based repayment estimates from the figures you enter. The [college aid comparison tool](/tools/compare-college-aid-offers/) helps separate net price, loans and the amount left to cover. The [guides](/guides/) explain terms and trade-offs with links to official sources.
 
-{!author.name.includes('{{') && <section aria-labelledby="publisher"><h2 id="publisher">Publisher</h2><p><strong>{author.name}</strong></p>{!author.bio.includes('{{') && <p>{author.bio}</p>}</section>}
+Results are **estimates, not official eligibility decisions**. Federal program rules, lender records and your own circumstances can change the outcome. Verify any decision using [Federal Student Aid](https://studentaid.gov/), your loan servicer or the relevant college financial aid office.
 
-For corrections or publisher questions, use the <EditorialLink slug="contact">contact page</EditorialLink>.
+## How to check our work
+
+The public [source code](https://github.com/aritzgsc/LoanLens) includes calculation logic, automated tests, assumptions and a [documented data-source inventory](https://github.com/aritzgsc/LoanLens/blob/main/docs/DATA_SOURCES.md). Automated testing helps catch mistakes, but it is not a substitute for official repayment records or independent legal review.
+
+See the [editorial policy](/editorial-policy/), [sources](/sources/), [disclaimer](/disclaimer/) and [advertising disclosure](/advertising/) for more details.
+
+## Corrections and feedback
+
+Found a calculation error, broken link or unclear explanation? Use our [public GitHub issue tracker](https://github.com/aritzgsc/LoanLens/issues/new). Issues are visible to everyone and generally require a GitHub account. **Do not post student loan account numbers, tax returns, identity documents or private financial details.**
