@@ -22,7 +22,9 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
   return <label class="field"><span>{label}</span>
     <input inputMode={currency ? 'decimal' : 'numeric'}
       value={editing ?? (currency ? formatUSD(value, Number.isInteger(value) ? 'whole' : 'exact') : value)}
-      onFocus={() => setEditing(String(value))}
+      // Switch to the editable raw value synchronously. Avoid scheduling a
+      // focus-state rerender that can overwrite a quick paste before onInput.
+      onFocus={event => { event.currentTarget.value = String(value); }}
       onBlur={() => setEditing(null)}
       onInput={event => {
         const raw = event.currentTarget.value;
