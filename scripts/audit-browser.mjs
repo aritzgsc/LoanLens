@@ -54,7 +54,8 @@ const visit = async (page, route) => {
 try {
   for (const colorScheme of ['light', 'dark']) {
     for (const width of widths) {
-      const page = await browser.newPage({ colorScheme, viewport: { width, height: heights[width] }, reducedMotion: 'reduce' });
+      const context = await browser.newContext({ colorScheme, viewport: { width, height: heights[width] }, reducedMotion: 'reduce' });
+      const page = await context.newPage();
       for (const route of allPages) {
         try {
           await visit(page, route);
@@ -88,7 +89,7 @@ try {
           report.failures.push({ route, width, colorScheme, message: String(error) });
         }
       }
-      await page.close();
+      await context.close();
     }
   }
 } finally {
