@@ -7,13 +7,23 @@ import { author } from '../lib/site';
 import { entryPath, visible } from '../lib/content';
 interface Props { entry:CollectionEntry<'pages'>; }
 const {entry}=Astro.props;
-const { Content }=await render(entry);
+const { Content, headings }=await render(entry);
 const {title,description,category,status,updated,verified,reviewed,related,shortAnswer}=entry.data;
 const draft=status==='draft';
 const guide=category==='guide';
 const entries=(await visible()).filter(e=>e.id!==entry.id && e.data.category==='guide');
 const relatedEntries=entries.filter(e=>related.includes(e.id));
 const suggestions=(relatedEntries.length?relatedEntries:entries).slice(0,3);
+const contents = headings.filter(heading=>heading.depth===2);
+const nextTools:Record<string,{href:string;title:string;description:string}>={
+  'compare-college-financial-aid-offers':{href:'/tools/compare-college-aid-offers/',title:'Compare two aid offers',description:'Test the calculations from this guide with two annual college offers.'},
+  'understand-college-aid-types':{href:'/tools/compare-college-aid-offers/',title:'Compare college costs',description:'Separate gift aid from planned loans and the remaining gap.'},
+  'compare-student-loan-repayment':{href:'/calculator/',title:'Compare repayment plans',description:'Look at projected starting payments, total paid and payoff dates.'},
+  'student-loan-interest-explained':{href:'/calculator/',title:'Test an interest scenario',description:'See how the modeled payment and interest cost vary by balance and rate.'},
+  'prepare-for-student-loan-repayment':{href:'/calculator/',title:'Estimate your repayment',description:'Use the figures you gathered from your account to compare illustrative outcomes.'},
+  'pslf-payment-count-checklist':{href:'/tools/pslf-payment-tracker/',title:'Track a PSLF milestone',description:'Enter a certified count for one loan to estimate a target month.'},
+};
+const nextTool=nextTools[entry.id]??{href:'/tools/',title:'Explore related tools',description:'Find the next planning step for this topic.'};
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
   <header class="hero"><h1>{title}</h1><p>{description}</p>
@@ -23,7 +33,17 @@ const suggestions=(relatedEntries.length?relatedEntries:entries).slice(0,3);
   </header>
   <div class="article-columns"><article class="article-body">
     {guide && shortAnswer && <section class="short-answer notice" aria-labelledby="short-answer"><h2 id="short-answer">Short answer</h2><p>{shortAnswer}</p></section>}
+    {guide && contents.length>2 && <nav class="article-toc" aria-label="On this page">
+      <strong>In this guide</strong>
+      <ol>{contents.map(heading=><li><a href={'#'+heading.slug}>{heading.text}</a></li>)}</ol>
+    </nav>}
     <Content/>
+    {guide && <div class="article-next">
+      <span class="eyebrow">Put it into practice</span>
+      <h2>{nextTool.title}</h2>
+      <p>{nextTool.description}</p>
+      <a class="primary button-link" href={nextTool.href}>Try the matching tool</a>
+    </div>}
   </article>
     {guide && <aside><AdSlot kind="sidebar"/></aside>}
   </div>
