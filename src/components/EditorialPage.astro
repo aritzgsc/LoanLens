@@ -1,0 +1,31 @@
+---
+import { render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import AdSlot from './AdSlot.astro';
+import { author } from '../lib/site';
+import { entryPath, visible } from '../lib/content';
+interface Props { entry:CollectionEntry<'pages'>; }
+const {entry}=Astro.props;
+const { Content }=await render(entry);
+const {title,description,category,status,updated,verified,reviewed,related}=entry.data;
+const draft=status==='draft';
+const guide=category==='guide';
+const entries=(await visible()).filter(e=>e.id!==entry.id && e.data.category==='guide');
+const relatedEntries=entries.filter(e=>related.includes(e.id));
+const suggestions=(relatedEntries.length?relatedEntries:entries).slice(0,3);
+---
+<Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
+  <header class="hero"><h1>{title}</h1><p>{description}</p>
+    {guide && <p>By {author.name} · Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
+    {reviewed && <p>Reviewed <time>{reviewed}</time></p>}
+    {draft && <p class="warning">Editorial draft awaiting review.</p>}
+  </header>
+  <div class="article-columns"><article class="article-body"><Content/></article>
+    {guide && <aside><AdSlot kind="sidebar"/></aside>}
+  </div>
+  {guide && <section class="support"><h2>Related tools and guides</h2><div class="guide-grid">
+    <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong></a>
+    {suggestions.map(e=><a class="guide-link" href={entryPath(e)}><strong>{e.data.title}</strong><span>{e.data.description}</span></a>)}
+  </div></section>}
+</Base>

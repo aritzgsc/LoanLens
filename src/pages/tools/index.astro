@@ -1,0 +1,5 @@
+---
+import Base from '../../layouts/Base.astro';
+import { toolLinks } from '../../lib/site';
+---
+<Base title="Student loan tools" description="Check repayment deadlines, married RAP payments, Parent PLUS pathways, and PSLF progress." og="tools"><div class="hero"><h1>Student loan tools</h1><p>Answer a specific repayment question or explore a new scenario.</p></div><div class="guide-grid">{toolLinks.map(([url,title,description])=><a class="guide-link" href={url}><strong>{title}</strong><span>{description}</span></a>)}</div></Base>

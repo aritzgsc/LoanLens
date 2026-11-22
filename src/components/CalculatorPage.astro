@@ -1,0 +1,17 @@
+---
+import Calculator from './Calculator';
+import AdSlot from './AdSlot.astro';
+import PartnerOffers from './PartnerOffers.astro';
+import { entryPath, visible } from '../lib/content';
+import { toolLinks } from '../lib/site';
+const {title, description} = Astro.props as {title:string;description:string};
+const guides = (await visible()).filter(e=>e.data.category==='guide').slice(0,3);
+---
+<header class="hero"><span class="eyebrow">Student loan repayment</span><h1>{title}</h1><p>{description}</p></header>
+<Calculator client:load />
+<AdSlot kind="results" />
+<PartnerOffers />
+<section class="support"><h2>Explore your next step</h2><div class="guide-grid">
+  {toolLinks.map(([url,label,description])=><a class="guide-link" href={url}><strong>{label}</strong><span>{description}</span></a>)}
+  {guides.map(entry=><a class="guide-link" href={entryPath(entry)}><strong>{entry.data.title}</strong><span>{entry.data.description}</span></a>)}
+</div></section>

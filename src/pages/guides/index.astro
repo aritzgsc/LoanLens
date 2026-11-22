@@ -1,0 +1,7 @@
+---
+import Base from '../../layouts/Base.astro';
+import { visible, entryPath } from '../../lib/content';
+const entries = (await visible()).filter(entry=>entry.data.category==='guide');
+---
+<Base title="Student loan repayment guides" description="Explore student loan repayment, borrower eligibility, plan transitions and forgiveness." og="guides"><div class="hero"><h1>Repayment guides</h1><p>Read about eligibility, repayment choices and what to check with your servicer.</p></div>
+{entries.length?<div class="guide-grid">{entries.map(entry=><a href={entryPath(entry)} class="guide-link"><strong>{entry.data.title}</strong><span>{entry.data.description}</span></a>)}</div>:<p>Guides will appear here after editorial review. You can use the <a href="/tools/">repayment tools</a> now.</p>}</Base>

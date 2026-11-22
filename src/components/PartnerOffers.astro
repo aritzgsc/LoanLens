@@ -1,0 +1,15 @@
+---
+import { visible } from '../lib/content';
+import { partnerOffersEnabled, partnerOfferUrl } from '../lib/site';
+
+const enabled = partnerOffersEnabled;
+const url = partnerOfferUrl;
+const entries = await visible();
+const disclosureExists = ['advertising','privacy'].every(id=>entries.some(e=>e.id===id && e.data.status==='reviewed'));
+---
+{enabled && disclosureExists && /^https:\/\//.test(url) && <aside class="warning support" aria-label="Advertisement">
+  <strong>Advertisement</strong>
+  <p><strong>Refinancing federal student loans into private loans can permanently forfeit federal repayment protections and forgiveness.</strong></p>
+  <p>We may earn compensation if you use this affiliate link. {disclosureExists && <a href="/advertising/">Read the advertising disclosure</a>}</p>
+  <a href={url} rel="sponsored noopener noreferrer">View refinancing offer</a>
+</aside>}

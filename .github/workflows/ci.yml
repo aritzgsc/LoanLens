@@ -1,0 +1,26 @@
+name: LoanLens CI
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    env:
+      PUBLIC_SITE_URL: https://loanlens.example
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm install --no-audit --no-fund
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run verify-data
+      - run: npm run build
+      - run: npm run check:links
+      - run: npx lhci autorun
+      - run: PUBLISH_DRAFTS=true npm run build
+      - run: PUBLISH_DRAFTS=true npm run check:links

@@ -1,0 +1,10 @@
+---
+import Base from '../layouts/Base.astro';
+import Tools, { toolTitles } from './Tools';
+import type { Tool } from './Tools';
+import { rules } from '../lib/engine';
+interface Props { kind:Tool; }
+const {kind}=Astro.props;
+const {title,description}=toolTitles[kind];
+---
+<Base {title} {description} og={kind}><header class="hero"><h1>{title}</h1><p>{description}</p><p class="stamp">Rules last verified: <time>{rules.rapBands.retrieved}</time></p></header><Tools client:load {kind}/><p class="support"><a href="/calculator/">Compare repayment plans</a></p></Base>

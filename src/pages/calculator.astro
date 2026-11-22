@@ -1,0 +1,7 @@
+---
+import Base from '../layouts/Base.astro';
+import CalculatorPage from '../components/CalculatorPage.astro';
+const title='RAP calculator';
+const description='Estimate your Repayment Assistance Plan payment and compare it with the other student loan plans available to you.';
+---
+<Base {title} {description} kind="WebApplication" og="calculator"><CalculatorPage {title} {description}/></Base>

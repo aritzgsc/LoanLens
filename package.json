@@ -1,0 +1,42 @@
+{
+  "name": "loanlens",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run verify-data && astro build",
+    "preview": "astro preview",
+    "lint": "eslint .",
+    "typecheck": "astro check",
+    "test": "vitest run",
+    "verify-data": "node --experimental-strip-types scripts/verify-data.ts",
+    "review:list": "node scripts/review-list.mjs",
+    "check:links": "node scripts/check-build.mjs"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.3.0",
+    "@astrojs/preact": "^4.1.0",
+    "@astrojs/sitemap": "^3.4.0",
+    "@fontsource-variable/dm-sans": "^5.2.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "astro": "^5.12.0",
+    "preact": "^10.26.0",
+    "tailwindcss": "^4.1.0",
+    "sharp": "^0.34.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@lhci/cli": "^0.15.1",
+    "@types/node": "^22.15.0",
+    "@eslint/js": "^9.32.0",
+    "eslint": "^9.32.0",
+    "globals": "^16.3.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0",
+    "vitest": "^3.2.4"
+  }
+}

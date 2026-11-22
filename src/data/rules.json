@@ -1,0 +1,511 @@
+{
+  "rapBands": {
+    "value": [
+      [
+        10000,
+        0
+      ],
+      [
+        20000,
+        0.01
+      ],
+      [
+        30000,
+        0.02
+      ],
+      [
+        40000,
+        0.03
+      ],
+      [
+        50000,
+        0.04
+      ],
+      [
+        60000,
+        0.05
+      ],
+      [
+        70000,
+        0.06
+      ],
+      [
+        80000,
+        0.07
+      ],
+      [
+        90000,
+        0.08
+      ],
+      [
+        100000,
+        0.09
+      ],
+      [
+        null,
+        0.1
+      ]
+    ],
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapMinimum": {
+    "value": 10,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapDependent": {
+    "value": 50,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapPrincipalLimit": {
+    "value": 50,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapMonths": {
+    "value": 360,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapWaiver": {
+    "value": true,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapJoint": {
+    "value": "Joint AGI, eligible debt proration, then payment floor. Separate based on borrower income and claimed dependents.",
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapTypes": {
+    "value": [
+      "subsidized",
+      "unsubsidized",
+      "grad-plus",
+      "direct-consolidation",
+      "subsidized-consolidation"
+    ],
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "tierTerms": {
+    "value": [
+      [
+        25000,
+        120
+      ],
+      [
+        50000,
+        180
+      ],
+      [
+        100000,
+        240
+      ],
+      [
+        null,
+        300
+      ]
+    ],
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "standardMonths": {
+    "value": 120,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "fixedMinimum": {
+    "value": 50,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "consolidationTerms": {
+    "value": [
+      [
+        7500,
+        120
+      ],
+      [
+        10000,
+        144
+      ],
+      [
+        20000,
+        180
+      ],
+      [
+        40000,
+        240
+      ],
+      [
+        60000,
+        300
+      ],
+      [
+        null,
+        360
+      ]
+    ],
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "consolidationTermsStart": {
+    "value": "2006-07-01",
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "newLoanDate": {
+    "value": "2026-07-01",
+    "source": "https://www.govinfo.gov/content/pkg/PLAW-119publ21/pdf/PLAW-119publ21.pdf",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrNewDate": {
+    "value": "2014-07-01",
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrOld": {
+    "value": {
+      "rate": 0.15,
+      "months": 300
+    },
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrNew": {
+    "value": {
+      "rate": 0.1,
+      "months": 240
+    },
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrPovertyMultiplier": {
+    "value": 1.5,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrInterestSubsidyMonths": {
+    "value": 36,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrCap": {
+    "value": "10-year Standard amount determined when entering IBR; confirm existing cap with servicer.",
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrLowPayments": {
+    "value": {
+      "zeroBelow": 5,
+      "minimumPositive": 10
+    },
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "rapLowIncomeAnnual": {
+    "value": 120,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "payeIcrFallback": {
+    "value": "Eligible loans default to RAP, otherwise IBR under transition rules.",
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2028-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "parentPaymentWindow": {
+    "value": "At least one ICR/PAYE/IBR payment during July 4, 2025–June 30, 2028 for the regulatory exception. FSA directs eligible parents to use ICR.",
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ibrRounding": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Servicer installment rounding and sub-dollar treatment across loan groups have not been independently reconciled. Projection uses cent precision."
+  },
+  "poverty": {
+    "value": {
+      "contiguous": {
+        "first": 15960,
+        "increment": 5680
+      },
+      "AK": {
+        "first": 19950,
+        "increment": 7100
+      },
+      "HI": {
+        "first": 18360,
+        "increment": 6530
+      }
+    },
+    "source": "https://aspe.hhs.gov/poverty-guidelines/",
+    "effective": "2026-01-13",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": "2026 schedule; future schedules are unknown."
+  },
+  "pslfMonths": {
+    "value": 120,
+    "source": "https://studentaid.gov/sites/default/files/public-service-application-for-forgiveness.pdf",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "pslfPlans": {
+    "value": [
+      "rap",
+      "ibr",
+      "standard-120",
+      "paye-until-sunset",
+      "icr-until-sunset"
+    ],
+    "source": "https://studentaid.gov/sites/default/files/public-service-application-for-forgiveness.pdf",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "pslfTiered": {
+    "value": false,
+    "source": "https://studentaid.gov/sites/default/files/public-service-application-for-forgiveness.pdf",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "saveNoticeDays": {
+    "value": 90,
+    "source": "https://studentaid.gov/articles/save/",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "saveFinalNoticeDays": {
+    "value": 30,
+    "source": "https://studentaid.gov/articles/save/",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "sunsetDate": {
+    "value": "2028-07-01",
+    "source": "https://www.govinfo.gov/content/pkg/PLAW-119publ21/pdf/PLAW-119publ21.pdf",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "parentConsolidationBefore": {
+    "value": "2026-07-01",
+    "source": "https://studentaid.gov/understand-aid/types/loans/plus/parent",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "parentIcrPayments": {
+    "value": 1,
+    "source": "https://studentaid.gov/understand-aid/types/loans/plus/parent",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "parentOperationalCutoff": {
+    "value": null,
+    "source": "https://studentaid.gov/understand-aid/types/loans/plus/parent",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Check the last operational enrollment date and first ICR payment deadline with the servicer."
+  },
+  "interestRates": {
+    "value": {
+      "undergraduate": 0.0652,
+      "graduate": 0.0807,
+      "plus": 0.0907
+    },
+    "source": "https://fsapartners.ed.gov/fsa-print/publication/1007224",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "ratesEndExclusive": {
+    "value": "2027-07-01",
+    "source": "https://fsapartners.ed.gov/fsa-print/publication/1007224",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "taxIdr": {
+    "value": "Generally cancellation-of-debt income from 2026; exceptions may apply.",
+    "source": "https://www.taxpayeradvocate.irs.gov/news/tax-tips/what-to-know-about-student-loan-forgiveness-and-your-taxes/2026/03/",
+    "effective": "2026-01-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "taxPslf": {
+    "value": "Generally excluded from federal income under the service-based exception.",
+    "source": "https://www.irs.gov/publications/p4681",
+    "effective": "2026-01-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "interestConvention": {
+    "value": "Daily simple interest; the monthly projection uses the FSA annual rate divided by months example.",
+    "source": "https://studentaid.gov/articles/subsidized-vs-unsubsidized-loans/",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "VERIFIED",
+    "note": ""
+  },
+  "multiLoanAllocation": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Monthly allocation and RAP principal-match distribution are approximated in multi-loan projections."
+  },
+  "spouseBalanceForecast": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Future eligible spouse balances are unknown; held flat unless the borrowing scenario is edited."
+  },
+  "futurePoverty": {
+    "value": null,
+    "source": "https://aspe.hhs.gov/poverty-guidelines/",
+    "effective": "2027-01-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Future poverty guidelines are unknown and held flat."
+  },
+  "payoffReentry": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Borrowers with paid-off prior balances or plan-switch histories should confirm their IBR new-borrower classification and repayment terms."
+  },
+  "ibrCapitalization": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Timing and amount of account-level capitalization when reaching the IBR cap or changing plans require servicing history."
+  },
+  "priorPlanCredit": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Prior IDR credit is assumed to be the confirmed credit for the destination plan. Verify transfer, timing and loan-specific counts."
+  },
+  "fixedSchedule": {
+    "value": null,
+    "source": "https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Fixed estimates use a fresh schedule. Confirm any existing fixed-plan term, remaining installments, and balance at repayment entry."
+  },
+  "saveHistory": {
+    "value": null,
+    "source": "https://studentaid.gov/articles/save/",
+    "effective": "2026-07-01",
+    "retrieved": "2026-11-22",
+    "status": "UNVERIFIED",
+    "note": "Individual forbearance credit and buyback eligibility require account records."
+  }
+}

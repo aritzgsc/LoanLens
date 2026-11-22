@@ -1,0 +1,9 @@
+---
+import EditorialPage from '../../components/EditorialPage.astro';
+import { visible } from '../../lib/content';
+export async function getStaticPaths() {
+  return (await visible()).filter(e=>e.data.category==='guide').map(entry=>({params:{slug:entry.id},props:{entry}}));
+}
+const {entry}=Astro.props;
+---
+<EditorialPage {entry}/>
