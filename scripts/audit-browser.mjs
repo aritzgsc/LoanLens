@@ -292,6 +292,26 @@ try {
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
           }
+          if (['/about/','/contact/','/privacy/','/sources/','/editorial-policy/',
+               '/advertising/','/disclaimer/','/terms/','/accessibility/'].includes(route)) {
+            const article=page.locator('.trust-article');
+            const navigation=page.getByRole('navigation',{name:'Useful policies and information'});
+            if (await article.count()!==1 || await navigation.count()!==1)
+              throw new Error('Missing compact trust page layout');
+            if (!(await navigation.isVisible()))
+              throw new Error('Compact trust sidebar is hidden');
+            if (await article.locator('h2').count() < 1)
+              throw new Error('Trust page needs readable, structured sections');
+            const point=page.locator('.trust-key-point');
+            if (!await point.isVisible()) throw new Error('Trust summary missing');
+          }
+          if (route === '/guides/faq/') {
+            if (await page.locator('.article-body h2').count() < 6)
+              throw new Error('Loan calculator FAQ lacks useful Q&A sections');
+            if (!await page.getByRole('link',{name:/loan simulator|repayment calculator/i}).count() &&
+                !await page.locator('.article-body a[href="/calculator/"]').count())
+              throw new Error('FAQ missing useful calculator cross-links');
+          }
           if (route === '/tools/' || route === '/guides/') {
             const finder=page.locator('[data-goal-finder]');
             if (await finder.locator('[data-goal-panel]:visible').count() !== 1) throw new Error('Intent picker must have exactly one visible result');
