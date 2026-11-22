@@ -218,6 +218,7 @@ try {
               .getByText('$12,500.00', { exact: true }).waitFor();
             await page.getByRole('region', { name: 'School B', exact: true })
               .getByText('$13,000.00', { exact: true }).waitFor();
+            if (await page.locator('.aid-field-hint').count() !== 8) throw new Error('College aid input explanations are missing');
             await page.getByRole('heading',{name:'The differences that matter'}).waitFor();
             const insights=page.locator('.aid-insight');
             if (await insights.count() !== 3) throw new Error('Missing aid comparison insights');
@@ -292,6 +293,22 @@ try {
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
           }
           if (route === '/tools/' || route === '/guides/') {
+            const finder=page.locator('[data-goal-finder]');
+            if (await finder.locator('[data-goal-panel]:visible').count() !== 1) throw new Error('Intent picker must have exactly one visible result');
+            await finder.getByRole('button',{name:'I want to know what I might pay'}).click();
+            await finder.getByRole('heading',{name:'Explore monthly payments and total cost'}).waitFor();
+            const expectedPrimary=route==='/tools/'?'/calculator/':'/guides/compare-student-loan-repayment/';
+            const actualPrimary=await finder.locator('[data-goal-panel]:visible a.primary').getAttribute('href');
+            if (actualPrimary !== expectedPrimary) throw new Error('Incorrect primary destination for payment goal: '+actualPrimary);
+            await finder.locator('.goal-more summary').click();
+            const pslfChoice=finder.getByRole('button',{name:'I work in public service and track PSLF'});
+            await pslfChoice.focus();
+            await pslfChoice.press('Enter');
+            await finder.getByRole('heading',{name:'Estimate how many qualifying payment periods may remain'}).waitFor();
+            if (await pslfChoice.getAttribute('aria-pressed')!=='true' ||
+                await finder.locator('[data-goal-panel]:visible').count()!==1)
+              throw new Error('Intent picker keyboard selection or hidden panels are incorrect');
+            if (colorScheme==='light' && [320,390,1440].includes(width)) await capture(prefix+'-goal-picked');
             const search=page.locator('[data-resource-search]');
             await search.fill('pslf');
             const visibleCards=page.locator('[data-resource-card]:visible');
@@ -308,6 +325,12 @@ try {
             if (topicCount !== (route==='/guides/'?2:1)) throw new Error('Topic filter returned incorrect count: '+topicCount);
             await page.getByRole('button',{name:'All topics'}).click();
             if (colorScheme==='light' && [320,390,1440].includes(width)) await capture(prefix+'-directory');
+          }
+          if (['/deadlines/','/tools/married-rap-impact/','/tools/parent-plus-consolidation-checker/','/tools/pslf-payment-tracker/','/rap-payment-by-income/'].includes(route)) {
+            const help=page.locator('.tool-plain-help');
+            await help.locator('summary').click();
+            if (!(await help.evaluate(element=>element.open))) throw new Error('Plain-language tool help did not expand');
+            if (!(await help.innerText()).includes('Try it:')) throw new Error('Tool example is missing');
           }
           if (route === '/guides/student-loan-interest-explained/') {
             const nav=page.getByRole('navigation',{name:'On this page'});
