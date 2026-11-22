@@ -244,6 +244,14 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            // Optional school names must stay attached to their offers when swapping.
+            await page.locator('#aid-school-name-0').fill('North Valley University');
+            await page.getByRole('heading',{name:'North Valley University'}).waitFor();
+            await page.getByRole('button',{name:'Swap schools'}).click();
+            if (await page.locator('#aid-school-name-1').inputValue() !== 'North Valley University')
+              throw new Error('Swapping offers did not preserve school names');
+            await page.getByRole('button',{name:'Compare offers'}).click();
+            await page.getByRole('heading',{name:'North Valley University'}).waitFor();
             // View responsive feedback/error state and validate semantic focus.
             if (colorScheme === 'light' && [320, 390, 1440].includes(width)) {
               await cost.fill('-40');

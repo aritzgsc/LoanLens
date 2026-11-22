@@ -983,3 +983,11 @@ main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1020px);m
   .wizard .steps button{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.5rem .25rem;font-size:.78rem;min-height:66px}
   .wizard .steps button span{width:27px;height:27px;flex-basis:27px}
 }
+
+/* Comparing real colleges: custom labels follow the correct values when reordered. */
+.aid-school-name{padding:.7rem .8rem;border:1px solid #e0eae3;border-radius:12px;background:#f8fcf9}
+.aid-school-name>span:first-child{font-weight:720;font-size:.88rem;color:#2a5340}
+.aid-school-name input{background:#fff!important}
+.field-optional{font-size:.8rem;color:#607b69;font-weight:500}
+.tool-pane .actions{row-gap:.75rem}
+.tool-pane .actions .text-button{color:#4c6758}
