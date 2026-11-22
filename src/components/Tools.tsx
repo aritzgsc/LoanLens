@@ -114,7 +114,7 @@ function Income() {
       rate:(rate??0)*100,example:limit ?? lower+10000};
   });
   return <section class="tool-pane card"><N label="Dependents claimed on your return" help="Use the count from the tax return that supplies your income." value={dependents} max={30} change={setDependents}/>
-    <div class="table-wrap"><table><caption>Borrower with no eligible spouse debt. Starting monthly payment uses the sample AGI.</caption><thead><tr><th scope="col">AGI bracket</th><th scope="col">Full AGI rate</th><th scope="col">Sample AGI</th><th scope="col">Monthly payment</th></tr></thead><tbody>{table.map(row=><tr key={row.range}><th scope="row">{row.range}</th><td>{row.rate}%</td><td>{usd(row.example)}</td><td>{money(rapPayment(row.example,dependents))}</td></tr>)}</tbody></table></div>
+    <div class="table-wrap" role="region" tabIndex={0} aria-label="RAP payments by income bracket"><table><caption>Borrower with no eligible spouse debt. Starting monthly payment uses the sample AGI.</caption><thead><tr><th scope="col">AGI bracket</th><th scope="col">Full AGI rate</th><th scope="col">Sample AGI</th><th scope="col">Monthly payment</th></tr></thead><tbody>{table.map(row=><tr key={row.range}><th scope="row">{row.range}</th><td>{row.rate}%</td><td>{usd(row.example)}</td><td>{money(rapPayment(row.example,dependents))}</td></tr>)}</tbody></table></div>
     <p>The assigned rate applies to full AGI, divided by {annualMonths}, before the dependent reduction and payment floor.</p>
   </section>;
 }
