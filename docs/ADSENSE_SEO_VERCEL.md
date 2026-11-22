@@ -10,6 +10,13 @@
 4. Si el titular de AdSense es menor de 18 años, **la cuenta debe registrarla una persona adulta responsable usando su propia cuenta de Google**, conforme a las condiciones de AdSense.
 5. Publica contenidos originales útiles, los métodos de cálculo, referencias primarias verificadas y las páginas de confianza. `about`, `contact` y `editorial-policy` están en estado `draft` y requieren información editorial real antes de publicar. Nunca inventes un autor ni un contacto.
 
+## Identificadores reales ya integrados
+
+- **Editor:** `ca-pub-8177969374546909`.
+- **Unidad adaptable debajo de resultados:** `8951943585`.
+- Estos valores son públicos y ya están configurados como valores por defecto en `src/lib/site.ts` y `src/components/AdSlot.astro` (además de `.env.example`). No pegues otra copia del script HTML de Google: el proyecto ya prepara una única carga diferida a través del módulo de consentimiento.
+- Google solo mostrará anuncios reales cuando el sitio esté aprobado y se cumplan las preferencias de consentimiento. Si `PUBLIC_SITE_URL` no está configurado, los anuncios permanecerán desactivados y el sitio se marcará `noindex`.
+
 ## 2. Configuración de Vercel (Production)
 
 En Project > Settings > Environment Variables introduce:
