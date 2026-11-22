@@ -593,3 +593,14 @@ a.button-link:focus-visible, button:focus-visible,
 .aid-insights-note {max-width:85ch;color:#4c6657;font-size:.91rem}
 .aid-insights>a{font-weight:750}
 @media(max-width:700px){.aid-insight-grid{grid-template-columns:minmax(0,1fr)}}
+
+/* Audit follow-up: table-heavy new articles must not widen the page on phones. */
+.article-body {grid-template-columns:minmax(0,1fr);min-width:0}
+.article-body > * {min-width:0;max-width:100%}
+.article-body table {display:block;max-width:100%;overflow-x:auto;overscroll-behavior-inline:contain}
+.article-body :is(.short-answer,.article-toc,.article-next) {max-width:100%;min-width:0}
+.resource-card-detail {color:#355c4b}
+@media(max-width:550px){
+  .article-body table {font-size:.88rem}
+  .article-body table :is(th,td) {padding:.5rem .65rem}
+}
