@@ -851,3 +851,6 @@ a.button-link:focus-visible, button:focus-visible,
   .site-footer .footer-links{grid-template-columns:repeat(2,minmax(0,1fr))}
   .resource-card{padding:1rem}
 }
+
+/* Override generic hidden ad-sidebar rule for public trust navigation. */
+.trust-columns > .trust-sidebar {display:grid}
