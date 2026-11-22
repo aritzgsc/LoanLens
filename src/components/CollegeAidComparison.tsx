@@ -10,6 +10,13 @@ const fields = [
   ['loans', 'Loans you plan to accept'],
 ] as const;
 
+const fieldExplanations: Record<'cost' | 'grants' | 'scholarships' | 'loans', string> = {
+  cost:'The full estimated annual cost, including tuition, fees and living expenses—not just tuition.',
+  grants:'Financial aid that generally does not need to be repaid if you meet its conditions.',
+  scholarships:'Scholarship funding that generally does not need to be repaid; check renewal rules.',
+  loans:'Only the amount you plan to borrow. This is debt, not a price reduction.',
+};
+
 type Field = typeof fields[number][0];
 type Offer = Record<Field, string>;
 type Results = Array<ReturnType<typeof calculateAidOffer>>;
@@ -93,7 +100,7 @@ export default function CollegeAidComparison() {
                 <input id={id} type="text" inputMode="decimal" value={offers[index][field]}
                   required={field === 'cost'}
                   aria-invalid={errors[id] ? 'true' : undefined}
-                  aria-describedby={errors[id] ? `${id}-error` : 'aid-input-help'}
+                  aria-describedby={`${id}-hint ${errors[id] ? `${id}-error` : 'aid-input-help'}`}
                   onInput={event => {
                     const value = event.currentTarget.value;
                     setOffers(current => current.map((offer, position) => position === index ? { ...offer, [field]: value } : offer));
@@ -104,6 +111,7 @@ export default function CollegeAidComparison() {
                       return next;
                     });
                   }} />
+                <small id={`${id}-hint`} class="aid-field-hint">{fieldExplanations[field]}</small>
                 {errors[id] && <small id={`${id}-error`}>{errors[id]}</small>}
               </label>;
             })}
