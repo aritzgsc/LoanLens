@@ -5,11 +5,8 @@ import { AxeBuilder } from '@axe-core/playwright';
 
 const [origin = 'http://localhost:4321', output = 'audit-artifacts', dist = 'dist'] = process.argv.slice(2);
 const reportDir = resolve(output);
-const widths = [390, 768, 1280];
-const heights = { 390: 844, 768: 1024, 1280: 800 };
-const routes = ['/', '/calculator/', '/deadlines/', '/tools/', '/tools/married-rap-impact/',
-  '/tools/compare-college-aid-offers/', '/guides/compare-college-financial-aid-offers/', '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
-  '/guides/', '/guides/compare-student-loan-repayment/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
+const widths = [320, 390, 768, 1024, 1440];
+const heights = { 320: 740, 390: 844, 768: 1024, 1024: 768, 1440: 900 };
 const routeName = path => path === '/' ? 'home' : path.slice(1, -1).replaceAll('/', '--');
 const allPages = (await readdir(resolve(dist), { recursive: true }))
   .map(path => path.replaceAll('\\', '/'))
@@ -19,7 +16,8 @@ const allPages = (await readdir(resolve(dist), { recursive: true }))
 
 await mkdir(reportDir, { recursive: true });
 const browser = await chromium.launch({ channel: process.env.AUDIT_BROWSER_CHANNEL });
-const report = { origin, urls: allPages, pages: [], screenshots: [], failures: [] };
+const report = { origin, urls: allPages, pages: [], screenshots: [], assets: [], failures: [] };
+const inspectedAssets = new Set();
 const textMetrics = () => {
   const { document, innerHeight } = globalThis;
   const wordCount = text => [...new Intl.Segmenter('en-US', { granularity: 'word' }).segment(text)]
@@ -71,10 +69,41 @@ const fieldRowAlignment = () => {
   }
   return failures;
 };
+// Detect defects that don't trigger axe: narrow-screen overflow, clipped controls,
+// invisible images, unusable click targets and off-screen HTML text elements.
+const visualGeometry = () => {
+  const problems = [];
+  const viewport = document.documentElement.clientWidth;
+  if (document.documentElement.scrollWidth > viewport + 2) {
+    const offenders = [...document.querySelectorAll('body *')].filter(element => {
+      const style = getComputedStyle(element);
+      if (style.position === 'fixed' || style.visibility === 'hidden') return false;
+      const r = element.getBoundingClientRect();
+      return r.width > 0 && (r.right > viewport + 2 || r.left < -2);
+    }).slice(0, 5).map(el=>el.tagName.toLowerCase()+(el.className && typeof el.className==='string' ? '.'+el.className.trim().split(/\\s+/).slice(0,2).join('.') : ''));
+    problems.push('horizontal overflow: ' + document.documentElement.scrollWidth + 'px vs ' + viewport + 'px; nodes: ' + offenders.join(', '));
+  }
+  for (const img of document.querySelectorAll('main img, header img, footer img')) {
+    if (!img.complete || !img.naturalWidth) problems.push('image failed to load: ' + img.currentSrc);
+  }
+  for (const el of document.querySelectorAll('.field input:not([type=hidden]),.field select,.actions button,.hero-actions a,.site-nav a')) {
+    if (!el.getClientRects().length) continue;
+    const b = el.getBoundingClientRect();
+    if (b.left < -2 || b.right > viewport + 2) problems.push('control outside viewport: ' + el.outerHTML.slice(0, 130));
+    if ((el.matches('button,a') && (b.width < 24 || b.height < 24)) || (el.matches('input,select') && b.height < 40)) {
+      problems.push('too-small control: ' + el.outerHTML.slice(0, 130));
+    }
+  }
+  return problems.slice(0, 15);
+};
 const visit = async (page, route) => {
   const response = await page.goto(new URL(route, origin).href, { waitUntil: 'load' });
   if (response?.status() !== 200) throw new Error(route + ' returned HTTP ' + response?.status());
   await page.evaluate(() => globalThis.document.fonts.ready);
+  // Astro's client:load islands may hydrate just after the initial load event.
+  // Do not trigger interaction smoke-tests before the framework has wired events.
+  await page.waitForFunction(() => [...document.querySelectorAll('astro-island')]
+    .every(island => !island.hasAttribute('ssr')), null, {timeout:10000});
 };
 try {
   for (const colorScheme of ['light', 'dark']) {
@@ -92,7 +121,7 @@ try {
               report.screenshots.push(file);
             }
           };
-          if (routes.includes(route)) await capture(prefix);
+          if (colorScheme === 'light' || width === 320 || width === 1440) await capture(prefix);
           // Check CTA contrast explicitly. Automated accessibility audits may miss styles that
           // are hidden behind interactive states or an anchor overriding a button class.
           const badButtons = await page.evaluate(() => {
@@ -112,6 +141,28 @@ try {
               }).filter(item => item && item.ratio < 4.5);
           });
           if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
+          const visualIssues = await page.evaluate(visualGeometry);
+          if (visualIssues.length) throw new Error('Visual layout: ' + visualIssues.join('; '));
+          // Validate the actual generated social images and icons from the local build.
+          const assetHrefs = await page.locator('head link[rel="icon"], head link[rel="apple-touch-icon"], head meta[property="og:image"]').evaluateAll(els =>
+            els.map(el => el.getAttribute('href') || el.getAttribute('content')).filter(Boolean));
+          if (colorScheme === 'light' && width === 390) for (const href of assetHrefs) {
+            const pathname = new URL(href, origin).pathname;
+            if (inspectedAssets.has(pathname)) continue;
+            const response = await page.request.get(new URL(pathname, origin).href);
+            if (response.status() !== 200) throw new Error('Missing image/icon asset: ' + pathname + ' returned ' + response.status());
+            const mime = response.headers()['content-type'] || '';
+            if (!/^image\/(png|svg\+xml)/.test(mime)) throw new Error('Incorrect image MIME on ' + pathname + ': ' + mime);
+            const bytes = await response.body();
+            if (bytes.byteLength < 250) throw new Error('Incomplete image/icon: ' + pathname);
+            inspectedAssets.add(pathname);
+            report.assets.push({pathname, mime, bytes: bytes.byteLength});
+            if (pathname.startsWith('/og/') && pathname.endsWith('.png')) {
+              const filename = 'social-' + pathname.split('/').at(-1);
+              await writeFile(join(reportDir, filename), bytes);
+              report.screenshots.push(filename);
+            }
+          }
           const verticalIssues = await page.evaluate(fieldRowAlignment);
           if (verticalIssues.length) throw new Error('Vertical field alignment: ' + verticalIssues.join('; '));
           const metrics = await page.evaluate(textMetrics);
@@ -139,6 +190,23 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            // Exercise the actual add/remove controls, rather than only static screenshots.
+            await page.getByRole('button', { name: /Add another loan/ }).click();
+            await page.getByRole('group', { name: 'Loan 2' }).waitFor();
+            const loanStepIssues = await page.evaluate(fieldRowAlignment);
+            if (loanStepIssues.length) throw new Error('Multiple-loan fields: ' + loanStepIssues.join('; '));
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-two-loans');
+            await page.getByRole('button', { name: /Remove loan 2/ }).click();
+            await page.getByRole('group', { name: 'Loan 2' }).waitFor({ state: 'detached' });
+            await page.getByRole('button', { name: /Income and household/ }).click();
+            await page.getByLabel('Tax filing status').selectOption('joint');
+            await page.getByText('Spouse’s share of joint AGI').waitFor();
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-joint-income');
+            await page.getByRole('button', { name: /Goals/ }).click();
+            await page.getByLabel(/I expect to keep working/).check();
+            await page.getByText('Certified PSLF payments shared by these loans').waitFor();
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-pslf-goals');
+            await page.getByRole('button', { name: /Loans/ }).click();
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
           }
@@ -155,6 +223,14 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            // View responsive feedback/error state and validate semantic focus.
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) {
+              await cost.fill('-40');
+              await page.getByRole('button', { name: 'Compare offers' }).click();
+              await page.getByRole('alert').waitFor();
+              await capture(prefix + '-validation');
+              await cost.fill('30,000');
+            }
             await cost.fill('-40');
             await page.getByRole('button', { name: 'Compare offers' }).press('Enter');
             await page.getByRole('alert').getByText('Check the highlighted amounts before comparing.').waitFor();
@@ -162,6 +238,60 @@ try {
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             if (await cost.inputValue() !== '') throw new Error('Aid comparison reset did not clear the cost field');
             await page.getByText('Compare two offers to see what you may have left to cover.').waitFor();
+          }
+          // Exercise every independent interactive tool and capture meaningful state.
+          if (route === '/deadlines/') {
+            await page.getByLabel('Notice date').fill('2026-11-05');
+            await page.getByText(/Estimated deadline/).waitFor();
+            await page.getByLabel('Current plan or situation').selectOption('paye');
+            await page.getByText(/Choose an eligible replacement/).waitFor();
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-plan-changed');
+          }
+          if (route === '/tools/married-rap-impact/') {
+            const income = page.getByLabel('Your adjusted gross income');
+            await income.focus();
+            await income.press('Tab');
+            if (await income.inputValue() !== '$45,000')
+              throw new Error('Untouched currency field did not restore its formatted value');
+            await income.fill('56000');
+            const beforeBlur = await income.inputValue();
+            const beforeNotice = await page.locator('.notice').first().innerText();
+            await income.press('Tab');
+            const formattedIncome = await income.inputValue();
+            const afterNotice = await page.locator('.notice').first().innerText();
+            if (Number(formattedIncome.replace(/[^0-9.]/g, '')) !== 56000)
+              throw new Error('Edited income did not retain $56,000; beforeBlur=' + beforeBlur +
+                ' afterBlur=' + formattedIncome + ' beforeNotice=' + beforeNotice.slice(0,130) +
+                ' afterNotice=' + afterNotice.slice(0,130));
+            const issues = await page.evaluate(fieldRowAlignment);
+            if (issues.length) throw new Error('Married RAP: ' + issues.join('; '));
+            if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-edited');
+          }
+          if (route === '/tools/parent-plus-consolidation-checker/') {
+            await page.getByLabel(/When was your Parent PLUS consolidation loan disbursed/).selectOption('before');
+            await page.getByLabel(/Made an ICR payment/).selectOption('yes');
+            await page.getByText(/Ask your servicer to confirm/).waitFor();
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-eligible-path');
+          }
+          if (route === '/tools/pslf-payment-tracker/') {
+            const certified = page.getByLabel(/Certified qualifying payments for one loan/);
+            await certified.fill('120');
+            await certified.press('Tab');
+            await page.getByText(/Payment count reached/).waitFor();
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-completed');
+          }
+          if (route === '/rap-payment-by-income/') {
+            const dependents = page.getByLabel(/Dependents claimed on your return/);
+            await dependents.fill('2');
+            await dependents.press('Tab');
+            if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
+          }
+          if (route === '/') {
+            const item = page.locator('.home-question-list details').first();
+            await item.locator('summary').click();
+            if (!(await item.evaluate(el => el.open))) throw new Error('Homepage question did not expand');
+            if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-faq-expanded');
           }
         } catch (error) {
           report.failures.push({ route, width, colorScheme, message: String(error) });
@@ -175,7 +305,7 @@ try {
   await writeFile(join(reportDir, 'browser.json'), JSON.stringify(report, null, 2) + '\n');
 }
 const highImpact = report.pages.flatMap(page => page.violations.filter(issue => issue.impact === 'serious' || issue.impact === 'critical'));
-console.log('Captured ' + report.screenshots.length + ' screenshots; ' + highImpact.length + ' serious/critical axe findings; ' + report.failures.length + ' audit errors.');
+console.log('Audited ' + report.urls.length + ' routes at ' + widths.join('/') + 'px in light/dark; captured ' + report.screenshots.length + ' screenshots; validated ' + report.assets.length + ' image/icon assets; ' + highImpact.length + ' serious/critical axe findings; ' + report.failures.length + ' audit errors.');
 for (const message of new Set(report.failures.map(failure => failure.message))) console.error(message);
 for (const id of new Set(highImpact.map(issue => issue.id))) console.error('Accessibility finding: ' + id);
 // Print a short, actionable sample of offending selectors in CI; the full report is saved to browser.json.

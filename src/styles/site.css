@@ -332,3 +332,96 @@ button.primary,button.primary:hover{color:#fff}
     }
   }
 }
+
+
+/* Audit 2026-11-22: small, scoped fixes from desktop/mobile screenshots. */
+
+/* The six-field married RAP comparison should form two balanced rows on large
+   screens, not five columns followed by a stranded final control. */
+@media (min-width: 900px) {
+  .tool-pane.card > .fields:has(> .field:nth-child(6)) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* Keep the tool CTA button a normal, readable button rather than a
+   700px-wide bar caused by .support's display:grid stretch behavior. */
+p.support > a.button-link {
+  width: fit-content;
+  max-width: 100%;
+  justify-self: start;
+  text-align: center;
+}
+
+/* Preserve the compact single-row header on ordinary phones, but give very
+   narrow phones a clear two-row layout with usable navigation tap targets. */
+@media (max-width: 375px) {
+  .site-head .shell {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    gap: .3rem;
+    padding-block: .45rem .6rem;
+    width: calc(100% - 1.25rem);
+  }
+  .site-head .brand {
+    justify-self: center;
+    gap: .45rem;
+    font-size: 1.07rem;
+    min-height: 36px;
+  }
+  .site-head .brand img { display: block; width: 27px; height: 27px; }
+  .site-head .site-nav {
+    display: grid;
+    width: 100%;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .3rem .5rem;
+    white-space: nowrap;
+  }
+  .site-head .site-nav a {
+    min-width: 0;
+    min-height: 42px;
+    padding: .4rem .55rem;
+    font-size: .88rem;
+    justify-content: center;
+    border: 1px solid #e4eee8;
+    background: #f8fbf9;
+    border-radius: 9px;
+  }
+}
+
+/* Long guidance/labels should wrap normally rather than forcing a mobile
+   horizontal scrollbar. Tables remain explicitly scrollable in .table-wrap. */
+main, .wizard, .loan-row, .tool-pane, .plan, .chart, .article-body,
+.decision-hero, .guide-link, .home-info-card {
+  min-width: 0;
+}
+.field > :is(span, small), .guide-link span, .notice,
+.warning, .article-body a {
+  overflow-wrap: break-word;
+}
+.table-wrap {
+  max-width: 100%;
+  min-width: 0;
+  overscroll-behavior-inline: contain;
+}
+.table-wrap:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* Interaction polish: consistent focus/hover without altering the palette. */
+a.button-link, button.primary, button.secondary, button.text-button {
+  -webkit-tap-highlight-color: transparent;
+}
+a.button-link:focus-visible, button:focus-visible,
+.field:focus-within > :is(.numeric, input, select) {
+  outline-offset: 3px;
+}
+@media (max-width: 520px) {
+  p.support > a.button-link { width: 100%; }
+}
+
+@media (max-width: 375px) {
+  .site-head .site-nav a[aria-current] {background: var(--accent-bg);border-color: #b9dec9}
+}
