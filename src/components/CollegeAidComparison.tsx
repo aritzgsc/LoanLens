@@ -135,7 +135,7 @@ export default function CollegeAidComparison() {
         <button class="secondary" type="button" onClick={() => {
           setOffers([offers[1],offers[0]]);
           setSchoolNames([schoolNames[1],schoolNames[0]]);
-          setResults(null);
+          setResults(current=>current?[current[1],current[0]]:null);
           setErrors({});
         }}>Swap schools</button>
         <button class="text-button" type="reset">Reset</button>

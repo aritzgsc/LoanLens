@@ -265,6 +265,8 @@ try {
             await page.getByRole('button',{name:'Swap schools'}).click();
             if (await page.locator('#aid-school-name-1').inputValue() !== 'North Valley University')
               throw new Error('Swapping offers did not preserve school names');
+            if (await page.locator('#aid-result-1').count()!==1)
+              throw new Error('Swapping calculated offers should keep the results visible');
             await page.getByRole('button',{name:'Compare offers'}).click();
             await page.getByRole('heading',{name:'North Valley University'}).waitFor();
             // View responsive feedback/error state and validate semantic focus.
