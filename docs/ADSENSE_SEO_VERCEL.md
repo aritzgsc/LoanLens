@@ -56,7 +56,7 @@ Evita anuncios junto a botones, entradas o controles de la calculadora. No activ
 3. En **AdSense > Privacidad y mensajes > Normativa europea**, configura y publica un mensaje mediante la CMP certificada de Google o una alternativa certificada compatible con TCF. Debe permitir gestionar las decisiones de consentimiento y revocarlas. Configura e implementa correctamente el script de esa CMP. No actives publicidad sin verificar el flujo de consentimiento aplicable.
 4. La integración actual carga anuncios solo cuando se verifica el estado del consentimiento y existen variables válidas. Hay que probar aceptación, rechazo, revocación, navegación, modo incógnito, móvil y escritorio; **no des por hecho que el sistema está conforme solo porque existe un banner**.
 5. `src/pages/ads.txt.ts` genera automáticamente `/ads.txt` cuando `PUBLIC_ADSENSE_CLIENT` es válido y el sitio es indexable. No dupliques `ads.txt` dentro de `public`. Comprueba `https://TU-DOMINIO-REAL/ads.txt`; debe mostrar:
-   `google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0`
+   `google.com, pub-8177969374546909, DIRECT, f08c47fec0942fa0`
 6. Comprueba **Ads > Sites** en AdSense para verificar revisión y estado de ads.txt; el rastreo puede tardar.
 
 ## 5. SEO y confianza
