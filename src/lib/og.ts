@@ -5,7 +5,7 @@ export async function image(title:string) {
   const lines:string[]=[];
   for(const word of title.split(/\s+/)) {
     const last=lines.at(-1);
-    if(last && last.length+word.length<30) lines[lines.length-1]=last+' '+word;
+    if(last && last.length + 1 + word.length <= 22) lines[lines.length-1]=last+' '+word;
     else lines.push(word);
   }
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
@@ -18,7 +18,7 @@ export async function image(title:string) {
     <circle cx="1050" cy="298" r="13" fill="#0b7668" opacity=".7"/>
     <rect x="92" y="100" width="10" height="42" rx="5" fill="#0b7668"/>
     <text x="120" y="134" fill="#0b7668" font-size="31" font-weight="700" font-family="sans-serif">${escape(siteName)}</text>
-    <text fill="#203b34" font-size="62" font-weight="700" font-family="sans-serif">${lines.slice(0,4).map((line,i)=>`<tspan x="105" y="${244+i*77}">${escape(line)}</tspan>`).join('')}</text>
+    <text fill="#203b34" font-size="58" font-weight="700" letter-spacing="-1" font-family="sans-serif">${lines.slice(0,4).map((line,i)=>`<tspan x="105" y="${244+i*77}">${escape(line)}</tspan>`).join('')}</text>
   </svg>`;
   return new Uint8Array(await sharp(Buffer.from(svg)).png().toBuffer());
 }
