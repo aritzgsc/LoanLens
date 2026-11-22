@@ -34,7 +34,7 @@ function NumberField({label,value,onChange,prefix='',suffix='',max=100000000,min
   const invalid = editing !== null && (!safe(n,max,min) || (integer && !Number.isInteger(n)));
   return <label class="field"><span>{label}</span><span class="numeric">{prefix && <span aria-hidden="true">{prefix}</span>}<input
     inputMode={integer?'numeric':'decimal'} value={editing ?? numberFormat.format(value)} aria-invalid={invalid}
-    onFocus={()=>setEditing(String(value))} onBlur={()=>{if (!invalid) setEditing(null);}}
+    onFocus={()=>setEditing(previous=>previous ?? String(value))} onBlur={()=>{if (!invalid) setEditing(null);}}
     onInput={e=>{const raw=e.currentTarget.value; setEditing(raw); const next=Number(raw.replaceAll(',',''));
       if (safe(next,max,min) && (!integer || Number.isInteger(next))) onChange(next);}}/>{suffix && <span aria-hidden="true">{suffix}</span>}</span>
     {invalid && <small role="alert">Enter {integer?'a whole number':'an amount'} from {min} to {numberFormat.format(max)}.</small>}</label>;
