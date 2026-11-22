@@ -172,3 +172,13 @@ body{background:var(--ll-canvas)}
   .footer-menu{padding-left:.7rem}
 }
 @media(prefers-reduced-motion:reduce){.resource-card,.decision-option,.resource-path{transition:none}}
+
+/* Equal-height home navigation rows on large screens; one row of compact cards on tablets. */
+@media(min-width:1025px){
+  .decision-options{grid-template-rows:auto repeat(3,minmax(0,1fr))}
+  .decision-option{height:100%}
+}
+@media(min-width:651px) and (max-width:1024px){
+  .decision-options{grid-template-rows:auto minmax(0,1fr)}
+  .decision-option{height:100%}
+}
