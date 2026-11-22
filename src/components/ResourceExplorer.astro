@@ -30,7 +30,7 @@ const searchId='resource-search-'+label.toLowerCase().replace(/[^a-z0-9]+/g,'-')
     </div>
     <div class="resource-filter-row" role="group" aria-label="Filter by topic">
       <button class="resource-filter is-active" type="button" data-topic="all" aria-pressed="true" aria-label="All topics">All topics <span class="resource-filter-count" aria-hidden="true">{items.length}</span></button>
-      {topics.map(topic => <button class="resource-filter" type="button" data-topic={topic.value} aria-pressed="false" aria-label={topic.label}>{topic.label} <span class="resource-filter-count" aria-hidden="true">{items.filter(item=>item.topic===topic.value).length}</span></button>)
+      {topics.map(topic => <button class="resource-filter" type="button" data-topic={topic.value} aria-pressed="false" aria-label={topic.label}>{topic.label} <span class="resource-filter-count" aria-hidden="true">{items.filter(item=>item.topic===topic.value).length}</span></button>)}
     </div>
   </div>
   <p class="resource-count" aria-live="polite" data-resource-count>
