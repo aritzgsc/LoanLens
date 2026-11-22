@@ -4,8 +4,9 @@
 - [x] Implement the repayment engine and Vitest coverage.
 - [x] Confirm baseline GitHub Actions ran lint, typecheck, tests, and the Astro build on `bfcb4b6`.
 - [x] Confirm lint, types, tests, production build and link checks in release branch CI with a reserved test origin.
-- [ ] Confirm the latest pull request checks and browser artifacts. See the pull request for the latest results.
-- [ ] Recover the local college aid comparison tool and test the examples, invalid amounts, keyboard, mobile, and reset.
+- [x] Confirm [launch fixes CI and browser artifacts](https://github.com/aritzgsc/LoanLens/actions/runs/45028861335) and merge PR #1.
+- [x] Reimplement the college aid comparison in the repository. The earlier local copy was unavailable.
+- [ ] Confirm the comparison's unit and browser checks on its release commit.
 - [ ] Verify a production Cloudflare Pages project and canonical domain, then confirm its deployed commit and public routes.
 - [ ] Verify the Search Console property, sitemap, URL inspection, and U.S. search data.
 - [ ] Verify the AdSense site, account-provided consent configuration, placements, and ads.txt.

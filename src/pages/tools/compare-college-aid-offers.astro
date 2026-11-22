@@ -1,0 +1,18 @@
+---
+import Base from '../../layouts/Base.astro';
+import CollegeAidComparison from '../../components/CollegeAidComparison';
+const title = 'Compare College Financial Aid Offers';
+const description = 'Compare two college aid offers side by side. Calculate annual net price and what you still need to cover before and after loans.';
+---
+<Base {title} {description} kind="WebApplication" og="tools">
+  <header class="hero">
+    <h1>{title}</h1>
+    <p>Enter the annual cost, grants, scholarships, and loans for two schools.</p>
+  </header>
+  <CollegeAidComparison client:load />
+  <section class="support">
+    <h2>How to read the results</h2>
+    <p>Net price is the annual cost minus grants and scholarships. Before loans, it is the amount left to cover from other sources. After loans, the remaining amount subtracts the borrowing you plan to accept. Those loans still need to be repaid. Compare awards for the same academic year and check each school’s renewal terms.</p>
+    <p>See the <a href="/guides/compare-college-financial-aid-offers/">guide to comparing financial aid offers</a> for a worked example and what to do with work-study.</p>
+  </section>
+</Base>

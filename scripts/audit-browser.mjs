@@ -8,7 +8,7 @@ const reportDir = resolve(output);
 const widths = [390, 768, 1280];
 const heights = { 390: 844, 768: 1024, 1280: 800 };
 const routes = ['/', '/calculator/', '/deadlines/', '/tools/', '/tools/married-rap-impact/',
-  '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
+  '/tools/compare-college-aid-offers/', '/guides/compare-college-financial-aid-offers/', '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
   '/guides/', '/guides/compare-student-loan-repayment/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
 const routeName = path => path === '/' ? 'home' : path.slice(1, -1).replaceAll('/', '--');
 const allPages = (await readdir(resolve(dist), { recursive: true }))
@@ -84,6 +84,27 @@ try {
             });
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
+          }
+          if (route === '/tools/compare-college-aid-offers/') {
+            const cost = page.getByRole('group', { name: 'School A', exact: true })
+              .getByRole('textbox', { name: 'Annual cost of attendance (USD)' });
+            await page.getByRole('button', { name: 'Use example offers' }).press('Enter');
+            await page.getByRole('region', { name: 'School A', exact: true })
+              .getByText('$12,500.00', { exact: true }).waitFor();
+            await page.getByRole('region', { name: 'School B', exact: true })
+              .getByText('$13,000.00', { exact: true }).waitFor();
+            await capture(prefix + '-example');
+            const resultsAxe = await new AxeBuilder({ page }).analyze();
+            report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
+              violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
+            });
+            await cost.fill('-40');
+            await page.getByRole('button', { name: 'Compare offers' }).press('Enter');
+            await page.getByRole('alert').getByText('Check the highlighted amounts before comparing.').waitFor();
+            await page.locator('#aid-0-cost:focus[aria-invalid="true"]').waitFor();
+            await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
+            if (await cost.inputValue() !== '') throw new Error('Aid comparison reset did not clear the cost field');
+            await page.getByText('Compare two offers to see what you may have left to cover.').waitFor();
           }
         } catch (error) {
           report.failures.push({ route, width, colorScheme, message: String(error) });
