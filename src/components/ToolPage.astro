@@ -2,9 +2,94 @@
 import Base from '../layouts/Base.astro';
 import Tools, { toolTitles } from './Tools';
 import type { Tool } from './Tools';
-import { rules } from '../lib/engine';
 interface Props { kind:Tool; }
 const {kind}=Astro.props;
 const {title,description}=toolTitles[kind];
+const context:Record<Tool,{
+  question:string;
+  need:string;
+  reading:string;
+  limitation:string;
+  guide:string;
+  guideLabel:string;
+  next:string;
+}> = {
+  deadlines:{
+    question:'Which dates and notices should I check?',
+    need:'Your current repayment plan and, if you have a SAVE notice, the date and notice type.',
+    reading:'Use the result as a reminder to check the exact deadline in your servicer message. The notice itself controls if the dates differ.',
+    limitation:'The tool does not read your inbox, application status, or account-specific notices.',
+    guide:'/guides/prepare-for-student-loan-repayment/',
+    guideLabel:'Prepare for repayment',
+    next:'Check the real notice and save its deadline in your calendar.'
+  },
+  married:{
+    question:'How might filing jointly or separately change a RAP estimate?',
+    need:'Both spouses’ annual adjusted gross income, eligible balances and dependent counts for each filing scenario.',
+    reading:'Look at the two modeled monthly figures. The result covers one borrower, not both spouses’ combined payments or the tax impact.',
+    limitation:'This comparison does not advise which filing status to choose or verify eligibility.',
+    guide:'/guides/compare-student-loan-repayment/',
+    guideLabel:'Compare repayment costs',
+    next:'Compare the household’s combined payment and tax implications with a qualified adviser.'
+  },
+  parent:{
+    question:'What should I verify about Parent PLUS consolidation?',
+    need:'The consolidation loan’s actual disbursement date and whether an ICR payment is recorded on that loan.',
+    reading:'Use the questions and next step shown to prepare for a conversation with your loan servicer.',
+    limitation:'An online checklist cannot establish eligibility or override program transition dates.',
+    guide:'/guides/prepare-for-student-loan-repayment/',
+    guideLabel:'Read the repayment checklist',
+    next:'Check your loan history and ask the servicer which repayment options are open.'
+  },
+  pslf:{
+    question:'How far away might the 120-payment milestone be?',
+    need:'The certified qualifying-payment count for one loan and the next expected qualifying payment month.',
+    reading:'The target month is illustrative and assumes future payment periods qualify. Different loans may have different counts.',
+    limitation:'LoanLens cannot certify an employer, validate payment history or grant forgiveness.',
+    guide:'/guides/pslf-payment-count-checklist/',
+    guideLabel:'Understand PSLF counts',
+    next:'Verify the count for each loan and use the official PSLF Help Tool.'
+  },
+  income:{
+    question:'What happens to a starting RAP estimate across income ranges?',
+    need:'The number of dependents you expect to claim on the return used for the illustration.',
+    reading:'Use the table to compare sample incomes, not to determine an exact account payment or plan eligibility.',
+    limitation:'The table uses sample AGIs and omits some account and household factors.',
+    guide:'/guides/compare-student-loan-repayment/',
+    guideLabel:'Learn to compare payments',
+    next:'Enter your actual balances and other details in a broader calculator, then verify the result.'
+  },
+};
+const info=context[kind];
 ---
-<Base {title} {description} og={kind}><header class="hero"><h1>{title}</h1><p>{description}</p><p class="stamp">Rules last verified: <time>{rules.rapBands.retrieved}</time></p></header><Tools client:load {kind}/><p class="support"><a class="primary button-link" href="/calculator/">Compare all repayment plans</a></p></Base>
+<Base {title} {description} og={kind}>
+  <header class="hero tool-detail-hero">
+    <a class="tool-back" href="/tools/">← All planning tools</a>
+    <span class="eyebrow">Interactive planning tool</span>
+    <h1>{title}</h1>
+    <p>{description}</p>
+    <div class="tool-brief">
+      <div><span class="tool-brief-label">The question</span><strong>{info.question}</strong></div>
+      <div><span class="tool-brief-label">What you need</span><strong>{info.need}</strong></div>
+    </div>
+  </header>
+  <Tools client:load {kind}/>
+  <section class="tool-explain" aria-labelledby="tool-read-result">
+    <div class="resource-section-head">
+      <div><span class="eyebrow">Make sense of your estimate</span><h2 id="tool-read-result">What to do with the result</h2></div>
+      <p>The tool is designed to help you ask better questions, not replace information held by Federal Student Aid.</p>
+    </div>
+    <div class="tool-explain-grid">
+      <article class="tool-explain-card"><span class="tool-explain-number">01</span><h3>Read the estimate</h3><p>{info.reading}</p></article>
+      <article class="tool-explain-card"><span class="tool-explain-number">02</span><h3>Know the limit</h3><p>{info.limitation}</p></article>
+      <article class="tool-explain-card"><span class="tool-explain-number">03</span><h3>Take the next step</h3><p>{info.next}</p></article>
+    </div>
+    <div class="tool-related-cta">
+      <div><strong>Want more context?</strong><p>Read the explanation or compare a fuller repayment scenario.</p></div>
+      <div class="tool-related-actions">
+        <a class="secondary button-link" href={info.guide}>{info.guideLabel}</a>
+        <a class="primary button-link" href="/calculator/">Compare repayment plans</a>
+      </div>
+    </div>
+  </section>
+</Base>
