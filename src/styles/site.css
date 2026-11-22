@@ -718,3 +718,52 @@ a.button-link:focus-visible, button:focus-visible,
   .goal-choice{transition:none}
   .goal-more>summary>span{transition:none}
 }
+
+/* Contextual explanations inside existing calculators: do not reflow fields. */
+.tool-plain-help{
+  margin:1rem 0 1.3rem;
+  border:1px solid #d4e6d8;
+  border-radius:13px;
+  background:#f6fbf7;
+  overflow:hidden;
+}
+.tool-plain-help summary{
+  cursor:pointer;
+  padding:.85rem 1.1rem;
+  font-size:.92rem;
+  font-weight:780;
+  color:#20503d;
+  line-height:1.45;
+}
+.tool-plain-help[open] summary{border-bottom:1px solid #dceae1}
+.tool-plain-help>div{display:grid;gap:.65rem;padding:1rem 1.1rem}
+.tool-plain-help p{max-width:85ch;color:#466353;font-size:.93rem}
+.aid-field-hint{
+  display:block;
+  color:#577264;
+  font-size:.78rem;
+  line-height:1.5;
+  font-weight:480;
+}
+.home-goal-banner{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:1rem 2rem;
+  padding:1.3rem 1.5rem;
+  margin:1.3rem 0 1.2rem;
+  border:1px solid #cce4d3;
+  border-radius:17px;
+  background:linear-gradient(110deg,#eaf7ee,#fcfefa);
+}
+.home-goal-banner>div:first-child{display:grid;gap:.35rem;min-width:0}
+.home-goal-banner h2{font-size:clamp(1.2rem,2.2vw,1.5rem);max-width:34ch;color:#244837;line-height:1.25;letter-spacing:-.02em}
+.home-goal-banner p{font-size:.88rem;color:#516d5d;max-width:66ch}
+.home-goal-actions{display:flex;align-items:center;flex-wrap:wrap;gap:.6rem}
+.home-goal-actions .button-link{font-size:.87rem;min-height:44px;text-align:center}
+@media(max-width:600px){
+  .home-goal-banner{padding:1.05rem}
+  .home-goal-actions{width:100%}
+  .home-goal-actions a{flex:1 1 130px}
+}
