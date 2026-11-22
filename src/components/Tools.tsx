@@ -19,26 +19,31 @@ const day = (value:string, add:number) => {
 };
 function N({label,help,value,max=100000000,currency=false,change}:{label:string;help:string;value:number;max?:number;currency?:boolean;change:(value:number)=>void}) {
   const [editing,setEditing]=useState<string|null>(null);
+  const formatted = (amount:number) => currency ? formatUSD(amount, Number.isInteger(amount) ? 'whole' : 'exact') : String(amount);
+  const parse = (raw:string):number|null => {
+    const normalized = raw.replaceAll(',', '').replace(/^\$/, '');
+    const valid = currency ? /^\d*(?:\.\d{0,2})?$/.test(normalized) : /^\d*$/.test(normalized);
+    const amount = Number(normalized);
+    return valid && Number.isFinite(amount) && amount >= 0 && amount <= max ? amount : null;
+  };
   return <label class="field"><span>{label}</span>
     <input inputMode={currency ? 'decimal' : 'numeric'}
-      value={editing ?? (currency ? formatUSD(value, Number.isInteger(value) ? 'whole' : 'exact') : value)}
-      // Switch to the editable raw value synchronously. Avoid scheduling a
-      // focus-state rerender that can overwrite a quick paste before onInput.
+      value={editing ?? formatted(value)}
+      // No focus-state re-render: it could overwrite a quick paste.
       onFocus={event => { event.currentTarget.value = String(value); }}
       onBlur={event => {
-        // If the user only focused and left, restore the formatted display
-        // without relying on a state change that React/Preact may skip.
-        if (editing === null) event.currentTarget.value =
-          currency ? formatUSD(value, Number.isInteger(value) ? 'whole' : 'exact') : String(value);
+        // Read the DOM value before formatting so fast edits are committed
+        // even if Preact has not rendered the last input event yet.
+        const parsed = parse(event.currentTarget.value);
+        if (parsed !== null) change(parsed);
+        event.currentTarget.value = formatted(parsed ?? value);
         setEditing(null);
       }}
       onInput={event => {
         const raw = event.currentTarget.value;
         setEditing(raw);
-        const normalized = raw.replaceAll(',', '').replace(/^\$/, '');
-        const valid = currency ? /^\d*(?:\.\d{0,2})?$/.test(normalized) : /^\d*$/.test(normalized);
-        const amount = Number(normalized);
-        if (valid && Number.isFinite(amount) && amount >= 0 && amount <= max) change(amount);
+        const parsed = parse(raw);
+        if (parsed !== null) change(parsed);
       }}/>
     <small class="field-hint">{help}</small>
   </label>;
