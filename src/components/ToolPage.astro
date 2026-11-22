@@ -8,6 +8,8 @@ const {title,description}=toolTitles[kind];
 const context:Record<Tool,{
   question:string;
   need:string;
+  plain:string;
+  example:string;
   reading:string;
   limitation:string;
   guide:string;
@@ -17,6 +19,8 @@ const context:Record<Tool,{
   deadlines:{
     question:'Which dates and notices should I check?',
     need:'Your current repayment plan and, if you have a SAVE notice, the date and notice type.',
+    plain:'A servicer is the company that manages billing and notices for your federal loan. Use the date printed in its message, not a date you remember.',
+    example:'If you received a transition notice, select the notice type and enter the exact date on it. The tool gives a date to double-check, not a new official deadline.',
     reading:'Use the result as a reminder to check the exact deadline in your servicer message. The notice itself controls if the dates differ.',
     limitation:'The tool does not read your inbox, application status, or account-specific notices.',
     guide:'/guides/prepare-for-student-loan-repayment/',
@@ -26,6 +30,8 @@ const context:Record<Tool,{
   married:{
     question:'How might filing jointly or separately change a RAP estimate?',
     need:'Both spouses’ annual adjusted gross income, eligible balances and dependent counts for each filing scenario.',
+    plain:'AGI means adjusted gross income from a tax return. It is not the amount you take home each month. RAP refers to the Repayment Assistance Plan.',
+    example:'If both partners have incomes, enter each annual AGI and eligible loan balance. Compare the displayed amounts, then check any joint tax consequences separately.',
     reading:'Look at the two modeled monthly figures. The result covers one borrower, not both spouses’ combined payments or the tax impact.',
     limitation:'This comparison does not advise which filing status to choose or verify eligibility.',
     guide:'/guides/compare-student-loan-repayment/',
@@ -35,6 +41,8 @@ const context:Record<Tool,{
   parent:{
     question:'What should I verify about Parent PLUS consolidation?',
     need:'The consolidation loan’s actual disbursement date and whether an ICR payment is recorded on that loan.',
+    plain:'Parent PLUS loans are federal loans taken out by parents for a student. Consolidation combines eligible federal loans into a new consolidation loan, which has its own records.',
+    example:'If your Parent PLUS loan was consolidated, find the new loan’s disbursement date on your official record before choosing an answer.',
     reading:'Use the questions and next step shown to prepare for a conversation with your loan servicer.',
     limitation:'An online checklist cannot establish eligibility or override program transition dates.',
     guide:'/guides/prepare-for-student-loan-repayment/',
@@ -44,6 +52,8 @@ const context:Record<Tool,{
   pslf:{
     question:'How far away might the 120-payment milestone be?',
     need:'The certified qualifying-payment count for one loan and the next expected qualifying payment month.',
+    plain:'PSLF stands for Public Service Loan Forgiveness. A qualifying-payment count is the count shown in your official record for a particular loan.',
+    example:'If your official record lists 84 qualifying payments for one loan, the illustrative tracker starts with 36 periods remaining toward 120.',
     reading:'The target month is illustrative and assumes future payment periods qualify. Different loans may have different counts.',
     limitation:'LoanLens cannot certify an employer, validate payment history or grant forgiveness.',
     guide:'/guides/pslf-payment-count-checklist/',
@@ -53,6 +63,8 @@ const context:Record<Tool,{
   income:{
     question:'What happens to a starting RAP estimate across income ranges?',
     need:'The number of dependents you expect to claim on the return used for the illustration.',
+    plain:'RAP is the Repayment Assistance Plan. AGI is adjusted gross income on a tax return; the table uses sample income figures, not your actual loan balance.',
+    example:'Change the dependent count from 0 to 2 and compare the sample monthly estimates at the same income row.',
     reading:'Use the table to compare sample incomes, not to determine an exact account payment or plan eligibility.',
     limitation:'The table uses sample AGIs and omits some account and household factors.',
     guide:'/guides/compare-student-loan-repayment/',
@@ -73,6 +85,10 @@ const info=context[kind];
       <div><span class="tool-brief-label">What you need</span><strong>{info.need}</strong></div>
     </div>
   </header>
+  <details class="tool-plain-help">
+    <summary>New to these terms? See a plain-English explanation and example</summary>
+    <div><p>{info.plain}</p><p><strong>Try it:</strong> {info.example}</p></div>
+  </details>
   <Tools client:load {kind}/>
   <section class="tool-explain" aria-labelledby="tool-read-result">
     <div class="resource-section-head">
