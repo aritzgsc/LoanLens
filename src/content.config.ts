@@ -5,7 +5,8 @@ const pages = defineCollection({
   schema:z.object({
     title:z.string(), description:z.string(), category:z.enum(['guide','trust']),
     status:z.enum(['draft','reviewed']), verified:z.string(), updated:z.string(),
-    reviewed:z.string().optional(), related:z.array(z.string()).default([])
+  reviewed:z.string().optional(), related:z.array(z.string()).default([]),
+  shortAnswer:z.string().optional()
   }).superRefine((value,ctx)=>{
     if(value.status==='reviewed' && !value.reviewed) ctx.addIssue({
       code:'custom', path:['reviewed'], message:'Add a review date when changing status to reviewed.'

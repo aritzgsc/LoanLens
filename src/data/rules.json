@@ -398,7 +398,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Check the last operational enrollment date and first ICR payment deadline with the servicer."
+    "note": "Ask your servicer how early you need to enroll and when your first ICR payment must be received."
   },
   "interestRates": {
     "value": {
@@ -450,7 +450,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Monthly allocation and RAP principal-match distribution are approximated in multi-loan projections."
+    "note": "Your servicer may split payments and RAP benefits across your loans differently."
   },
   "spouseBalanceForecast": {
     "value": null,
@@ -458,7 +458,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Future eligible spouse balances are unknown; held flat unless the borrowing scenario is edited."
+    "note": "The estimate keeps your spouse’s eligible loan balance the same over time."
   },
   "futurePoverty": {
     "value": null,
@@ -466,7 +466,7 @@
     "effective": "2027-01-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Future poverty guidelines are unknown and held flat."
+    "note": "The estimate uses current poverty guidelines for future years."
   },
   "payoffReentry": {
     "value": null,
@@ -474,7 +474,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Borrowers with paid-off prior balances or plan-switch histories should confirm their IBR new-borrower classification and repayment terms."
+    "note": "Ask your servicer which IBR rules apply if you paid off earlier loans or changed plans."
   },
   "ibrCapitalization": {
     "value": null,
@@ -482,7 +482,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Timing and amount of account-level capitalization when reaching the IBR cap or changing plans require servicing history."
+    "note": "Ask how much unpaid interest would be added to your balance if your IBR payment reaches the cap or you leave IBR."
   },
   "priorPlanCredit": {
     "value": null,
@@ -490,7 +490,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Prior IDR credit is assumed to be the confirmed credit for the destination plan. Verify transfer, timing and loan-specific counts."
+    "note": "The estimate uses the months you entered. Check which months count for each loan in your new plan."
   },
   "fixedSchedule": {
     "value": null,
@@ -498,7 +498,7 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Fixed estimates use a fresh schedule. Confirm any existing fixed-plan term, remaining installments, and balance at repayment entry."
+    "note": "The estimate starts a new fixed schedule. Check how many payments are left on any existing schedule."
   },
   "saveHistory": {
     "value": null,
@@ -506,6 +506,6 @@
     "effective": "2026-07-01",
     "retrieved": "2026-11-22",
     "status": "UNVERIFIED",
-    "note": "Individual forbearance credit and buyback eligibility require account records."
+    "note": "Check your loan record to see which SAVE months count and whether you can buy back any months for PSLF."
   }
 }

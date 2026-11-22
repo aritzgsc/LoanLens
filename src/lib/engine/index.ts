@@ -54,9 +54,12 @@ export const example: Inputs = {
 };
 
 const sum = (values: number[]) => values.reduce((a, b) => a + b, 0);
-export const money = (amount: number) => new Intl.NumberFormat('en-US', {
-  style:'currency', currency:'USD', maximumFractionDigits:2, minimumFractionDigits:0
-}).format(amount);
+const currencyFormats = {
+  exact: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+  whole: new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0, maximumFractionDigits: 0 }),
+};
+export const formatUSD = (amount: number, precision: 'exact' | 'whole' = 'exact') => currencyFormats[precision].format(amount);
+export { formatUSD as money };
 export const dateAfter = (start: string, offset: number) => {
   const [year, month] = start.split('-').map(Number);
   return new Date(Date.UTC(year, month - 1 + offset)).toISOString().slice(0, 7);
@@ -194,12 +197,12 @@ export function compare(input: Inputs) {
   });
   const lowest = Math.min(...rows.map(row => row.starting));
   const cost = Math.min(...rows.map(row => row.paid));
-  const fastest = Math.min(...rows.map(row => row.months));
+  const fastest = Math.min(...rows.filter(row => row.outcome === 'paid').map(row => row.months));
   const bestPslf = Math.min(...rows.filter(row => row.pslfDate).map(row => row.paid));
   return rows.map(row => ({...row, badges: [
     row.starting === lowest && 'Lowest monthly',
     row.paid === cost && 'Lowest total cost',
-    row.months === fastest && 'Fastest',
+    row.outcome === 'paid' && row.months === fastest && 'Fastest',
     row.pslfDate && row.paid === bestPslf && 'Best for PSLF',
   ].filter((item): item is string => typeof item === 'string')}));
 }

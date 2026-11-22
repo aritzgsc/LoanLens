@@ -1,32 +1,21 @@
-# Launch checklist
+# LoanLens launch checklist
 
-## Repository and review
+Keep the GitHub repository private. Use Node 22.12 or later in CI and Cloudflare Pages. Use `npm run build` and publish `dist`. Keep `PUBLISH_DRAFTS=true` on private preview builds only.
 
-- [ ] Install under Node 22 and commit the resulting npm lockfile. Use the same version in CI and Pages.
-- [ ] Run lint, typecheck, tests, metadata validation, production and draft builds, the generated HTML link check and Lighthouse CI.
-- [ ] Run matched public Loan Simulator examples and record the comparison in VALIDATION.md. Review the calculator scenarios, keyboard, screen readers, mobile layout, dark mode and print.
-- [ ] Replace author name, author bio and contact email throughout the project.
-- [ ] Review each parameter against its cited source, update effective and retrieval dates, and resolve entries marked UNVERIFIED.
-- [ ] Review every draft article and trust page, including privacy, advertising and legal language. Add the date in the reviewed field and set status to reviewed. Use npm run review:list to check remaining drafts.
-- [ ] Turn on STRICT_DATA after blocking records are resolved. For unknowable forecasts, decide during review whether to explicitly exclude the forecast from published output or to carve out a separate assumptions category with reviewed scenario behavior.
+## Do these in order
 
-## Cloudflare and discovery
+1. **Set the domain.** Attach the real HTTPS domain to Cloudflare Pages and set `PUBLIC_SITE_URL` to that origin. The example host forces noindex. Check canonical URLs, `robots.txt` and alternate-host redirects.
+2. **Fill publisher placeholders.** Replace `{{AUTHOR_NAME}}`, `{{AUTHOR_BIO}}` and `{{CONTACT_EMAIL}}` with real publisher information. Confirm the contact mailbox works.
+3. **Review and approve content.** Follow [REVIEW_PACKET.md](REVIEW_PACKET.md). Compare real matching scenarios using [SIMULATOR_CASES.md](SIMULATOR_CASES.md). Run `npm run review:approve -- <slug>` to print the checks, then repeat with `--yes` after completing them. For launch, enable `STRICT_PUBLISH=true` and run the production verification in [RUN_ME.md](RUN_ME.md). Check that the about, contact, privacy and other approved pages are live.
+4. **Create the Search Console property.** Verify domain ownership, submit the production sitemap and inspect representative pages for indexability.
+5. **Apply for AdSense.** Submit the real domain using your actual publisher account. Leave Auto ads off. Set up at most three manual placements per page, with fewer on short pages. Put none between inputs and results or next to primary action buttons.
+6. **Configure and verify the CMP.** Use the consent configuration provided for your account. Test acceptance, refusal, revocation, Global Privacy Control and consent not available in the affected regions. Verify that eligible ads load lazily after consent and interaction, and that no calculator data is sent to the ad provider.
+7. **Configure ads.txt.** Use the record from your AdSense account and confirm the production `/ads.txt` response. Verify a configured live unit on narrow and wide screens before enabling monetization.
 
-- [ ] Connect the repository to Cloudflare Pages. Set Node 22, build command npm run build, output directory dist, and the production branch.
-- [ ] Add the canonical custom domain, configure redirects for alternate hosts, and set PUBLIC_SITE_URL to the real HTTPS origin.
-- [ ] Configure PUBLISH_DRAFTS=true only in private preview environments. Production must omit drafts.
-- [ ] Verify Search Console and Bing via DNS or the configured HTML tag tokens. Submit sitemap-index.xml, then inspect sample routes and robots.txt from production.
-- [ ] Enable cookieless Cloudflare Web Analytics from the Pages dashboard. Verify it does not receive scenario fragments. Check field INP when enough data becomes available.
-- [ ] Check the CSP report-only console on production. Inventory the observed sources, replace broad wildcard hosts with specific allowed hosts where viable, and test without inline execution before moving any directive into an enforced policy. Keep strict-origin-when-cross-origin for Google messaging.
+## Production acceptance
 
-## Google AdSense
-
-- [ ] Publish the reviewed About, Contact, Privacy, Terms, Disclaimer, Accessibility, Editorial Policy, Sources and Advertising Disclosure pages.
-- [ ] In AdSense Sites, add the real origin and use the Google AdSense account meta tag as the verification method. Set PUBLIC_ADSENSE_CLIENT and check both the rendered tag and /ads.txt against your account. Request review.
-- [ ] In Ads, turn off Auto ads and remove any automatic placements. Create three fixed display ad units for 300 × 250 creatives and use their IDs for results, article and sidebar. Check placement in rendered HTML on both mobile and desktop.
-- [ ] In Privacy & messaging, configure European regulations, select the sites and publish the Google CMP message. Enable consent mode for advertising purposes in the European settings. Configure US state regulations separately, select the sites, choose all supported current and future states for targeting, review partners, and publish. Expose the privacy choices link and verify sale, sharing and targeted advertising opt-outs.
-- [ ] Obtain a supported CMP bootstrap independent of the ad request script for your exact AdSense account configuration. If Google supplies a standalone Funding Choices URL, configure PUBLIC_GOOGLE_CMP_URL. Google’s AdSense US message documentation ordinarily calls for the AdSense code to be present. Verify that the separate bootstrap produces the correct consent signals before enabling any manual units. Keep monetization disabled if the account does not support this ordering.
-- [ ] With the account configured, verify TCF opt-in, refusal, revocation, US opt-out, GPC, no CMP response, and the first-interaction and visibility requirements in real browser network traces. Verify manual requests, the appropriate privacy signal, and that no calculator fields or fragments appear in third-party traffic. Document the combinations and outcomes.
-- [ ] Leave partner offers off unless the offer and disclosures are reviewed. Confirm the refinancing disclosure and sponsored link treatment before enabling.
-
-References: [US state message setup](https://support.google.com/adsense/answer/10960771), [AdSense consent mode](https://support.google.com/adsense/answer/16053245), [Consent Mode v2](https://developers.google.com/tag-platform/security/guides/consent), [ads.txt](https://support.google.com/adsense/answer/12171612) and [site verification](https://support.google.com/adsense/answer/13996652).
+- [ ] Lint, type check, tests, data checks, both builds and internal links pass.
+- [ ] Every route passes mobile and desktop accessibility checks; performance measurements meet the audit thresholds.
+- [ ] Unverified assumptions are listed and remain visible wherever they apply.
+- [ ] Verify the actual Cloudflare privacy configuration and report-only CSP before enforcement.
+- [ ] Confirm the private preview and any draft content are inaccessible to the public.

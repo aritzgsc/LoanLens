@@ -42,19 +42,34 @@ function Field({label,children}:{label:string;children:ComponentChildren}) {
   return <label class="field"><span>{label}</span>{children}</label>;
 }
 function Chart({rows,metric}:{rows:Result[];metric:'balance'|'payment'}) {
-  const maxMonth = Math.max(1,...rows.map(result=>result.months));
+  const maxYears = Math.max(1, ...rows.map(row => Math.ceil(row.months / 12)));
+  const x = (month: number) => 85 + 490 * month / (maxYears * 12);
   const max = Math.max(1,...rows.flatMap(result=>result.points.map(point=>point[metric])));
   const title = metric === 'balance' ? 'Balance over time' : 'Monthly payment over time';
-  const coords = (row: Result) => row.points.filter(p=>metric==='balance' || p.month>0).map(p=>(
-    (75 + 494*p.month/maxMonth).toFixed(2)+','+(160-130*p[metric]/max).toFixed(2))).join(' ');
+  const y = (amount: number) => 152 - 118 * amount / max;
+  const tickStep = Math.max(1, Math.ceil(maxYears / 5));
+  const ticks = Array.from({length:Math.ceil(maxYears / tickStep)}, (_, index) => index * tickStep).concat(maxYears);
+  const dash = ['none', '10 5', '2 5'];
+  const coords = (row: Result) => row.points.flatMap(point => {
+    if (metric === 'balance') return [[x(point.month), y(point.balance)]];
+    if (point.month === 0) return [];
+    const amount = y(point.payment);
+    return [[x(point.month - 1), amount], [x(point.month), amount]];
+  }).map(point => point.join(',')).join(' ');
   return <figure class="chart card">
     <figcaption><h3>{title}</h3></figcaption>
-    <svg viewBox="0 0 600 193" role="img" aria-label={title+' by repayment plan. Detailed points follow in a table.'}>
-      {[0,.5,1].map(part=><g key={part}><path d={`M75 ${160-130*part}H569`} stroke="var(--line)"/><text x="67" y={164-130*part} text-anchor="end">{money(Math.round(max*part))}</text></g>)}
-      <text x="75" y="184">Start</text><text x="569" y="184" text-anchor="end">{maxMonth} months</text>
-      {rows.map((row,i)=><polyline key={row.plan} points={coords(row)} fill="none" stroke={colors[i]} stroke-width="3"/>)}
+    <svg viewBox="0 0 600 205" role="img" aria-label={title+' in dollars by year. Detailed points follow in a table.'}>
+      <text x="85" y="18">{metric === 'balance' ? 'Loan balance (USD)' : 'Monthly payment (USD)'}</text>
+      {[0,.5,1].map(part => <g key={part}>
+        <path d={`M85 ${y(max * part)}H575`} stroke="var(--line)"/>
+        <text x="77" y={y(max * part) + 4} text-anchor="end">{money(max * part, 'whole')}</text>
+      </g>)}
+      {ticks.map(year => <text key={year} x={x(year * 12)} y="174" text-anchor="middle">{year}</text>)}
+      <text x="330" y="195" text-anchor="middle">Years</text>
+      {rows.map((row,i) => <polyline key={row.plan} points={coords(row)} fill="none" stroke={colors[i]} stroke-dasharray={dash[i]} stroke-width="3"/>)}
     </svg>
-    <ul class="legend">{rows.map((row,i)=><li key={row.plan} style={{'--series':colors[i]}}>{row.title}</li>)}</ul>
+    <ul class="legend chart-legend">{rows.map((row,i) => <li key={row.plan}><svg viewBox="0 0 26 8" aria-hidden="true" focusable="false"><path d="M0 4H26" stroke={colors[i]} stroke-dasharray={dash[i]} stroke-width="3"/></svg>{row.title}</li>)}</ul>
+    <p class="muted">Each line ends at the projected payoff or forgiveness date.</p>
     <details><summary>View chart data</summary><div class="table-wrap"><table><thead><tr><th scope="col">Plan</th><th scope="col">Month</th><th scope="col">Amount</th></tr></thead>
       <tbody>{rows.flatMap(row=>row.points.filter(p=>p.month===1 || p.month===row.months || (p.month % 12 === 0 && metric==='balance')).map(p=><tr key={row.plan+p.month}><th scope="row">{row.title}</th><td>{p.month}</td><td>{money(p[metric])}</td></tr>))}</tbody></table></div></details>
   </figure>;
@@ -105,7 +120,7 @@ export default function Calculator() {
   const low = rows.find(r=>r.badges.includes('Lowest monthly'));
   return <div class="calculator">
     <div class="wizard card" id="wizard">
-      <div class="wizard-top"><span class="eyebrow">Repayment calculator</span><button type="button" class="text-button" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');}}>Use example borrower</button></div>
+    <div class="wizard-top"><button type="button" class="primary" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');}}>Use example borrower</button></div>
       <nav aria-label="Calculator steps" class="steps">{steps.map((label,i)=><button type="button" key={label} class={step===i?'current':''} aria-current={step===i?'step':undefined} onClick={()=>go(i)}><span>{i+1}</span>{label}</button>)}</nav>
       <form key={version} onSubmit={e=>{e.preventDefault();if(e.currentTarget.querySelector('[aria-invalid="true"]')) {setMessage('Correct the highlighted values before continuing.');return;}
         if(step===0&&!hasBalance) {setMessage('Enter at least one positive loan balance.');return;}
@@ -156,11 +171,28 @@ export default function Calculator() {
       <div class="notice" aria-live="polite">{!submitted ? 'Complete the calculator or load an example to compare starting payments, lifetime costs and payoff dates.'
         : !rows.length ? <>This scenario needs an eligibility check or a positive loan balance. Choose your borrowing history and review the <a href="/tools/parent-plus-consolidation-checker/">Parent PLUS checker</a> or <a href="/deadlines/">transition guidance</a> if applicable.</>
           : <>{low?.title} has the lowest starting payment ({money(low?.starting ?? 0)}). {cost?.title} has the lowest projected out-of-pocket payments ({money(cost?.paid ?? 0)}) before any forgiveness tax.</>}</div>
-      {alerts.length>0 && <aside class="warning" aria-label="Unverified projection inputs"><strong>Some projection assumptions are unverified.</strong><ul>{alerts.map(key=><li key={key}>{rules[key].note}</li>)}</ul></aside>}
       {rows.length>0 && <>
+      <section class="best-plans" aria-labelledby="best-plans-title">
+        <h3 id="best-plans-title">Best for you</h3>
+        <ul>{[
+          ['Lowest monthly', 'Lowest starting payment'],
+          ['Lowest total cost', 'Lowest total paid'],
+          ['Fastest', 'Fastest payoff'],
+          ['Best for PSLF', 'Best for PSLF'],
+        ].map(([badge,label]) => {
+          const winners = rows.filter(row => row.badges.includes(badge));
+          return <li key={badge}><strong>{label}</strong><span>{winners.map(row => row.title).join(' / ') || 'No match in this estimate'}</span></li>;
+        })}</ul>
+      </section>
+      <p class="muted">Estimates only, not financial or legal advice. Not affiliated with the U.S. Department of Education.</p>
+      {alerts.length>0 && <section class="assumptions" aria-label="Unverified projection assumptions">
+        <p>Planning estimate. {alerts.length} {alerts.length === 1 ? 'assumption applies' : 'assumptions apply'}.</p>
+        <details><summary>See assumptions <span class="muted">(unverified)</span></summary>
+          <ul>{alerts.map(key => <li key={key}>{key === 'ibrRounding' ? 'Your servicer may round small IBR payments differently.' : rules[key].note}</li>)}</ul>
+        </details>
+      </section>}
         <div class="result-grid">{rows.map((row,i)=><article key={row.plan} class="plan card" style={{'--series':colors[i]}}>
           <h3>{row.title}</h3><p class="amount">{money(row.starting)} <small>/ month to start</small></p>
-          <ul class="badges">{row.badges.map(label=><li key={label}>{label}</li>)}</ul>
           <dl><div><dt>Total you pay</dt><dd>{money(row.paid)}</dd></div><div><dt>Interest you pay</dt><dd>{money(row.interest)}</dd></div><div><dt>Estimated forgiveness</dt><dd>{money(row.forgiven)}</dd></div><div><dt>{row.outcome==='paid'?'Estimated payoff':row.outcome==='pslf'?'Estimated PSLF':'Estimated IDR forgiveness'}</dt><dd>{dateLabel(row.end)}</dd></div>
           {row.pslfSavings!==null && <div><dt>PSLF payment savings</dt><dd>{money(row.pslfSavings)}</dd></div>}</dl>
         </article>)}</div>

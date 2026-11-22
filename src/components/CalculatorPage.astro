@@ -3,15 +3,23 @@ import Calculator from './Calculator';
 import AdSlot from './AdSlot.astro';
 import PartnerOffers from './PartnerOffers.astro';
 import { entryPath, visible } from '../lib/content';
-import { toolLinks } from '../lib/site';
-const {title, description} = Astro.props as {title:string;description:string};
-const guides = (await visible()).filter(e=>e.data.category==='guide').slice(0,3);
+const {title} = Astro.props as {title:string;description:string};
+const entries = await visible();
+const nextSteps = [
+  { href:'/deadlines/', title:'Repayment deadlines', description:'Find which dates apply to your loans and repayment plan.' },
+  ...[
+    ['save-ended-what-now','SAVE ended: what now?','Find your notice deadline and compare replacement plans.'],
+    ['rap-and-pslf','Does RAP count for PSLF?','Check how RAP payments can count toward public service forgiveness.'],
+  ].flatMap(([id,title,description]) => {
+    const entry = entries.find(page => page.id === id && page.data.category === 'guide');
+    return entry ? [{ href:entryPath(entry), title, description }] : [];
+  }),
+];
 ---
-<header class="hero"><span class="eyebrow">Student loan repayment</span><h1>{title}</h1><p>{description}</p></header>
+<header class="hero hero-calculator"><h1>{title}</h1><p>Compare monthly payments, total costs, and forgiveness.</p></header>
 <Calculator client:load />
 <AdSlot kind="results" />
 <PartnerOffers />
 <section class="support"><h2>Explore your next step</h2><div class="guide-grid">
-  {toolLinks.map(([url,label,description])=><a class="guide-link" href={url}><strong>{label}</strong><span>{description}</span></a>)}
-  {guides.map(entry=><a class="guide-link" href={entryPath(entry)}><strong>{entry.data.title}</strong><span>{entry.data.description}</span></a>)}
+  {nextSteps.map(step => <a class="guide-link" href={step.href}><strong>{step.title}</strong><span>{step.description}</span></a>)}
 </div></section>

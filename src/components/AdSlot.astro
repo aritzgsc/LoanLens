@@ -5,6 +5,4 @@ const {kind} = Astro.props;
 const unit = {results:import.meta.env.PUBLIC_ADSLOT_RESULTS,article:import.meta.env.PUBLIC_ADSLOT_ARTICLE,sidebar:import.meta.env.PUBLIC_ADSLOT_SIDEBAR}[kind];
 const configured = !robotsNoIndex && validPublisher && /^\d+$/.test(unit || '');
 ---
-<div class="ad-slot" data-slot-kind={kind} data-dev={import.meta.env.DEV || undefined} data-ad-client={configured?publisher:undefined} data-ad-unit={configured?unit:undefined} aria-label="Reserved advertisement placement">
-  {import.meta.env.DEV && !configured && <span>Advertisement placement</span>}
-</div>
+{configured && <div class="ad-slot" data-slot-kind={kind} data-ad-client={publisher} data-ad-unit={unit}></div>}

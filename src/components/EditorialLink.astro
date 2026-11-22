@@ -1,0 +1,10 @@
+---
+import { getEntry } from 'astro:content';
+import { entryPath } from '../lib/content';
+import { publishDrafts } from '../lib/site';
+
+interface Props { slug: string; }
+const entry = await getEntry('pages', Astro.props.slug);
+const href = entry && (entry.data.status === 'reviewed' || publishDrafts) ? entryPath(entry) : undefined;
+---
+{href ? <a {href}><slot /></a> : <span><slot /></span>}

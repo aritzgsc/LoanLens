@@ -1,64 +1,59 @@
 ---
-title: "Married filing separately vs. jointly under RAP"
-description: "Compare RAP payments across tax filing statuses while accounting for dependent claims, eligible debts, and tax trade-offs."
+title: "RAP and married filing status"
+description: "Compare RAP estimates for joint and separate tax returns with the right income, debt and dependents."
 category: "guide"
 status: "draft"
 verified: "2026-11-22"
 updated: "2026-11-22"
-related: ["rap-payment-calculation","rap-vs-ibr","idr-forgiveness-taxes"]
+shortAnswer: "Joint filing can combine income and account for both spouses’ eligible loans when RAP computes one borrower’s share. Separate filing uses the borrower’s own income and the dependents they would claim."
+related: ["rap-payment-calculation","rap-vs-ibr"]
 ---
 
+import { rules } from "../../lib/engine";
 import Example from "../../components/Example.astro";
-import PublicationAd from "../../components/PublicationAd.astro";
+import CalculatorLink from "../../components/CalculatorLink.astro";
 
-## Separate a filing decision from a loan estimate
+## Who this applies to
 
-Choosing how to file can change a Repayment Assistance Plan bill. It can also change tax credits, deductions and the total tax a household pays. The repayment estimator only sees the loan inputs you give it. For a complete comparison, you need a calculation of the loan payments for each spouse and the separate tax results. Start by considering scenarios you can actually use under the tax filing rules. Ask a tax professional when eligible filing options or dependent claims are unclear.
+Use this comparison if you are married, have loans eligible for RAP, and want to see the effect of changing which income and dependents appear on your tax return. If both spouses have debt, estimate each spouse’s payment separately.
 
-For joint filing, start with joint adjusted gross income. Do not add each wage amount to that number again. Wages and AGI are not always the same because the return may contain other income or adjustments. If entering each spouse’s share, make sure the values add up to the joint AGI you are trying to model. For separate filing, use the amount that would appear on the borrower's separate return. The borrower and spouse may need different loan or tax inputs in that case.
+<CalculatorLink />
 
-## Check which loans enter the ratio
+## What to check
 
-Where joint income applies and both spouses have eligible loans, RAP can prorate a monthly amount by the borrower's share of combined eligible outstanding debt. The eligible loan total uses the balances relevant to the program. Private student loans can affect the household budget but do not belong in that ratio. Parent PLUS loans and certain consolidated loans can affect eligibility. Check the types shown by each servicer and ask which balances will be used.
+### Build a separate set of inputs for each return
 
-The ratio can explain why simply adding a second income overstates one spouse’s bill. A borrower with a smaller share of eligible debts may pay a smaller share of the overall calculation. The payment floor still applies after proration. If both spouses are comparing payments, check both borrowers. A smaller bill for one spouse can coexist with a larger bill for the household. The [married borrower tool](/tools/married-rap-impact/) lets you change debt and dependency inputs to see how the estimate moves.
+| Input | Joint return | Separate return |
+| --- | --- | --- |
+| Income | Combined adjusted gross income from the joint return. | Borrower’s adjusted gross income. |
+| Dependents | Dependents on the joint return. | Dependents claimed on that borrower’s return. |
+| Eligible loans | Borrower’s eligible balance and spouse’s eligible balance, if used in the rule. | Borrower’s eligible balance. |
 
+Use the [married RAP tool](/tools/married-rap-impact/) and enter each spouse’s share of joint income once. If starting from the joint total, make sure the two entries sum to that total. Avoid entering the entire joint amount in both fields. Enter separate-filing dependents independently because the count may change when the couple splits claims.
 
-<PublicationAd />
+### Check the household payment
+
+A spouse’s eligible debt can affect the share of a joint calculation assigned to each borrower. Some debts may be ineligible for the allocation. Inspect both federal loan lists before including a balance. Use the borrower’s own balance in the first run, reverse the borrower and spouse roles in the second run, and add the resulting monthly payments when both spouses are on RAP. If a spouse is on a different plan, use their actual bill or a separate comparison.
+
+The minimum payment applies to the borrower’s result. For scenarios near that floor, a smaller calculated share might not lower the bill. Inspect the displayed amounts before treating a reduction in one borrower’s income or debt share as a savings for the household.
+
+### Decide what the comparison includes
+
+The repayment tool estimates student loan bills. It does not compute the joint-versus-separate tax bill, changes in credits or deductions, or how income may be reported under state rules. Compare annual loan payments with the change in annual tax cost from the same filing assumptions. A smaller bill for one spouse can coexist with higher total household costs.
+
+For a longer projection, track the date each spouse’s plan uses updated income. A borrower’s bill can change when new tax information is used and a spouse’s balance can fall at a different pace. LoanLens holds the spouse’s eligible balance at the value entered. If that balance is about to be repaid, run a second scenario with a lower balance and compare what changes before relying on the projected total.
+
+## Worked example
 
 <Example scenario="joint" />
 
-## Count dependents based on the return
+## Common mistakes
 
-RAP looks at tax dependents claimed on the return used for the payment calculation. Make separate entries for your joint and separate scenarios when the claimed dependents would differ. A support arrangement can matter for how you file, but entering a person in both spouses’ separate cases without supporting claims will distort the comparison. Use tax guidance for questions about who can be claimed and obtain help if support or custody circumstances changed.
+- Entering a joint income twice by copying it to both spouse fields.
+- Using the joint dependent count for each separate return.
+- Looking at one spouse’s payment and assuming it represents the whole household.
 
-An income-driven plan can treat family size differently. If you are also comparing IBR, check the separate IBR definition and regional poverty allowance. A particular person might change the RAP dependent adjustment and the IBR poverty allowance differently. Take care to check other qualifying supported individuals as a separate input when estimating IBR.
+## Sources
 
-## Model a household budget, then a life change
-
-Make two columns, one for the total joint-filing scenario and one for the separately filed scenario. Use rows for estimated payment for the borrower, estimated payment for the spouse, estimated tax, and any significant costs or benefits affected by filing status. Convert annual and monthly figures to the same period so they can be added. Keep near-term and longer-term totals separate if one payment is expected to change sooner.
-
-Test a change in one spouse’s earnings, debt balance or employment. A debt ratio can change as one spouse pays faster or gets forgiveness. Some benefits depend on repayment timing, and future balances cannot be known exactly. A fixed spouse balance can make the long-term example easier to interpret while still leaving uncertainty beyond the starting payment.
-
-## Prepare a question for the servicer
-
-If your real bill differs, ask which tax return and AGI the servicer has, which dependent count it used, whether it included spouse debt, and which balances determined the share. Record the date the payment became effective and when you next need to recertify. Ask for a written calculation if the difference remains unexplained. Compare that breakdown with a saved worksheet so you can spot a missing loan or double-counted income line.
-
-A different filing status can affect the rest of your finances. Talk through the combined effect before choosing a return solely from the payment difference on a website. An estimate is strongest when it shows every input and lets you replace the uncertain figures with documented ones as they become available.
-
-## Records to keep
-
-Keep a plain-language record of the filing scenarios, the claimed dependents, and each spouse’s eligible balances. Include the date you checked it and the source you used. If the information changes, retain both versions and note which one came first. This makes a call with a servicer or reviewer easier because you can explain the exact point that changed.
-
-Next, write down the combined household bills and the tax estimate for each case. Include these details in your own copy of the example and check both against the next statement. If a figure comes from a forecast, mark it as an assumption. Finally, identify the largest unresolved assumption in the comparison. You can use that item as the next question if the answer still depends on someone else's records.
-
-## Compare one variable at a time
-
-It is easier to identify what changed if you hold all other figures fixed. First vary filing status, then check the result after adjusting dependents, and then test a change to the eligible spouse balance. If your expected AGI differs between the two tax returns, add those changes once the loan formula is understood. Do the same on the spouse’s side before adding the two loan bills. This is especially useful when each spouse has a different collection of loans, a different projected payoff date or a different forgiveness goal. Verify the actual numbers with the tax return and a recent account statement.
-
-## Primary sources
-
-- [Department of Education, final repayment regulations](https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm)
-- [Federal Student Aid, IDR questions](https://studentaid.gov/articles/faqs-idr-plan/)
-- [Public Law 119-21](https://www.govinfo.gov/content/pkg/PLAW-119publ21/pdf/PLAW-119publ21.pdf)
-- [IRS Publication 4681](https://www.irs.gov/publications/p4681)
+- <a href={rules.rapJoint.source}>Final rule for joint RAP calculations</a>
+- [Federal Student Aid’s income-driven repayment FAQ](https://studentaid.gov/articles/faqs-idr-plan/)

@@ -15,6 +15,7 @@
     "test": "vitest run",
     "verify-data": "node --experimental-strip-types scripts/verify-data.ts",
     "review:list": "node scripts/review-list.mjs",
+    "review:approve": "node scripts/review-approve.mjs",
     "check:links": "node scripts/check-build.mjs"
   },
   "dependencies": {

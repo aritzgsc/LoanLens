@@ -19,7 +19,7 @@ const schema = {'@context':'https://schema.org','@graph':[
   {'@type':'Organization','@id':new URL('/#organization',root).href,name:siteName,url:root.href,logo:new URL('/icon.svg',root).href},
   ...(segments.length?[{'@type':'BreadcrumbList',itemListElement:breadcrumb.map((b,i)=>({'@type':'ListItem',position:i+1,name:b.title,item:new URL(b.url,root).href}))}]:[]),
   ...(kind?[{'@type':kind,name:title,headline:title,description,url:canonical.href,image:ogImage.href,
-    ...(kind==='Article'?{dateModified:updated,author:{'@type':'Person',name:author.name},publisher:{'@id':new URL('/#organization',root).href}}:
+      ...(kind==='Article'?{dateModified:updated,...(!author.name.includes('{{') && {author:{'@type':'Person',name:author.name}}),publisher:{'@id':new URL('/#organization',root).href}}:
       {applicationCategory:'FinanceApplication',operatingSystem:'Any',isAccessibleForFree:true,offers:{'@type':'Offer',price:0,priceCurrency:'USD'}})}]:[])
 ]};
 const cmp = import.meta.env.PUBLIC_GOOGLE_CMP_URL || '';
@@ -31,7 +31,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title} | {siteName}</title>
+  <title>{title.length + siteName.length + 3 < 60 ? title + ' | ' + siteName : title}</title>
   <meta name="description" content={description} />
   <meta name="robots" content={noindex?'noindex, follow':'index, follow'} />
   <link rel="canonical" href={canonical.href} />

@@ -1,58 +1,61 @@
 ---
 title: "SAVE ended. What now?"
-description: "Find your SAVE notice deadline, compare replacement plans, and check which payments may count."
+description: "Check your SAVE notice, see what happens if you miss the deadline, and compare eligible replacement plans."
 category: "guide"
 status: "draft"
 verified: "2026-11-22"
 updated: "2026-11-22"
-related: ["what-if-i-do-nothing","rap-vs-ibr","parent-plus-consolidation"]
+shortAnswer: "Your servicer’s notice gives you the deadline to select a replacement for SAVE. If you miss the final deadline, your servicer can move your loans into a fixed repayment plan and issue a new bill."
+related: ["rap-vs-ibr","rap-and-pslf","parent-plus-consolidation"]
 ---
 
+import { rules } from "../../lib/engine";
 import Example from "../../components/Example.astro";
-import PublicationAd from "../../components/PublicationAd.astro";
+import CalculatorLink from "../../components/CalculatorLink.astro";
 
-## Find the date printed in your notice
+## Who this applies to
 
-If you were in SAVE, Federal Student Aid says to wait for or look up the transition notice your servicer sends. The notice date controls your choice window. A first notice gives you 90 days to choose a different plan. If you let that window pass, there is a separate final 30-day notice. If you miss the final deadline, the servicer can put you on a fixed plan. This differs from the retirement date for PAYE and ICR. Your SAVE deadline should be on your own schedule.
+Use this page if you were enrolled in SAVE or had a SAVE application pending. A pending application can lead to a different outcome from an active SAVE enrollment. Federal Student Aid explains which borrowers in school or in a grace period need no immediate action.
 
-Check the notice in both your servicer inbox and email. Verify the date by signing into the servicer site directly if the message seems suspicious. Keep a copy of the correspondence and its final date. If you see conflicting dates, contact the servicer and ask for the deadline attached to your account. Allow time to send documents and confirm they were accepted.
+<CalculatorLink />
 
-## Identify the replacement plans you can use
+## What to check
 
-Look up every current loan before choosing a plan. Label each Direct loan, consolidation, PLUS loan and any other type. Review the disbursement date of a new Direct Loan and the date a consolidation was issued. For qualifying student Direct Loans, compare RAP with IBR if the portfolio remains eligible for both. If you have a new Direct Loan from July 1, 2026 onward, check the RAP and Tiered Standard options. Some legacy borrowers may have temporary alternatives such as PAYE or ICR, depending on eligibility. Those plans have a distinct transition deadline in 2028.
+### Find the deadline in the notice
 
-Loan labels can be easy to misread. Parent PLUS is debt of the parent borrower. A graduate PLUS loan is student debt. A Direct Consolidation Loan may include debt that changes its plan options. If Parent PLUS appears in your history, ask what went into the consolidation and whether a separate fixed plan is required. Comparing only monthly dollar amounts before checking these details can make an unavailable plan look attractive.
+Open the message from your servicer and note the date it was sent. The first notice gives affected borrowers {rules.saveNoticeDays.value} days to choose an eligible plan. If you receive a final notice, it starts a separate {rules.saveFinalNoticeDays.value}-day window. Enter the notice date and type in the [deadline tool](/deadlines/) and use your servicer’s stated date if the two disagree.
 
+| Your status | What to check |
+| --- | --- |
+| First notice received | Read the first deadline and look for any pending plan application. |
+| Final notice received | Confirm the replacement plan and when the first bill is due. |
+| Deadline passed | Open your current repayment schedule and check which plan your servicer assigned. |
+| SAVE application pending | Check whether you were returned to the plan you held before applying. |
 
-<PublicationAd />
+### Check the bill if you take no action
+
+A borrower who was enrolled in SAVE and misses the final deadline can go onto Standard or Tiered Standard. The relevant loan dates determine which fixed plan applies. Under a fixed plan, changes in income do not automatically change the scheduled payment. Open the first statement after the switch, compare the due date and amount with your previous statement, and check that any scheduled bank withdrawal uses the new amount.
+
+You can still ask the servicer about switching to an eligible plan after a fixed plan assignment. A submitted request and an accepted request are different account events. Look for the effective date and read the bill while the request is pending.
+
+### Compare the plans your loans can use
+
+For student Direct Loans, check whether the portfolio qualifies for both RAP and IBR. New Direct borrowing on or after {rules.newLoanDate.value} can change which options remain. A consolidation loan containing parents’ loans needs a separate eligibility check. Use the [Parent PLUS tool](/tools/parent-plus-consolidation-checker/) before interpreting the comparison for that portfolio.
+
+PAYE and ICR have a separate transition tied to {rules.sunsetDate.value}. That date does not replace the deadline written in an individual SAVE notice. If you are pursuing PSLF, compare eligible replacement plans using each loan’s certified count. Ask about the exact SAVE months in your record. A general description of forbearance cannot establish what will count on your account.
+
+## Worked example
 
 <Example scenario="low" />
 
-## Check what the payment gap did to your account
+## Common mistakes
 
-SAVE borrowers can see a different balance when they move to a new plan because interest, forbearance and the timing of bills may have changed. Write down the principal and accrued interest separately if your account shows both. Use your next statement to check which charges are included and which were recorded during forbearance. A projected balance built from principal and today's rate cannot reconstruct a servicer’s history.
+- Using the PAYE and ICR transition date as the deadline from a SAVE notice.
+- Assuming a submitted replacement request changed the next automatic debit.
+- Counting every SAVE forbearance month as PSLF or IDR credit.
 
-Ask which past months count for your particular goal. Months counted for an income-driven discharge and months counted toward PSLF are measured under different rules. Some SAVE forbearance months may require further analysis. If you are close to PSLF, read the federal buyback instructions and check whether it is available for the specific months and loans. Treat a possible credit as an open question until it appears in your record.
+## Sources
 
-## Review the bill before the change takes effect
-
-Use a current tax-return AGI and one alternate income scenario if a change is likely. Compare each plan’s starting bill, total out-of-pocket payments, projected discharge and time until resolution. A fixed plan can give a predictable bill. An income-driven plan can adjust to a change in earnings after recertification and can change the balance through interest or principal benefits. Which of these matters most depends on your budget and the particular loans eligible for each plan.
-
-Check whether your bank payment is tied to the old bill. If autopay is active, verify the date and amount of the next draft with your servicer after the change. Keep money for a larger payment available while the request is pending if possible. If you receive a billing statement before approval, ask how to stay current while the application is processed. Record the person or case reference and any dates they provide.
-
-## Make a short transition record
-
-A small written record helps if processing takes longer than you expected. Include your notice date, response date, plan requested, and date you sent any income paperwork. Check that the plan and loan group shown on the confirmation match what you intended. Save the next payment due date and amount and confirm how your existing payments are displayed. If your information changed after submitting the request, ask how to update it without losing track of the original request.
-
-If you are still in school, in a grace period, or never enrolled in SAVE, check the criteria in FSA's current notice guidance. Do not assume a news story applies to your account. If you cannot confirm your plan, call using the phone number in the servicer portal, and keep paying any billed amount while you resolve the confusion. The most useful outcome is a verifiable new plan, a specific next payment date, and a clear record of your progress toward the kind of forgiveness you intend to pursue.
-
-## If your account shows two timelines
-
-The notice process, the application process and your billing cycle can move independently. For example, an application may be in review on the day a new bill appears. Read the bill and any forbearance notice to see which date is in effect. Ask whether a bill that was issued will still be due if the change is approved before the due date. For each event, keep the date you took the action and the date the servicer says the action took effect. If you are transferring between servicers, save copies of the earlier messages while the original account portal is still available.
-
-## Primary sources
-
-- [Federal Student Aid, SAVE borrower guidance](https://studentaid.gov/articles/save/)
-- [Department of Education, final repayment regulations](https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm)
-- [Federal Student Aid, repayment plans](https://studentaid.gov/manage-loans/repayment/plans)
-- [Federal Student Aid, PSLF application and eligible plans](https://studentaid.gov/sites/default/files/public-service-application-for-forgiveness.pdf)
+- <a href={rules.saveNoticeDays.source}>Federal Student Aid’s SAVE transition FAQ</a>
+- <a href={rules.newLoanDate.source}>Repayment regulations</a>
+- [Federal Student Aid’s PSLF buyback guidance](https://studentaid.gov/manage-loans/forgiveness-cancellation/public-service/public-service-loan-forgiveness-buyback)

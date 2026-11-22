@@ -8,7 +8,7 @@ import { entryPath, visible } from '../lib/content';
 interface Props { entry:CollectionEntry<'pages'>; }
 const {entry}=Astro.props;
 const { Content }=await render(entry);
-const {title,description,category,status,updated,verified,reviewed,related}=entry.data;
+const {title,description,category,status,updated,verified,reviewed,related,shortAnswer}=entry.data;
 const draft=status==='draft';
 const guide=category==='guide';
 const entries=(await visible()).filter(e=>e.id!==entry.id && e.data.category==='guide');
@@ -17,15 +17,18 @@ const suggestions=(relatedEntries.length?relatedEntries:entries).slice(0,3);
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
   <header class="hero"><h1>{title}</h1><p>{description}</p>
-    {guide && <p>By {author.name} · Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
+  {guide && <p>{(draft || !author.name.includes('{{')) && <>By {author.name} · </>}Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
     {reviewed && <p>Reviewed <time>{reviewed}</time></p>}
     {draft && <p class="warning">Editorial draft awaiting review.</p>}
   </header>
-  <div class="article-columns"><article class="article-body"><Content/></article>
+  <div class="article-columns"><article class="article-body">
+    {guide && shortAnswer && <section class="short-answer notice" aria-labelledby="short-answer"><h2 id="short-answer">Short answer</h2><p>{shortAnswer}</p></section>}
+    <Content/>
+  </article>
     {guide && <aside><AdSlot kind="sidebar"/></aside>}
   </div>
   {guide && <section class="support"><h2>Related tools and guides</h2><div class="guide-grid">
-    <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong></a>
+  <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong><span>See your estimated monthly payments and total costs.</span></a>
     {suggestions.map(e=><a class="guide-link" href={entryPath(e)}><strong>{e.data.title}</strong><span>{e.data.description}</span></a>)}
   </div></section>}
 </Base>
