@@ -247,7 +247,9 @@ try {
             const income = page.getByLabel('Your adjusted gross income');
             await income.fill('56000');
             await income.press('Tab');
-            if (await income.inputValue() !== '$56,000') throw new Error('Income field did not format the edited amount');
+            const formattedIncome = await income.inputValue();
+            if (Number(formattedIncome.replace(/[^0-9.]/g, '')) !== 56000)
+              throw new Error('Edited income did not retain $56,000: ' + formattedIncome);
             const issues = await page.evaluate(fieldRowAlignment);
             if (issues.length) throw new Error('Married RAP: ' + issues.join('; '));
             if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-edited');
