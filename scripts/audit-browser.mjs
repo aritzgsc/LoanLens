@@ -100,6 +100,10 @@ const visit = async (page, route) => {
   const response = await page.goto(new URL(route, origin).href, { waitUntil: 'load' });
   if (response?.status() !== 200) throw new Error(route + ' returned HTTP ' + response?.status());
   await page.evaluate(() => globalThis.document.fonts.ready);
+  // Astro's client:load islands may hydrate just after the initial load event.
+  // Do not trigger interaction smoke-tests before the framework has wired events.
+  await page.waitForFunction(() => [...document.querySelectorAll('astro-island')]
+    .every(island => !island.hasAttribute('ssr')), null, {timeout:10000});
 };
 try {
   for (const colorScheme of ['light', 'dark']) {
