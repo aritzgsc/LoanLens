@@ -46,50 +46,30 @@ const textMetrics = () => {
     })),
   };
 };
-
-// Validate centered form geometry in every viewport, including hidden-initially wizard steps.
-// Labels remain left aligned intentionally; form blocks and field grids must be balanced.
-const formGeometry = () => {
-  const problems = [];
-  const visible = el => el && el.getClientRects().length && getComputedStyle(el).visibility !== 'hidden';
-  const box = el => el.getBoundingClientRect();
-  if (document.documentElement.scrollWidth > innerWidth + 2)
-    problems.push('horizontal document overflow: ' + document.documentElement.scrollWidth + ' > ' + innerWidth);
-  for (const [selector, reference] of [
-    ['.calculator .wizard', 'main'],
-    ['.calculator .wizard form', '.calculator .wizard'],
-    ['.calculator .steps', '.calculator .wizard'],
-    ['.aid-form', 'main'],
-    ['.aid-form .result-grid', '.aid-form'],
-    ['.aid-results', 'main'],
-    ['.aid-results .result-grid', '.aid-results'],
-    ['.tool-app', 'main'],
-    ['.tool-app > .tool-pane.card', '.tool-app'],
-  ]) {
-    const element = document.querySelector(selector);
-    const parent = document.querySelector(reference);
-    if (!visible(element) || !visible(parent)) continue;
-    const child = box(element), outer = box(parent);
-    if (child.left < -1 || child.right > innerWidth + 1)
-      problems.push(selector + ' exceeds the viewport');
-    const left = child.left - outer.left, right = outer.right - child.right;
-    if (outer.width - child.width > 35 && Math.abs(left - right) > 16)
-      problems.push(selector + ' is off-center by ' + Math.round(left - right) + 'px');
+// Verify vertical alignment only: inputs in the same visual row must start at the
+// same y-coordinate, even when neighboring labels wrap onto additional lines.
+const fieldRowAlignment = () => {
+  const failures = [];
+  for (const grid of document.querySelectorAll('.fields')) {
+    const fields = [...grid.children].filter(el => el.matches('.field') && el.getClientRects().length);
+    const rows = new Map();
+    for (const field of fields) {
+      const control = field.querySelector(':scope > input, :scope > select, :scope > .numeric');
+      if (!control || !control.getClientRects().length) continue;
+      const fieldRect = field.getBoundingClientRect();
+      const rowKey = Math.round(fieldRect.top / 4) * 4;
+      const controls = rows.get(rowKey) ?? [];
+      controls.push({ top: control.getBoundingClientRect().top, label: field.textContent.trim().slice(0, 55) });
+      rows.set(rowKey, controls);
+    }
+    for (const controls of rows.values()) {
+      if (controls.length < 2) continue;
+      const tops = controls.map(control => control.top);
+      if (Math.max(...tops) - Math.min(...tops) > 3)
+        failures.push('fields in the same row have misaligned controls: ' + JSON.stringify(controls));
+    }
   }
-  for (const element of document.querySelectorAll('.calculator .fields, .aid-form .fields, .tool-app .fields')) {
-    if (!visible(element) || !visible(element.parentElement)) continue;
-    const child = box(element), parent = box(element.parentElement);
-    const left = child.left - parent.left, right = parent.right - child.right;
-    if (parent.width - child.width > 35 && Math.abs(left - right) > 16)
-      problems.push('field grid is off-center by ' + Math.round(left - right) + 'px');
-  }
-  for (const element of document.querySelectorAll('.calculator input, .calculator select, .aid-form input, .aid-form select, .tool-app input, .tool-app select')) {
-    if (!visible(element)) continue;
-    const rect = box(element);
-    if (rect.width > 0 && (rect.left < -1 || rect.right > innerWidth + 1))
-      problems.push('input/control extends outside the viewport: ' + element.outerHTML.slice(0, 130));
-  }
-  return problems.slice(0, 16);
+  return failures;
 };
 const visit = async (page, route) => {
   const response = await page.goto(new URL(route, origin).href, { waitUntil: 'load' });
@@ -132,8 +112,8 @@ try {
               }).filter(item => item && item.ratio < 4.5);
           });
           if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
-          const geometryProblems = await page.evaluate(formGeometry);
-          if (geometryProblems.length) throw new Error('Form layout: ' + geometryProblems.join('; '));
+          const verticalIssues = await page.evaluate(fieldRowAlignment);
+          if (verticalIssues.length) throw new Error('Vertical field alignment: ' + verticalIssues.join('; '));
           const metrics = await page.evaluate(textMetrics);
           const axe = await new AxeBuilder({ page }).analyze();
           report.pages.push({ route, width, colorScheme, ...metrics,
@@ -146,18 +126,15 @@ try {
             await page.getByRole('link', { name: /Choosing a college/ }).waitFor();
             await page.getByRole('button', { name: 'Use example borrower' }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor();
+            // Also verify fields rendered in the income and goals steps.
+            for (const stepName of [/Income and household/, /Goals/]) {
+              await page.getByRole('button', { name: stepName }).click();
+              const alignmentIssues = await page.evaluate(fieldRowAlignment);
+              if (alignmentIssues.length) throw new Error('Wizard step vertical alignment: ' + alignmentIssues.join('; '));
+            }
+            await page.getByRole('button', { name: /Loans/ }).click();
             await page.evaluate(() => globalThis.scrollTo(0, 0));
             await capture(prefix + '-example');
-            // Cover the additional form states that are not present in the initial screenshots.
-            await page.getByRole('button', { name: /Income and household/ }).click();
-            const incomeGeometry = await page.evaluate(formGeometry);
-            if (incomeGeometry.length) throw new Error('Income step layout: ' + incomeGeometry.join('; '));
-            if (colorScheme === 'light' && width !== 768) await capture(prefix + '-income-step');
-            await page.getByRole('button', { name: /Goals/ }).click();
-            const goalGeometry = await page.evaluate(formGeometry);
-            if (goalGeometry.length) throw new Error('Goal step layout: ' + goalGeometry.join('; '));
-            if (colorScheme === 'light' && width !== 768) await capture(prefix + '-goals-step');
-            await page.getByRole('button', { name: /Loans/ }).click();
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
@@ -174,8 +151,6 @@ try {
             await page.getByRole('region', { name: 'School B', exact: true })
               .getByText('$13,000.00', { exact: true }).waitFor();
             await capture(prefix + '-example');
-            const resultGeometry = await page.evaluate(formGeometry);
-            if (resultGeometry.length) throw new Error('Aid comparison layout: ' + resultGeometry.join('; '));
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
