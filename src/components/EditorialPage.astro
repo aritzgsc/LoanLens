@@ -76,7 +76,7 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
         <ul>{trustNavigation.map(([id,label])=><li><a href={'/'+id+'/'}>{label}<span aria-hidden="true">↗</span></a></li>)}</ul>
       </nav>
       <div class="trust-sidebar-note"><strong>Need an account-specific answer?</strong><p>For your actual student loan, consult Federal Student Aid or your servicer.</p><a href="https://studentaid.gov/" rel="noopener noreferrer">Visit StudentAid.gov <span aria-hidden="true">↗</span></a></div>
-    </aside>
+    </aside>}
   </div>
   {guide && <section class="support"><h2>Related tools and guides</h2><div class="guide-grid">
   <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong><span>See your estimated monthly payments and total costs.</span></a>
