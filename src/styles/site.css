@@ -604,3 +604,7 @@ a.button-link:focus-visible, button:focus-visible,
   .article-body table {font-size:.88rem}
   .article-body table :is(th,td) {padding:.5rem .65rem}
 }
+
+/* Table scrolling belongs to the focusable region, not an unfocusable table. */
+.article-body .table-wrap {max-width:100%;min-width:0;overflow-x:auto}
+.article-body .table-wrap table {display:table;width:max-content;min-width:100%;max-width:none;overflow:visible}
