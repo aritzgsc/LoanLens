@@ -1,7 +1,9 @@
 export const siteName = import.meta.env.PUBLIC_SITE_NAME?.trim() || 'LoanLens';
 export const author = {name:'{{AUTHOR_NAME}}',bio:'{{AUTHOR_BIO}}'};
 export const contact = '{{CONTACT_EMAIL}}';
-export const publisher = import.meta.env.PUBLIC_ADSENSE_CLIENT || '';
+// Public AdSense publisher ID. Production can override it with a valid ID.
+const publisherOverride = (import.meta.env.PUBLIC_ADSENSE_CLIENT || '').trim();
+export const publisher = /^ca-pub-\d+$/.test(publisherOverride) ? publisherOverride : 'ca-pub-8177969374546909';
 export const validPublisher = /^ca-pub-\d+$/.test(publisher);
 export const partnerOffersEnabled = import.meta.env.PUBLIC_PARTNER_OFFERS === 'true';
 export const partnerOfferUrl = import.meta.env.PUBLIC_PARTNER_OFFER_URL || '';
