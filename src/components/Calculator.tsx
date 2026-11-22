@@ -136,7 +136,7 @@ export default function Calculator() {
       <button type="button" class="secondary wizard-example" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');requestAnimationFrame(()=>resultHeading.current?.focus());}}>Use example borrower</button>
     </div>
       <nav aria-label="Calculator steps" class="steps">{steps.map((label,i)=><button type="button" key={label} class={step===i?'current':''} aria-current={step===i?'step':undefined} onClick={()=>go(i)}><span>{i+1}</span>{label}</button>)}</nav>
-      <form key={version} onSubmit={e=>{e.preventDefault();if(e.currentTarget.querySelector('[aria-invalid="true"]')) {setMessage('Correct the highlighted values before continuing.');return;}
+      <form key={version} onSubmit={e=>{e.preventDefault();const firstInvalid=e.currentTarget.querySelector<HTMLInputElement>('[aria-invalid="true"]');if(firstInvalid) {setMessage('Correct the highlighted values before continuing.');firstInvalid.focus();return;}
         if(step===0&&!hasBalance) {setMessage('Enter at least one positive loan balance.');return;}
         if(step<2) go(step+1); else if(!hasBalance || !monthOk(input.start)) {setMessage('Enter a positive loan balance and valid projection start month.');}
         else {setSubmitted(true);setMessage('Comparison updated.');requestAnimationFrame(()=>resultHeading.current?.focus());}}}>

@@ -232,6 +232,14 @@ try {
             await page.getByRole('button', { name: /Loans/ }).click();
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
+            if (colorScheme==='light' && width===390) {
+              const rate=page.getByRole('group',{name:'Loan 1'}).getByRole('textbox',{name:'Annual interest rate'});
+              await rate.fill('101');
+              await page.getByRole('button',{name:'Continue'}).click();
+              if (await rate.getAttribute('aria-invalid')!=='true' || !(await rate.evaluate(el=>el===document.activeElement)))
+                throw new Error('Invalid calculator input did not regain focus');
+              await page.getByRole('button',{name:'Reset',exact:true}).click();
+            }
           }
           if (route === '/tools/compare-college-aid-offers/') {
             const cost = page.getByRole('group', { name: 'School A', exact: true })
@@ -327,6 +335,8 @@ try {
                '/advertising/','/disclaimer/','/terms/','/accessibility/'].includes(route)) {
             const article=page.locator('.trust-article');
             const navigation=page.getByRole('navigation',{name:'Useful policies and information'});
+            if (route==='/contact/' && await page.locator('.contact-option').count()!==3)
+              throw new Error('Contact page reporting options are missing');
             if (await article.count()!==1 || await navigation.count()!==1)
               throw new Error('Missing compact trust page layout');
             if (!(await navigation.isVisible()))
