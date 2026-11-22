@@ -249,8 +249,8 @@ try {
           if (route === '/tools/married-rap-impact/') {
             const income = page.getByLabel('Your adjusted gross income');
             await income.fill('56000');
-            await income.blur();
-            await page.getByText('$56,000').waitFor();
+            await income.press('Tab');
+            if (await income.inputValue() !== '$56,000') throw new Error('Income field did not format the edited amount');
             const issues = await page.evaluate(fieldRowAlignment);
             if (issues.length) throw new Error('Married RAP: ' + issues.join('; '));
             if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-edited');
@@ -264,14 +264,14 @@ try {
           if (route === '/tools/pslf-payment-tracker/') {
             const certified = page.getByLabel(/Certified qualifying payments for one loan/);
             await certified.fill('120');
-            await certified.blur();
+            await certified.press('Tab');
             await page.getByText(/Payment count reached/).waitFor();
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-completed');
           }
           if (route === '/rap-payment-by-income/') {
             const dependents = page.getByLabel(/Dependents claimed on your return/);
             await dependents.fill('2');
-            await dependents.blur();
+            await dependents.press('Tab');
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
           }
