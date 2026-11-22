@@ -1,0 +1,77 @@
+---
+import { goalPaths } from '../lib/goal-paths';
+type Props={id:string;mode:'tools'|'guides'};
+const {id,mode}=Astro.props;
+const primary = goalPaths.slice(0,4);
+const specialized = goalPaths.slice(4);
+---
+<section id={id} class="goal-finder" data-goal-finder aria-labelledby={id+'-title'}>
+  <div class="goal-heading">
+    <div>
+      <span class="eyebrow">Start with your situation</span>
+      <h2 id={id+'-title'}>What are you trying to figure out?</h2>
+      <p>You do not need to know which loan program or calculator you want. Choose a situation and we will show you a sensible starting point.</p>
+    </div>
+    <span class="goal-privacy">No sign-in · No financial information requested</span>
+  </div>
+  <div class="goal-finder-layout">
+    <div class="goal-chooser" aria-label="Choose your situation">
+      <div class="goal-choices">
+        {primary.map((goal,i) => <button type="button"
+            class:list={['goal-choice',{'is-selected':i===0}]}
+            data-goal-choice={goal.id}
+            aria-pressed={i===0}
+            aria-controls={id+'-'+goal.id}>
+          <span>{goal.choice}</span><span aria-hidden="true" class="goal-choice-arrow">↗</span>
+        </button>)}
+      </div>
+      <details class="goal-more">
+        <summary>My situation is more specific <span aria-hidden="true">+</span></summary>
+        <div class="goal-choices goal-choices-more">
+          {specialized.map(goal => <button type="button" class="goal-choice"
+              data-goal-choice={goal.id}
+              aria-pressed="false"
+              aria-controls={id+'-'+goal.id}>
+            <span>{goal.choice}</span><span aria-hidden="true" class="goal-choice-arrow">↗</span>
+          </button>)}
+        </div>
+      </details>
+    </div>
+    <div class="goal-detail" aria-live="polite" aria-atomic="true">
+      {goalPaths.map((goal,i) => {
+        const toolFirst=mode==='tools'&&goal.first==='tool';
+        return <article id={id+'-'+goal.id} class="goal-result" data-goal-panel={goal.id} hidden={i!==0}>
+          <span class="goal-result-kicker">Your starting point · {goal.stage}</span>
+          <h3>{goal.title}</h3>
+          <p class="goal-situation">{goal.situation}</p>
+          <dl class="goal-requirements">
+            <div><dt>What you need</dt><dd>{goal.needed}</dd></div>
+            <div><dt>What you will get</dt><dd>{goal.takeaway}</dd></div>
+          </dl>
+          <p class="goal-limit"><strong>Good to know:</strong> {goal.limitation}</p>
+          <div class="goal-actions">
+            {toolFirst
+              ? <><a class="primary button-link" href={goal.toolUrl}>{goal.toolLabel}</a><a class="goal-guide-link" href={goal.guideUrl}>{goal.guideLabel} →</a></>
+              : <><a class="primary button-link" href={goal.guideUrl}>{goal.guideLabel}</a><a class="goal-guide-link" href={goal.toolUrl}>{goal.toolLabel} →</a></>}
+          </div>
+        </article>;
+      })}
+    </div>
+  </div>
+  <p class="goal-bottom">None of these exactly? <a href={mode==='tools'?'#browse-tools':'#browse-guides'}>See every {mode==='tools'?'tool':'guide'}</a> or try the search below.</p>
+</section>
+<script>
+  for (const root of document.querySelectorAll<HTMLElement>('[data-goal-finder]')) {
+    const buttons=[...root.querySelectorAll<HTMLButtonElement>('[data-goal-choice]')];
+    const panels=[...root.querySelectorAll<HTMLElement>('[data-goal-panel]')];
+    buttons.forEach(button => button.addEventListener('click',()=>{
+      const choice=button.dataset.goalChoice;
+      buttons.forEach(item=>{
+        const selected=item===button;
+        item.setAttribute('aria-pressed',String(selected));
+        item.classList.toggle('is-selected',selected);
+      });
+      panels.forEach(panel=>{panel.hidden=panel.dataset.goalPanel!==choice;});
+    }));
+  }
+</script>
