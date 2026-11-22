@@ -10,6 +10,8 @@ const ogImage = new URL('/og/'+og+'.png',root);
 const noindex = draft || robotsNoIndex || Astro.url.pathname.startsWith('/404');
 const guides = await visible();
 const trust = trustLinks.filter(([slug])=>guides.some(entry=>entry.id===slug && entry.data.category==='trust'));
+const footerAbout = trust.filter(([slug])=>['about','contact','editorial-policy','sources'].includes(slug));
+const footerPolicies = trust.filter(([slug])=>['privacy','terms','disclaimer','accessibility','advertising'].includes(slug));
 const segments = Astro.url.pathname.split('/').filter(Boolean);
 const slug = segments[0];
 const navigation = [['/calculator/','Calculator'], ['/deadlines/','Deadlines'], ['/tools/','Tools'], ['/guides/','Guides']] as const;
@@ -86,13 +88,42 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
     {segments.length>0 && <nav class="crumbs" aria-label="Breadcrumb"><ol>{breadcrumb.map((b,i)=><li>{i===breadcrumb.length-1?<span aria-current="page">{b.title}</span>:<a href={b.url}>{b.title}</a>}</li>)}</ol></nav>}
     <slot />
   </main>
-  <footer class="site-footer"><div class="shell">
-    <nav aria-label="Footer" class="footer-links"><a href="/guides/faq/">Questions &amp; answers</a>{trust.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
-      {cmpUrl && <button class="text-button" type="button" data-ad-privacy>Advertising privacy choices</button>}
-    </nav>
-    <p>{siteName} is an independent educational resource. Estimates are for planning and do not constitute financial, tax, or legal advice.</p>
-    <p><a href="https://studentaid.gov/loan-simulator/">Federal Student Aid Loan Simulator</a></p>
-  </div></footer>
+  <footer class="site-footer">
+    <div class="shell">
+      <div class="footer-main">
+        <div class="footer-intro">
+          <a class="footer-brand" href="/" aria-label="LoanLens home">
+            <img src="/icon.svg" width="38" height="38" alt="" /><span>{siteName}</span>
+          </a>
+          <p>Student loan decisions become clearer when the numbers make sense. Free calculators, practical guides and transparent assumptions.</p>
+          <a href="/calculator/" class="footer-action">Open loan calculator <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="footer-menus">
+          <nav class="footer-menu" aria-label="Explore LoanLens">
+            <h2>Explore</h2>
+            <a href="/calculator/">Loan calculator</a>
+            <a href="/deadlines/">Repayment deadlines</a>
+            <a href="/tools/">All tools</a>
+            <a href="/guides/">Guides</a>
+            <a href="/guides/faq/">Common questions</a>
+          </nav>
+          <nav class="footer-menu" aria-label="About LoanLens">
+            <h2>About LoanLens</h2>
+            {footerAbout.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
+          </nav>
+          <nav class="footer-menu" aria-label="Legal and transparency">
+            <h2>Legal &amp; transparency</h2>
+            {footerPolicies.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
+            {cmpUrl && <button class="footer-privacy" type="button" data-ad-privacy>Advertising privacy choices</button>}
+          </nav>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>Independent educational information, not financial, tax or legal advice. LoanLens is not a government service or lender.</p>
+        <a href="https://studentaid.gov/loan-simulator/" rel="noopener noreferrer">Official Federal Student Aid simulator <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </footer>
   {cmpUrl && <script src="/ads-consent.js" defer is:inline></script>}
 </body>
 </html>
