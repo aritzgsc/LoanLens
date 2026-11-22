@@ -4,19 +4,39 @@ import { toolLinks } from '../../lib/site';
 
 const aidPath = '/tools/compare-college-aid-offers/';
 const toolGroups = [
-  { title: 'Before you borrow', tools: toolLinks.filter(([url]) => url === aidPath) },
-  { title: 'While you repay', tools: [
+  { title: 'Before you borrow', description: 'Compare college costs after grants, scholarships, and planned loans.', tools: toolLinks.filter(([url]) => url === aidPath) },
+  { title: 'While you repay', description: 'Explore payment projections, deadlines, and the records to verify with your loan servicer.', tools: [
     ['/calculator/', 'Compare repayment plans', 'Estimate monthly payments, lifetime costs, and potential forgiveness.'],
     ...toolLinks.filter(([url]) => url !== aidPath),
   ] },
 ];
 ---
-<Base title="Student loan tools" description="Compare college financial aid offers, estimate repayment costs, and check federal student loan deadlines and forgiveness progress." og="tools">
-  <header class="hero"><h1>Student loan tools</h1><p>Choose a tool for the decision you are making today.</p></header>
+<Base title="Free Student Loan Calculators & Planning Tools" description="Explore free tools for federal student loan payment estimates, college financial aid offers, repayment timelines, and forgiveness progress." og="tools">
+  <header class="hero">
+    <span class="eyebrow">Free planning tools</span>
+    <h1>Student loan calculators and tools</h1>
+    <p>Pick the question you need to answer. Start with your own figures or a sample scenario, then check the results against official records.</p>
+    <div class="page-intro-links">
+      <a href="/calculator/">Open repayment calculator</a>
+      <a href="/guides/">Read the guides</a>
+    </div>
+  </header>
   {toolGroups.map(group => <section class="tool-directory">
-    <h2>{group.title}</h2>
+    <div class="home-section-intro">
+      <h2>{group.title}</h2>
+      <p>{group.description}</p>
+    </div>
     <div class="guide-grid">
-      {group.tools.map(([url, title, description]) => <a class="guide-link" href={url}><strong>{title}</strong><span>{description}</span></a>)}
+      {group.tools.map(([url, title, description]) => <a class="guide-link" href={url}>
+        <strong>{title}</strong>
+        <span>{description}</span>
+      </a>)}
     </div>
   </section>)}
+  <section class="home-note">
+    <div>
+      <strong>Know what the estimate can—and cannot—tell you.</strong>
+      <p>These tools are for education and planning, not official account eligibility, loan applications, or financial advice. Start at <a href="https://studentaid.gov/">Federal Student Aid</a> when you need to verify your actual loan details.</p>
+    </div>
+  </section>
 </Base>

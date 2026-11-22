@@ -1,7 +1,15 @@
 ---
 import Base from '../layouts/Base.astro';
 import CalculatorPage from '../components/CalculatorPage.astro';
-const title='RAP calculator';
-const description='Estimate your Repayment Assistance Plan payment and compare it with the other student loan plans available to you.';
+const title='Federal Student Loan Repayment Calculator';
+const description='Estimate federal student loan monthly payments and compare projected total repayment costs, timelines, and forgiveness assumptions with LoanLens.';
 ---
-<Base {title} {description} kind="WebApplication" og="calculator"><CalculatorPage {title} {description}/></Base>
+<Base {title} {description} kind="WebApplication" og="calculator">
+  <CalculatorPage {title} {description}/>
+  <section class="home-note" aria-labelledby="calculator-context">
+    <div>
+      <h2 id="calculator-context">What to check after you compare</h2>
+      <p>Use the same balances and interest rates to compare scenarios. These are estimates, not eligibility decisions or official payment quotes. Confirm your available repayment options and any required actions with <a href="https://studentaid.gov/articles/repayment-calculator/">Federal Student Aid's Repayment Calculator</a> and your loan servicer.</p>
+    </div>
+  </section>
+</Base>
