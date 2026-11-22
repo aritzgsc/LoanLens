@@ -1,22 +1,32 @@
 ---
-title: "LoanLens sources"
-description: "Find the official sources used for repayment plans, poverty guidelines, PSLF and forgiveness taxes."
+title: "Official Sources Behind LoanLens Estimates"
+description: "Explore primary sources for U.S. federal repayment plans, RAP, IBR, PSLF, poverty guidelines and college aid."
 category: "trust"
-status: "draft"
+status: "reviewed"
+reviewed: "2026-11-22"
 verified: "2026-11-22"
 updated: "2026-11-22"
 ---
 
-## Repayment and forgiveness
+LoanLens is an independent planning tool. Its rules and examples should be checked against primary publications, especially when loan disbursement dates or repayment rules are important to your decision.
 
-- [Federal student loan repayment plans](https://studentaid.gov/manage-loans/repayment/plans)
-- [Department of Education final repayment regulations](https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm)
-- [SAVE transition guidance](https://studentaid.gov/articles/save/)
-- [Federal Student Aid’s PSLF program](https://studentaid.gov/manage-loans/forgiveness-cancellation/public-service)
+## Federal repayment plans
 
-## Income and taxes
+- [Federal Student Aid: Repayment Plans](https://studentaid.gov/manage-loans/repayment/plans) — official plan descriptions and qualification considerations.
+- [Federal Student Aid: Top FAQs on Income-Driven Repayment](https://studentaid.gov/articles/faqs-idr-plan/) — loan types, dates and RAP/IBR considerations.
+- [Federal Student Aid: Repayment Calculator](https://studentaid.gov/articles/repayment-calculator/) — official comparison resource.
+- [Federal Student Aid: SAVE borrower transition](https://studentaid.gov/articles/save/) — current SAVE transition guidance.
+- [2026 U.S. Department of Education repayment regulations](https://www.govinfo.gov/content/pkg/FR-2026-05-01/html/2026-08556.htm) — regulatory details used in the model.
 
-- [HHS poverty guidelines](https://aspe.hhs.gov/poverty-guidelines/)
-- [IRS Publication 4681](https://www.irs.gov/publications/p4681)
+## Forgiveness, income and other costs
 
-Dates and modeling assumptions appear in the calculator and affected guides. Verify your individual record through [Federal Student Aid](https://studentaid.gov/) or your loan servicer.
+- [Federal Student Aid: Public Service Loan Forgiveness](https://studentaid.gov/manage-loans/forgiveness-cancellation/public-service) — program requirements and tracking.
+- [U.S. Department of Health and Human Services: Poverty Guidelines](https://aspe.hhs.gov/poverty-guidelines/) — reference tables for income-driven plan calculations.
+- [Federal Student Aid: Evaluating Financial Aid Offers](https://studentaid.gov/articles/evaluating-financial-aid-offers/) — cost of attendance, aid and net-price considerations.
+- [Internal Revenue Service: Publication 4681](https://www.irs.gov/publications/p4681) — cancellation of debt and potential tax implications.
+
+## Inspect the inputs and assumptions
+
+The public repository contains the [rule values and their verification status](https://github.com/aritzgsc/LoanLens/blob/main/src/data/rules.json), [data-source inventory](https://github.com/aritzgsc/LoanLens/blob/main/docs/DATA_SOURCES.md) and [projection assumptions](https://github.com/aritzgsc/LoanLens/blob/main/docs/ASSUMPTIONS.md). Some operational details and future changes may remain **unverified**.
+
+**An official source citation does not make a LoanLens calculation an official account quote.** Confirm account-specific requirements with your servicer.
