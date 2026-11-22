@@ -7,9 +7,6 @@ const [origin = 'http://localhost:4321', output = 'audit-artifacts', dist = 'dis
 const reportDir = resolve(output);
 const widths = [320, 390, 768, 1024, 1440];
 const heights = { 320: 740, 390: 844, 768: 1024, 1024: 768, 1440: 900 };
-const routes = ['/', '/calculator/', '/deadlines/', '/tools/', '/tools/married-rap-impact/',
-  '/tools/compare-college-aid-offers/', '/guides/compare-college-financial-aid-offers/', '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
-  '/guides/', '/guides/compare-student-loan-repayment/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
 const routeName = path => path === '/' ? 'home' : path.slice(1, -1).replaceAll('/', '--');
 const allPages = (await readdir(resolve(dist), { recursive: true }))
   .map(path => path.replaceAll('\\', '/'))
