@@ -8,6 +8,9 @@ export async function image(title:string) {
     if(last && last.length + 1 + word.length <= 22) lines[lines.length-1]=last+' '+word;
     else lines.push(word);
   }
+  const fontSize = lines.length >= 6 ? 44 : lines.length === 5 ? 51 : 58;
+  const firstLineY = lines.length >= 5 ? 205 : 244;
+  const lineHeight = Math.round(fontSize * 1.22);
   const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
     <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#eaf8f0"/><stop offset=".7" stop-color="#ffffff"/><stop offset="1" stop-color="#f7f7ee"/></linearGradient></defs>
     <rect width="1200" height="630" fill="#fafcfb"/>
@@ -18,7 +21,7 @@ export async function image(title:string) {
     <circle cx="1050" cy="298" r="13" fill="#0b7668" opacity=".7"/>
     <rect x="92" y="100" width="10" height="42" rx="5" fill="#0b7668"/>
     <text x="120" y="134" fill="#0b7668" font-size="31" font-weight="700" font-family="sans-serif">${escape(siteName)}</text>
-    <text fill="#203b34" font-size="58" font-weight="700" letter-spacing="-1" font-family="sans-serif">${lines.slice(0,4).map((line,i)=>`<tspan x="105" y="${244+i*77}">${escape(line)}</tspan>`).join('')}</text>
+    <text fill="#203b34" font-size="${fontSize}" font-weight="700" letter-spacing="-1" font-family="sans-serif">${lines.slice(0,7).map((line,i)=>`<tspan x="105" y="${firstLineY+i*lineHeight}">${escape(line)}</tspan>`).join('')}</text>
   </svg>`;
   return new Uint8Array(await sharp(Buffer.from(svg)).png().toBuffer());
 }

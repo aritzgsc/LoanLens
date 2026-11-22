@@ -43,10 +43,26 @@ function compare(offers: Offer[]) {
   return { errors, results: Object.keys(errors).length ? null : results };
 }
 
+function interpretOffers(results:Results) {
+  const [first,second]=results;
+  const comparisons = [
+    ['annual net price','netPrice'],
+    ['remaining gap after planned loans','gapAfterLoans'],
+    ['planned borrowing','borrowed'],
+  ] as const;
+  return comparisons.map(([description,key]) => {
+    const a=first[key],b=second[key];
+    if (a===b) return {key,description,text:'The two schools are equal on this measure.'};
+    const lower=a<b?'School A':'School B';
+    return {key,description,text:lower+' has '+formatUSD(Math.abs(a-b)/100)+' less '+description+' in this one-year example.'};
+  });
+}
+
 export default function CollegeAidComparison() {
   const [offers, setOffers] = useState<Offer[]>([emptyOffer, emptyOffer]);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [results, setResults] = useState<Results | null>(null);
+  const insights=results ? interpretOffers(results) : [];
 
   function calculate(values: Offer[]) {
     const next = compare(values);
@@ -66,7 +82,7 @@ export default function CollegeAidComparison() {
       setResults(null);
       setErrors({});
     }}>
-      <p id="aid-input-help">Enter amounts for the same academic year. Leave an optional amount blank to count it as zero.</p>
+      <p id="aid-input-help">Use the same academic year for both schools. Enter total annual costs; list grants and scholarships separately from any loans you plan to accept. Leave an optional amount blank to count it as zero.</p>
       <div class="result-grid">
         {schools.map((school, index) => <fieldset class="loan-row" key={school}>
           <legend>{school}</legend>
@@ -118,6 +134,18 @@ export default function CollegeAidComparison() {
             </dl>
           </section>)}
         </div> : <p>Compare two offers to see what you may have left to cover.</p>}
+        {results && <section class="aid-insights card" aria-labelledby="aid-insights-heading">
+          <span class="eyebrow">What these figures tell you</span>
+          <h3 id="aid-insights-heading">The differences that matter</h3>
+          <div class="aid-insight-grid">
+            {insights.map(insight=><div class="aid-insight" key={insight.key}>
+              <strong>{insight.description}</strong>
+              <p>{insight.text}</p>
+            </div>)}
+          </div>
+          <p class="aid-insights-note">A smaller gap after borrowing does not necessarily mean a lower price: loans still need to be repaid. These figures are for one academic year and do not include future changes to aid or costs.</p>
+          <a href="/guides/compare-college-financial-aid-offers/">Learn how to interpret an aid offer →</a>
+        </section>}
       </div>
     </section>
   </>;

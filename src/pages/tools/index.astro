@@ -1,42 +1,66 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { toolLinks } from '../../lib/site';
-
-const aidPath = '/tools/compare-college-aid-offers/';
-const toolGroups = [
-  { title: 'Before you borrow', description: 'Compare college costs after grants, scholarships, and planned loans.', tools: toolLinks.filter(([url]) => url === aidPath) },
-  { title: 'While you repay', description: 'Explore payment projections, deadlines, and the records to verify with your loan servicer.', tools: [
-    ['/calculator/', 'Compare repayment plans', 'Estimate monthly payments, lifetime costs, and potential forgiveness.'],
-    ...toolLinks.filter(([url]) => url !== aidPath),
-  ] },
+import ResourceExplorer from '../../components/ResourceExplorer.astro';
+const resources = [
+  {href:'/tools/compare-college-aid-offers/',title:'Compare two college aid offers',description:'Place costs, grants, scholarships and planned loans side by side. See the gap left after borrowing.',kind:'College costs',detail:'Side-by-side comparison',topic:'college',featured:true},
+  {href:'/calculator/',title:'Compare student loan repayment plans',description:'Model payments, total paid, loan balances and repayment time from a single scenario.',kind:'Repayment',detail:'Three-step calculator',topic:'repayment',featured:true},
+  {href:'/rap-payment-by-income/',title:'Explore RAP payments by income',description:'See how income ranges and claimed dependents affect illustrative starting RAP payments.',kind:'Repayment',detail:'Income reference table',topic:'repayment'},
+  {href:'/tools/married-rap-impact/',title:'Estimate married RAP payment impact',description:'Explore household AGI, separate and joint filing, and eligible debt allocation.',kind:'Household',detail:'Two-scenario estimate',topic:'repayment'},
+  {href:'/deadlines/',title:'Check repayment transition dates',description:'Review important plan timelines and estimate a date from your actual notice.',kind:'Timeline',detail:'Date helper',topic:'repayment'},
+  {href:'/tools/pslf-payment-tracker/',title:'Track remaining PSLF payments',description:'Use an official qualifying-payment count to estimate a milestone month.',kind:'Forgiveness',detail:'Milestone tracker',topic:'forgiveness'},
+  {href:'/tools/parent-plus-consolidation-checker/',title:'Explore Parent PLUS options',description:'Follow a question-based check of consolidation timing and what to confirm with your servicer.',kind:'Special cases',detail:'Guided checklist',topic:'special'},
+];
+const topics=[
+  {value:'college',label:'Before college'},
+  {value:'repayment',label:'Repayment'},
+  {value:'forgiveness',label:'Forgiveness'},
+  {value:'special',label:'Special cases'},
 ];
 ---
-<Base title="Free Student Loan Calculators & Planning Tools" description="Explore free tools for federal student loan payment estimates, college financial aid offers, repayment timelines, and forgiveness progress." og="tools">
-  <header class="hero">
-    <span class="eyebrow">Free planning tools</span>
-    <h1>Student loan calculators and tools</h1>
-    <p>Pick the question you need to answer. Start with your own figures or a sample scenario, then check the results against official records.</p>
-    <div class="page-intro-links">
-      <a href="/calculator/">Open repayment calculator</a>
-      <a href="/guides/">Read the guides</a>
+<Base title="Free Student Loan Tools and College Cost Calculators" description="Choose the right free LoanLens tool: compare college costs, student loan repayment plans, RAP payments, deadlines or PSLF progress." og="tools">
+  <header class="resource-hero">
+    <div class="resource-hero-copy">
+      <span class="eyebrow">LoanLens toolkit</span>
+      <h1>Make the numbers easier to understand.</h1>
+      <p>Every tool answers a practical question. Pick your goal, enter the information you know, and see what it means—with the assumptions kept visible.</p>
+      <div class="hero-actions">
+        <a class="primary button-link" href="#browse-tools">Find a tool</a>
+        <a class="secondary button-link" href="/guides/">Learn the basics first</a>
+      </div>
+      <p class="hero-microcopy">Free · No account required · Independent educational estimates</p>
+    </div>
+    <div class="resource-hero-aside" aria-label="How to use LoanLens tools">
+      <span class="resource-aside-kicker">A clear path from question to action</span>
+      <ol class="resource-steps">
+        <li><span>01</span><div><strong>Choose your question</strong><p>Compare costs, estimate repayment or check a milestone.</p></div></li>
+        <li><span>02</span><div><strong>Try real or example numbers</strong><p>Look at the result and check the warnings.</p></div></li>
+        <li><span>03</span><div><strong>Verify before acting</strong><p>Confirm eligibility and account details with official sources.</p></div></li>
+      </ol>
     </div>
   </header>
-  {toolGroups.map(group => <section class="tool-directory">
-    <div class="home-section-intro">
-      <h2>{group.title}</h2>
-      <p>{group.description}</p>
+
+  <section id="browse-tools" class="resource-section" aria-labelledby="browse-tools-title">
+    <div class="resource-section-head">
+      <div><span class="eyebrow">Explore the tools</span><h2 id="browse-tools-title">Find the right starting point</h2></div>
+      <p>Search by goal or filter by topic. Each tool explains the inputs it needs and what its result can tell you.</p>
     </div>
-    <div class="guide-grid">
-      {group.tools.map(([url, title, description]) => <a class="guide-link" href={url}>
-        <strong>{title}</strong>
-        <span>{description}</span>
-      </a>)}
-    </div>
-  </section>)}
-  <section class="home-note">
+    <ResourceExplorer label="Browse LoanLens planning tools" items={resources} topics={topics} placeholder="Try: aid offers, monthly payment, PSLF…" />
+  </section>
+
+  <section class="resource-split" aria-labelledby="tools-before-title">
     <div>
-      <strong>Know what the estimate can—and cannot—tell you.</strong>
-      <p>These tools are for education and planning, not official account eligibility, loan applications, or financial advice. Start at <a href="https://studentaid.gov/">Federal Student Aid</a> when you need to verify your actual loan details.</p>
+      <span class="eyebrow">Before you start</span>
+      <h2 id="tools-before-title">Have the right numbers handy.</h2>
+      <p>You can test a hypothetical scenario first. For a more useful estimate, check your records rather than guessing.</p>
     </div>
+    <div class="resource-prep-grid">
+      <article class="resource-prep"><strong>Comparing colleges?</strong><p>Find each school's cost of attendance, grants, scholarships, and loans you expect to accept.</p><a href="/guides/compare-college-financial-aid-offers/">How to read an award letter</a></article>
+      <article class="resource-prep"><strong>Already have loans?</strong><p>Find the balance, annual interest rate, loan type, and payment history for each loan.</p><a href="/guides/compare-student-loan-repayment/">What to compare in a plan</a></article>
+    </div>
+  </section>
+
+  <section class="resource-note" aria-label="Important limitation">
+    <strong>Your result is a starting point, not an eligibility decision.</strong>
+    <p>LoanLens does not connect to your loan account or submit applications. Rules change and some calculations use approximations. Check the <a href="/sources/">sources and assumptions</a> and compare with the <a href="https://studentaid.gov/articles/repayment-calculator/">official Federal Student Aid Repayment Calculator</a>.</p>
   </section>
 </Base>

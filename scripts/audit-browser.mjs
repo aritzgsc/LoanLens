@@ -218,6 +218,10 @@ try {
               .getByText('$12,500.00', { exact: true }).waitFor();
             await page.getByRole('region', { name: 'School B', exact: true })
               .getByText('$13,000.00', { exact: true }).waitFor();
+            await page.getByRole('heading',{name:'The differences that matter'}).waitFor();
+            const insights=page.locator('.aid-insight');
+            if (await insights.count() !== 3) throw new Error('Missing aid comparison insights');
+            if (!(await page.locator('.aid-insights').innerText()).includes('$1,000.00')) throw new Error('Expected $1,000 net price difference');
             await capture(prefix + '-example');
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
@@ -286,6 +290,29 @@ try {
             await dependents.press('Tab');
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
+          }
+          if (route === '/tools/' || route === '/guides/') {
+            const search=page.locator('[data-resource-search]');
+            await search.fill('pslf');
+            const visibleCards=page.locator('[data-resource-card]:visible');
+            if (await visibleCards.count() !== 1) throw new Error('Resource search did not narrow to one PSLF item on '+route);
+            await search.fill('nothing-matches-this-test');
+            await page.getByText('No matching resources.').waitFor();
+            await page.getByRole('button',{name:'Clear filters'}).click();
+            if (await search.inputValue() !== '') throw new Error('Resource clear did not reset search input');
+            const matching=await visibleCards.count();
+            if (matching < (route === '/guides/' ? 6 : 7)) throw new Error('Not all directory cards visible after clear: '+matching);
+            const selected=route==='/guides/'?'Choosing a college':'Before college';
+            await page.getByRole('button',{name:selected,exact:true}).click();
+            const topicCount=await visibleCards.count();
+            if (topicCount !== (route==='/guides/'?2:1)) throw new Error('Topic filter returned incorrect count: '+topicCount);
+            await page.getByRole('button',{name:'All topics'}).click();
+            if (colorScheme==='light' && [320,390,1440].includes(width)) await capture(prefix+'-directory');
+          }
+          if (route === '/guides/student-loan-interest-explained/') {
+            const nav=page.getByRole('navigation',{name:'On this page'});
+            await nav.getByRole('link').first().click();
+            if (!new URL(page.url()).hash) throw new Error('Article on-page contents did not navigate to a heading');
           }
           if (route === '/') {
             const item = page.locator('.home-question-list details').first();
