@@ -61,10 +61,10 @@ The production project is `loan-lens` in the `aritz-gsc` team. Its canonical hos
 - `vercel.json` is the source of Vercel HTTP headers and legacy redirects. The Cloudflare-only files in `public/_headers` and `public/_redirects` are not authoritative on Vercel.
 - The AdSense public IDs are already in the code. **No ads load unless a valid, verified Google-certified CMP is connected using `PUBLIC_GOOGLE_CMP_URL` and the required consent conditions are met.** The code is not a substitute for approval by AdSense.
 - A Vercel deployment showing READY only confirms that a build deployed; it does **not** mean AdSense approved the site. The adult account holder must verify the site in AdSense. Monetization also requires a Vercel plan that permits commercial use or another compliant host.
-- The About, Contact, Editorial policy, Terms, Sources and other draft pages require genuine editorial review before they can go live. Never fill missing author/contact details with invented values.
+- About, Contact (public correction reports only), Editorial Policy, Sources and Disclaimer publish under the independent LoanLens name without inventing a company or author. Terms and other unreviewed guides remain drafts. Before commercial advertising, verify the legal and privacy transparency obligations that apply to the real publisher; a private contact route is not yet offered.
 
 ### Verification after each production deploy
 
 Check the live canonical, `/robots.txt`, `/ads.txt`, and `/sitemap-index.xml`, and run the GitHub Actions workflow. Review the current AdSense site status and European consent configuration before relying on ads.
 
-For the account-holder setup and checklist, see [the Spanish AdSense and SEO guide](docs/ADSENSE_SEO_VERCEL.md) and [the launch checklist](docs/LAUNCH_CHECKLIST.md).
+For the account-holder setup and checklist, see [the Spanish AdSense and SEO guide](docs/ADSENSE_SEO_VERCEL.md), [the calculation audit](docs/CALCULATION_AUDIT_2026-11-22.md), and [the launch checklist](docs/LAUNCH_CHECKLIST.md).
