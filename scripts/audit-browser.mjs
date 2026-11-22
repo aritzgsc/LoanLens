@@ -141,6 +141,22 @@ try {
               }).filter(item => item && item.ratio < 4.5);
           });
           if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
+          if (route === '/') {
+            const menu = page.locator('[data-mobile-nav]');
+            if (width <= 720) {
+              if (!(await menu.isVisible()) || await page.locator('.site-nav').isVisible())
+                throw new Error('Compact navigation is not active on small screens');
+              await menu.locator('summary').click();
+              await menu.getByRole('navigation',{name:'Mobile navigation'}).getByRole('link',{name:'Guides',exact:true}).waitFor();
+              if (await menu.locator('a:visible').count() < 5)
+                throw new Error('Mobile navigation is missing destinations');
+              await menu.locator('summary').press('Escape');
+              if (await menu.evaluate(element=>element.open))
+                throw new Error('Escape did not dismiss the mobile navigation');
+            } else if (await menu.isVisible()) {
+              throw new Error('Mobile navigation should be hidden at desktop widths');
+            }
+          }
           const visualIssues = await page.evaluate(visualGeometry);
           if (visualIssues.length) throw new Error('Visual layout: ' + visualIssues.join('; '));
           // Validate the actual generated social images and icons from the local build.
@@ -186,6 +202,13 @@ try {
             await page.getByRole('button', { name: /Loans/ }).click();
             await page.evaluate(() => globalThis.scrollTo(0, 0));
             await capture(prefix + '-example');
+            if (width<=390) {
+              const chartInfo=await page.locator('.chart-scroll').first().evaluate(el=>({
+                viewport:el.clientWidth,content:el.scrollWidth
+              }));
+              if (chartInfo.content <= chartInfo.viewport+20)
+                throw new Error('Loan chart is not horizontally explorable on phones');
+            }
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
@@ -209,6 +232,14 @@ try {
             await page.getByRole('button', { name: /Loans/ }).click();
             await page.getByRole('button', { name: 'Reset', exact: true }).press('Enter');
             await page.getByText('Example borrower loaded.', { exact: true }).waitFor({ state: 'hidden' });
+            if (colorScheme==='light' && width===390) {
+              const rate=page.getByRole('group',{name:'Loan 1'}).getByRole('textbox',{name:'Annual interest rate'});
+              await rate.fill('101');
+              await page.getByRole('button',{name:'Continue'}).click();
+              if (await rate.getAttribute('aria-invalid')!=='true' || !(await rate.evaluate(el=>el===document.activeElement)))
+                throw new Error('Invalid calculator input did not regain focus');
+              await page.getByRole('button',{name:'Reset',exact:true}).click();
+            }
           }
           if (route === '/tools/compare-college-aid-offers/') {
             const cost = page.getByRole('group', { name: 'School A', exact: true })
@@ -228,6 +259,16 @@ try {
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
             });
+            // Optional school names must stay attached to their offers when swapping.
+            await page.locator('#aid-school-name-0').fill('North Valley University');
+            await page.getByRole('heading',{name:'North Valley University'}).waitFor();
+            await page.getByRole('button',{name:'Swap schools'}).click();
+            if (await page.locator('#aid-school-name-1').inputValue() !== 'North Valley University')
+              throw new Error('Swapping offers did not preserve school names');
+            if (await page.locator('#aid-result-1').count()!==1)
+              throw new Error('Swapping calculated offers should keep the results visible');
+            await page.getByRole('button',{name:'Compare offers'}).click();
+            await page.getByRole('heading',{name:'North Valley University'}).waitFor();
             // View responsive feedback/error state and validate semantic focus.
             if (colorScheme === 'light' && [320, 390, 1440].includes(width)) {
               await cost.fill('-40');
@@ -296,6 +337,8 @@ try {
                '/advertising/','/disclaimer/','/terms/','/accessibility/'].includes(route)) {
             const article=page.locator('.trust-article');
             const navigation=page.getByRole('navigation',{name:'Useful policies and information'});
+            if (route==='/contact/' && await page.locator('.contact-option').count()!==3)
+              throw new Error('Contact page reporting options are missing');
             if (await article.count()!==1 || await navigation.count()!==1)
               throw new Error('Missing compact trust page layout');
             if (!(await navigation.isVisible()))
@@ -353,6 +396,11 @@ try {
             if (await visibleCards.count() !== 1) throw new Error('Resource search did not narrow to one PSLF item on '+route);
             await search.fill('nothing-matches-this-test');
             await page.getByText('No matching resources.').waitFor();
+            if (await page.locator('.resource-filter-count').count() !== await page.locator('.resource-filter').count())
+              throw new Error('Directory topic counts are missing');
+            await page.getByRole('button',{name:'Clear search'}).click();
+            if (await search.inputValue() !== '') throw new Error('Quick search clear did not reset the query');
+            await search.fill('nothing-matches-this-test');
             await page.getByRole('button',{name:'Clear filters'}).click();
             if (await search.inputValue() !== '') throw new Error('Resource clear did not reset search input');
             const matching=await visibleCards.count();

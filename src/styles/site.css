@@ -353,43 +353,6 @@ p.support > a.button-link {
   text-align: center;
 }
 
-/* Preserve the compact single-row header on ordinary phones, but give very
-   narrow phones a clear two-row layout with usable navigation tap targets. */
-@media (max-width: 375px) {
-  .site-head .shell {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    justify-items: center;
-    gap: .3rem;
-    padding-block: .45rem .6rem;
-    width: calc(100% - 1.25rem);
-  }
-  .site-head .brand {
-    justify-self: center;
-    gap: .45rem;
-    font-size: 1.07rem;
-    min-height: 36px;
-  }
-  .site-head .brand img { display: block; width: 27px; height: 27px; }
-  .site-head .site-nav {
-    display: grid;
-    width: 100%;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: .3rem .5rem;
-    white-space: nowrap;
-  }
-  .site-head .site-nav a {
-    min-width: 0;
-    min-height: 42px;
-    padding: .4rem .55rem;
-    font-size: .88rem;
-    justify-content: center;
-    border: 1px solid #e4eee8;
-    background: #f8fbf9;
-    border-radius: 9px;
-  }
-}
-
 /* Long guidance/labels should wrap normally rather than forcing a mobile
    horizontal scrollbar. Tables remain explicitly scrollable in .table-wrap. */
 main, .wizard, .loan-row, .tool-pane, .plan, .chart, .article-body,
@@ -422,9 +385,6 @@ a.button-link:focus-visible, button:focus-visible,
   p.support > a.button-link { width: 100%; }
 }
 
-@media (max-width: 375px) {
-  .site-head .site-nav a[aria-current] {background: var(--accent-bg);border-color: #b9dec9}
-}
 
 
 /* Tools + Guides experience: deliberately scoped, preserving calculator layout. */
@@ -950,3 +910,123 @@ main:has(> .trust-page) > .crumbs{width:min(100%,1050px);margin-inline:auto}
   .trust-mobile-toc ol,.footer-menu:last-child{grid-template-columns:minmax(0,1fr)}
 }
 @media(prefers-reduced-motion:reduce){.trust-next-grid a:hover{transform:none}}
+
+/* Site-wide navigation and reading-layout polish: a compact accessible mobile menu. */
+.site-head .shell{position:relative}
+.mobile-nav{display:none}
+@media(max-width:720px){
+  .site-head .shell{display:flex;align-items:center;justify-content:space-between;flex-wrap:nowrap;gap:.8rem;min-height:64px;width:calc(100% - 1.4rem);padding-block:.45rem}
+  .site-head .brand{font-size:1.12rem;min-height:44px;gap:.55rem;flex:0 1 auto}
+  .site-head .brand img{display:block;width:30px;height:30px}
+  .site-head .site-nav{display:none}
+  .mobile-nav{display:block;flex:0 0 auto}
+  .mobile-nav>summary{list-style:none;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;min-height:44px;padding:.5rem .8rem;border:1px solid #cbded3;border-radius:11px;background:#fff;color:#254b3b;font-size:.9rem;font-weight:760;cursor:pointer;user-select:none}
+  .mobile-nav>summary::-webkit-details-marker{display:none}
+  .mobile-nav[open]>summary,.mobile-nav>summary:hover{background:#eaf7f0;border-color:#7cbea2;color:#075b52}
+  .mobile-nav-icon{display:flex;flex-direction:column;gap:4px}
+  .mobile-nav-icon>span{width:17px;height:2px;border-radius:1px;background:currentColor;transition:transform .15s ease,opacity .15s ease}
+  .mobile-nav[open] .mobile-nav-icon>span:first-child{transform:translateY(6px) rotate(45deg)}
+  .mobile-nav[open] .mobile-nav-icon>span:nth-child(2){opacity:0}
+  .mobile-nav[open] .mobile-nav-icon>span:last-child{transform:translateY(-6px) rotate(-45deg)}
+  .mobile-nav-panel{position:absolute;left:0;right:0;top:calc(100% + .2rem);z-index:20;padding:.55rem;border:1px solid #dce8de;border-radius:16px;background:#fff;box-shadow:0 18px 45px #1d443022;display:grid;gap:.16rem;max-height:calc(100dvh - 85px);overflow:auto}
+  .mobile-nav-panel a{display:flex;align-items:center;min-height:46px;padding:.7rem .9rem;border-radius:9px;text-decoration:none;font-size:1rem;font-weight:680;color:#284f3d}
+  .mobile-nav-panel a:hover,.mobile-nav-panel a:focus-visible,.mobile-nav-panel a[aria-current]{background:#eaf7f0;color:#086b60}
+  .mobile-nav-panel .mobile-nav-extra{border-top:1px solid #e5eee7;margin-top:.35rem;border-radius:0;padding-top:.8rem;font-size:.91rem;color:#466a57}
+}
+@media(prefers-reduced-motion:reduce){.mobile-nav-icon>span{transition:none}}
+/* Guide articles use the same centered rhythm as our information pages, without changing ad behavior. */
+main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1020px);margin-inline:auto}
+.editorial-frame:not(.trust-page){width:min(100%,1020px);min-width:0;margin-inline:auto}
+.editorial-frame:not(.trust-page) .hero{margin:1.2rem auto 1rem;max-width:none}
+.editorial-frame:not(.trust-page) .hero h1{max-width:24ch;text-wrap:balance;font-size:clamp(2.05rem,4vw,3.15rem)}
+.editorial-frame:not(.trust-page) .hero p{max-width:65ch;line-height:1.75}
+.editorial-frame:not(.trust-page) .article-columns{width:100%;margin:1.15rem auto 0;justify-items:center}
+.editorial-frame:not(.trust-page) .article-body{width:100%;max-width:780px;margin-inline:auto}
+.editorial-frame:not(.trust-page) .article-columns:has(.ad-slot[data-active]) .article-body{max-width:none}
+@media(max-width:650px){
+  .editorial-frame:not(.trust-page) .hero{margin-top:.85rem}
+  .editorial-frame:not(.trust-page) .article-body{border-radius:16px;padding:1.25rem 1.05rem}
+}
+/* Open/closed FAQ is apparent at a glance and remains usable with native details behavior. */
+.home-question-list summary{display:flex;align-items:center;justify-content:space-between;gap:1rem;list-style:none;min-height:44px;cursor:pointer}
+.home-question-list summary::-webkit-details-marker{display:none}
+.home-question-list summary::after{content:"+";display:grid;place-items:center;flex:0 0 30px;width:30px;height:30px;border-radius:9px;background:#eaf6ee;color:#096c55;font-size:1.4rem;line-height:1;font-weight:600}
+.home-question-list details[open]>summary::after{content:"−";background:#dceee3}
+.home-question-list details[open]{background:#fbfefa}
+.home-question-list details p{padding:.65rem 2rem .35rem 0;line-height:1.7}
+.home-question-list details summary:hover{color:#086b60}
+@media(max-width:480px){.home-question-list details{padding:.8rem 1rem}.home-question-list details p{padding-right:0}}
+
+/* Guided calculator: compact step indicators, discoverable examples and useful result highlights. */
+.wizard-top{align-items:center;gap:.85rem 1.25rem;border-bottom:1px solid #e7eee8;padding-bottom:1.1rem;margin-bottom:.2rem}
+.wizard-intro{display:grid;gap:.35rem;min-width:0;flex:1 1 300px}
+.wizard-intro .eyebrow{font-size:.76rem;letter-spacing:.07em}
+.wizard-intro p{font-size:.91rem;line-height:1.65;color:#526d5e;max-width:67ch}
+.wizard-example{flex:0 0 auto;white-space:normal;text-align:center}
+.wizard-step-caption{display:flex;align-items:center;flex-wrap:wrap;gap:.15rem .4rem;font-size:.8rem;color:#567366;letter-spacing:.005em}
+.wizard-step-caption strong{color:#076c58;font-size:.83rem}
+.wizard .steps{margin-top:1.2rem;gap:.6rem}
+.wizard .steps button{display:flex;align-items:center;gap:.5rem;justify-content:flex-start;min-width:0;padding:.65rem .75rem;font-size:.86rem;line-height:1.45}
+.wizard .steps button span{display:grid;place-items:center;min-width:28px;width:28px;height:28px;flex:0 0 28px;border-radius:9px;margin:0;font-size:.8rem;background:#eaf4ed;color:#355d48}
+.wizard .steps .current{box-shadow:inset 0 0 0 1px #086b6040}
+.wizard .steps .current span{background:#086b60;color:white}
+.wizard .actions{padding-top:.4rem;gap:.65rem}
+.results-update-hint{padding:.65rem .9rem;border:1px solid #dceae1;background:#f7fbf8;border-radius:10px;color:#4d6a5a;font-size:.88rem;line-height:1.55}
+.best-plans ul{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
+.best-plans li{border:1px solid #d6eadd;gap:.4rem;padding:1rem}
+.best-plans li strong{font-size:.92rem;color:#265241}
+.best-plans li span{font-size:.92rem;line-height:1.55}
+@media(max-width:620px){
+  .wizard-top{align-items:stretch}
+  .wizard-example{width:100%}
+  .wizard .steps{gap:.35rem}
+  .wizard .steps button{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.5rem .25rem;font-size:.78rem;min-height:66px}
+  .wizard .steps button span{width:27px;height:27px;flex-basis:27px}
+}
+
+/* Comparing real colleges: custom labels follow the correct values when reordered. */
+.aid-school-name{padding:.7rem .8rem;border:1px solid #e0eae3;border-radius:12px;background:#f8fcf9}
+.aid-school-name>span:first-child{font-weight:720;font-size:.88rem;color:#2a5340}
+.aid-school-name input{background:#fff!important}
+.field-optional{font-size:.8rem;color:#375849;font-weight:500}
+.tool-pane .actions{row-gap:.75rem}
+.tool-pane .actions .text-button{color:#4c6758}
+
+/* Search and category filters: clear affordance, useful counts, mobile-safe horizontal chips. */
+.resource-search-control{display:block;position:relative;width:100%;min-width:0}
+.resource-search-control>input{padding-right:3rem}
+.resource-search-clear{position:absolute;right:.3rem;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:40px;height:40px;background:transparent;border:0;border-radius:9px;font-size:1.5rem;font-weight:500;color:#36634f}
+.resource-search-clear:not([hidden]):hover{background:#eaf6ef}
+.resource-search-clear[hidden]{display:none!important}
+.resource-filter{display:inline-flex;align-items:center;justify-content:center;gap:.55rem}
+.resource-filter-count{display:inline-grid;place-items:center;min-width:24px;height:24px;border-radius:999px;background:#e7f2ea;color:#285845;padding:0 .35rem;font-size:.75rem;line-height:1;font-weight:800}
+.resource-filter[aria-pressed="true"] .resource-filter-count{background:#ffffff29;color:#fff}
+@media(max-width:650px){
+  .resource-filter-row{flex-wrap:nowrap;overflow-x:auto;overscroll-behavior-x:contain;padding-bottom:.35rem;scrollbar-width:thin}
+  .resource-filter{flex:0 0 auto;white-space:nowrap}
+  .resource-search{max-width:none}
+}
+
+/* Prevent tiny chart text on phones: chart remains zoom-readable and keyboard-scrollable. */
+.chart-scroll{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin;scrollbar-color:#9bbdab transparent}
+.chart-scroll:focus-visible{outline:3px solid #086b60;outline-offset:3px;border-radius:7px}
+.chart-scroll svg{display:block;min-width:0}
+.chart-scroll-hint{display:none;font-size:.78rem;line-height:1.55;color:#607568;margin-top:.25rem}
+.plan .amount{font-size:clamp(1.75rem,3.5vw,2.3rem);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.plan :is(dt,dd),.tool-pane dd{font-variant-numeric:tabular-nums}
+@media(max-width:600px){
+  .chart-scroll svg{width:600px;min-width:600px;height:auto}
+  .chart-scroll-hint{display:block}
+}
+
+/* Contact: clear, honest next actions without implying private borrower support. */
+.contact-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch;gap:.75rem;margin-block:.55rem .8rem}
+.contact-option{position:relative;display:grid;align-content:start;gap:.55rem;min-width:0;padding:1.05rem;border:1px solid #dce9df;border-radius:13px;background:#fbfdfb;text-decoration:none;transition:border-color .15s ease,background .15s ease}
+.contact-option:hover{border-color:#7fba9d;background:#f0f9f3}
+.contact-option-type{color:#13705b;text-transform:uppercase;letter-spacing:.055em;font-size:.72rem;font-weight:800}
+.contact-option strong{font-size:1rem;line-height:1.35;color:#234839}
+.contact-option>span:not(.contact-option-type):not(.contact-option-action){font-size:.86rem;line-height:1.6;color:#4e6b5a}
+.contact-option-action{font-size:.84rem;font-weight:790;color:#086b60;margin-top:.4rem}
+@media(max-width:800px){.contact-options{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.contact-options{grid-template-columns:1fr}.contact-option{padding:1rem}}
+@media(prefers-reduced-motion:reduce){.contact-option{transition:none}}

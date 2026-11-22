@@ -83,6 +83,14 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
     <nav class="site-nav" aria-label="Main navigation">
       {navigation.map(([url, label]) => <a href={url} aria-current={Astro.url.pathname === url ? 'page' : slug && url === '/' + slug + '/' ? 'location' : undefined}>{label}</a>)}
     </nav>
+    <details class="mobile-nav" data-mobile-nav>
+      <summary><span class="mobile-nav-icon" aria-hidden="true"><span></span><span></span><span></span></span><span>Menu</span></summary>
+      <nav class="mobile-nav-panel" aria-label="Mobile navigation">
+        <a href="/" aria-current={Astro.url.pathname==='/'?'page':undefined}>Home</a>
+        {navigation.map(([url,label])=><a href={url} aria-current={Astro.url.pathname===url?'page':slug&&url==='/'+slug+'/'?'location':undefined}>{label}</a>)}
+        <a class="mobile-nav-extra" href="/guides/faq/">Common questions</a>
+      </nav>
+    </details>
   </div></header>
   <main id="main" class="shell">
     {segments.length>0 && <nav class="crumbs" aria-label="Breadcrumb"><ol>{breadcrumb.map((b,i)=><li>{i===breadcrumb.length-1?<span aria-current="page">{b.title}</span>:<a href={b.url}>{b.title}</a>}</li>)}</ol></nav>}
@@ -125,5 +133,21 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
     </div>
   </footer>
   {cmpUrl && <script src="/ads-consent.js" defer is:inline></script>}
+  <script>
+    const mobileNav = document.querySelector<HTMLDetailsElement>('[data-mobile-nav]');
+    if (mobileNav) {
+      mobileNav.addEventListener('keydown', event => {
+        if (event.key === 'Escape' && mobileNav.open) {
+          mobileNav.open = false;
+          mobileNav.querySelector('summary')?.focus();
+        }
+      });
+      document.addEventListener('pointerdown', event => {
+        if (mobileNav.open && event.target instanceof Node && !mobileNav.contains(event.target)) mobileNav.open = false;
+      });
+      mobileNav.querySelectorAll('a').forEach(anchor => anchor.addEventListener('click', () => { mobileNav.open = false; }));
+      window.matchMedia('(min-width: 721px)').addEventListener('change', event => { if (event.matches) mobileNav.open = false; });
+    }
+  </script>
 </body>
 </html>

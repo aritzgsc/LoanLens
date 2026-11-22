@@ -50,7 +50,7 @@ function compare(offers: Offer[]) {
   return { errors, results: Object.keys(errors).length ? null : results };
 }
 
-function interpretOffers(results:Results) {
+function interpretOffers(results:Results, names:string[]) {
   const [first,second]=results;
   const comparisons = [
     ['annual net price','netPrice'],
@@ -60,16 +60,17 @@ function interpretOffers(results:Results) {
   return comparisons.map(([description,key]) => {
     const a=first[key],b=second[key];
     if (a===b) return {key,description,text:'The two schools are equal on this measure.'};
-    const lower=a<b?'School A':'School B';
+    const lower=names[a<b?0:1].trim() || schools[a<b?0:1];
     return {key,description,text:lower+' has '+formatUSD(Math.abs(a-b)/100)+' less '+description+' in this one-year example.'};
   });
 }
 
 export default function CollegeAidComparison() {
   const [offers, setOffers] = useState<Offer[]>([emptyOffer, emptyOffer]);
+  const [schoolNames, setSchoolNames] = useState<string[]>(['','']);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [results, setResults] = useState<Results | null>(null);
-  const insights=results ? interpretOffers(results) : [];
+  const insights=results ? interpretOffers(results,schoolNames) : [];
 
   function calculate(values: Offer[]) {
     const next = compare(values);
@@ -86,6 +87,7 @@ export default function CollegeAidComparison() {
     }} onReset={event => {
       event.preventDefault();
       setOffers([emptyOffer, emptyOffer]);
+      setSchoolNames(['','']);
       setResults(null);
       setErrors({});
     }}>
@@ -94,6 +96,11 @@ export default function CollegeAidComparison() {
         {schools.map((school, index) => <fieldset class="loan-row" key={school}>
           <legend>{school}</legend>
           <div class="tool-pane">
+            <label class="field aid-school-name" for={`aid-school-name-${index}`}>
+              <span>School name <span class="field-optional">(optional)</span></span>
+              <input id={`aid-school-name-${index}`} type="text" maxLength={70} placeholder="e.g., North Valley University"
+                value={schoolNames[index]} onInput={event=>{const value=event.currentTarget.value;setSchoolNames(current=>current.map((name,i)=>i===index?value:name));}}/>
+            </label>
             {fields.map(([field, label]) => {
               const id = `aid-${index}-${field}`;
               return <label class="field" key={field} for={id}><span>{label} (USD)</span>
@@ -125,6 +132,12 @@ export default function CollegeAidComparison() {
           setOffers(examples);
           calculate(examples);
         }}>Use example offers</button>
+        <button class="secondary" type="button" onClick={() => {
+          setOffers([offers[1],offers[0]]);
+          setSchoolNames([schoolNames[1],schoolNames[0]]);
+          setResults(current=>current?[current[1],current[0]]:null);
+          setErrors({});
+        }}>Swap schools</button>
         <button class="text-button" type="reset">Reset</button>
       </div>
     </form>
@@ -133,7 +146,7 @@ export default function CollegeAidComparison() {
       <div aria-live="polite">
         {results ? <div class="result-grid">
           {results.map((offer, index) => <section class="tool-pane card" aria-labelledby={`aid-result-${index}`} key={schools[index]}>
-            <h3 id={`aid-result-${index}`}>{schools[index]}</h3>
+            <h3 id={`aid-result-${index}`}>{schoolNames[index].trim() || schools[index]}</h3>
             <dl>
               <div><dt>Net price</dt><dd>{formatUSD(offer.netPrice / 100)}</dd></div>
               <div><dt>Remaining before loans</dt><dd>{formatUSD(offer.gapBeforeLoans / 100)}</dd></div>
