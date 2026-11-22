@@ -1,5 +1,12 @@
-@import "@fontsource-variable/dm-sans";
 @import "tailwindcss";
+
+@font-face {
+  font-family: "DM Sans Variable";
+  font-style: normal;
+  font-weight: 100 1000;
+  font-display: optional;
+  src: url("@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2") format("woff2");
+}
 :root{color-scheme:light dark;--bg:#f4f7fb;--paper:#fff;--ink:#13243c;--muted:#4d5f74;--line:#d7e0ec;--accent:#164daf;--accent-bg:#e8f0ff;--chart-alt:#905119;--warn:#fff2d9;--warn-ink:#633b0d;--shadow:0 13px 36px #1428490d;font-family:"DM Sans Variable",system-ui,sans-serif}
 @media(prefers-color-scheme:dark){:root{--bg:#101928;--paper:#172438;--ink:#eff5ff;--muted:#b0bfd1;--line:#40526c;--accent:#a9c8ff;--accent-bg:#233c64;--chart-alt:#ffbe83;--warn:#422f1a;--warn-ink:#ffddb2;--shadow:none}}
 *{box-sizing:border-box}
