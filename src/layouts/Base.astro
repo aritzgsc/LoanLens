@@ -87,7 +87,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
     <slot />
   </main>
   <footer class="site-footer"><div class="shell">
-    <nav aria-label="Footer" class="footer-links">{trust.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
+    <nav aria-label="Footer" class="footer-links"><a href="/guides/faq/">Questions &amp; answers</a>{trust.map(([slug,label])=><a href={'/'+slug+'/'}>{label}</a>)}
       {cmpUrl && <button class="text-button" type="button" data-ad-privacy>Advertising privacy choices</button>}
     </nav>
     <p>{siteName} is an independent educational resource. Estimates are for planning and do not constitute financial, tax, or legal advice.</p>
