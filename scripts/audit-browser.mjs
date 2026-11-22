@@ -304,6 +304,24 @@ try {
               throw new Error('Trust page needs readable, structured sections');
             const point=page.locator('.trust-key-point');
             if (!await point.isVisible()) throw new Error('Trust summary missing');
+            if (await page.locator('.trust-next-grid a').count()!==3)
+              throw new Error('Trust next-step navigation is missing');
+            const layoutIssue=await page.evaluate(() => {
+              const frame=document.querySelector('.trust-page');
+              const hero=document.querySelector('.trust-hero');
+              const cols=document.querySelector('.trust-columns');
+              const main=document.querySelector('main');
+              if (!frame||!hero||!cols||!main) return 'Missing editorial layout';
+              const a=frame.getBoundingClientRect(),h=hero.getBoundingClientRect(),c=cols.getBoundingClientRect(),m=main.getBoundingClientRect();
+              if (Math.abs((a.left+a.right)/2-(m.left+m.right)/2)>4) return 'Information page is not centered';
+              if (Math.abs((h.left+h.right)/2-(a.left+a.right)/2)>4) return 'Information hero is not centered';
+              if (Math.abs((c.left+c.right)/2-(a.left+a.right)/2)>4) return 'Article columns are not centered';
+              if (a.left < -1 || a.right > window.innerWidth+1) return 'Information page overflows screen';
+              return '';
+            });
+            if (layoutIssue) throw new Error(layoutIssue);
+            if (await page.locator('.site-footer .footer-menu').count()!==3)
+              throw new Error('Grouped footer links are missing');
           }
           if (route === '/guides/faq/') {
             if (await page.locator('.article-body h2').count() < 6)

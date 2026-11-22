@@ -41,17 +41,20 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
 
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
+  <div class:list={['editorial-frame',{'trust-page':!guide}]}>
   <header class:list={['hero',{'trust-hero':!guide}]}>
     {!guide && <span class="eyebrow">{trustInfo.eyebrow}</span>}
     <h1>{title}</h1>
     <p>{guide?description:trustInfo.summary}</p>
   {guide && <p>{!author.name.includes('{{') && <>By {author.name} · </>}Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
-    {reviewed && <p>Reviewed <time>{reviewed}</time></p>}
+    {!guide && <div class="trust-hero-meta"><span>Independent educational reference</span><span aria-hidden="true">·</span><span>Reviewed <time datetime={reviewed??updated}>{reviewed??updated}</time></span></div>}
+    {guide && reviewed && <p>Reviewed <time datetime={reviewed}>{reviewed}</time></p>}
     {draft && <p class="warning">Editorial draft awaiting review.</p>}
   </header>
   <div class:list={['article-columns',{'trust-columns':!guide}]}>
     <article class:list={['article-body',{'trust-article':!guide}]}>
     {!guide && <div class="trust-key-point"><span aria-hidden="true">✓</span><p>{trustInfo.focus}</p></div>}
+    {!guide && contents.length>1 && <nav class="trust-mobile-toc" aria-label="Sections on this page"><strong>On this page</strong><ol>{contents.map(h=><li><a href={'#'+h.slug}>{h.text}</a></li>)}</ol></nav>}
     {guide && shortAnswer && <section class="short-answer notice" aria-labelledby="short-answer"><h2 id="short-answer">Short answer</h2><p>{shortAnswer}</p></section>}
     {guide && contents.length>2 && <nav class="article-toc" aria-label="On this page">
       <strong>In this guide</strong>
@@ -67,20 +70,28 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
   </article>
     {guide && <aside><AdSlot kind="sidebar"/></aside>}
     {!guide && <aside class="trust-sidebar" aria-label="More about LoanLens">
-      <div class="trust-sidebar-block">
-        <strong>Project information</strong>
-        <p>LoanLens publishes independent educational tools. It is not a loan servicer, lender or government website.</p>
-        <a href="/tools/">Explore the calculators</a>
-      </div>
+      {contents.length>1 && <nav class="trust-sidebar-block trust-on-this-page" aria-label="On this page"><strong>On this page</strong><ol>{contents.map(h=><li><a href={'#'+h.slug}>{h.text}</a></li>)}</ol></nav>}
       <nav class="trust-sidebar-block" aria-label="Useful policies and information">
-        <strong>Related pages</strong>
-        <ul>{trustNavigation.map(([id,label])=><li><a href={'/'+id+'/'}>{label}</a></li>)}</ul>
+        <strong>Related information</strong>
+        <ul>{trustNavigation.map(([id,label])=><li><a href={'/'+id+'/'}>{label}<span aria-hidden="true">↗</span></a></li>)}</ul>
       </nav>
-      <div class="trust-reviewed">Content last reviewed <time datetime={reviewed??updated}>{reviewed??updated}</time></div>
-    </aside>}
+      <div class="trust-sidebar-note"><strong>Need an account-specific answer?</strong><p>For your actual student loan, consult Federal Student Aid or your servicer.</p><a href="https://studentaid.gov/" rel="noopener noreferrer">Visit StudentAid.gov <span aria-hidden="true">↗</span></a></div>
+    </aside>
   </div>
   {guide && <section class="support"><h2>Related tools and guides</h2><div class="guide-grid">
   <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong><span>See your estimated monthly payments and total costs.</span></a>
     {suggestions.map(e=><a class="guide-link" href={entryPath(e)}><strong>{e.data.title}</strong><span>{e.data.description}</span></a>)}
   </div></section>}
+  {!guide && <section class="trust-next" aria-labelledby="trust-next-title">
+    <div class="trust-next-intro">
+      <span class="eyebrow">Your next step</span><h2 id="trust-next-title">Explore with more confidence.</h2>
+      <p>Understand the estimates, verify the assumptions and choose a useful starting point.</p>
+    </div>
+    <div class="trust-next-grid">
+      <a href="/calculator/"><strong>Estimate a loan payment</strong><span>See the numbers behind a repayment scenario.</span><span class="trust-next-arrow" aria-hidden="true">↗</span></a>
+      <a href="/sources/"><strong>Check the sources</strong><span>Explore official references and modeling limits.</span><span class="trust-next-arrow" aria-hidden="true">↗</span></a>
+      <a href={entry.id==='contact'?'/editorial-policy/':'/contact/'}><strong>{entry.id==='contact'?'How corrections work':'Report an issue'}</strong><span>{entry.id==='contact'?'Learn how updates and corrections are managed.':'Share a correction safely through the public tracker.'}</span><span class="trust-next-arrow" aria-hidden="true">↗</span></a>
+    </div>
+  </section>}
+  </div>
 </Base>
