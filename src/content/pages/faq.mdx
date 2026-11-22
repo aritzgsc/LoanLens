@@ -1,58 +1,61 @@
 ---
-title: "Student loan repayment FAQ"
-description: "Find answers about RAP, IBR, the SAVE transition, Parent PLUS and Public Service Loan Forgiveness."
+title: "Student Loan Calculator FAQ: Payments, Interest and Aid | LoanLens"
+description: "Straight answers about LoanLens payment estimates, repayment costs, college aid, private data, repayment deadlines and forgiveness projections."
 category: "guide"
-status: "draft"
+status: "reviewed"
+reviewed: "2026-11-22"
 verified: "2026-11-22"
 updated: "2026-11-22"
-shortAnswer: "Eligibility depends on your loan types and when they were disbursed. Use the guide or tool for your account situation before comparing projected payments."
-related: ["rap-vs-ibr","save-ended-what-now","rap-and-pslf"]
+shortAnswer: "LoanLens helps you compare illustrative student loan payments, repayment costs and college net prices. Its results depend on the inputs you provide and cannot determine an official bill, eligibility or forgiveness."
+related: ["compare-student-loan-repayment","student-loan-interest-explained","compare-college-financial-aid-offers"]
 ---
 
-import CalculatorLink from "../../components/CalculatorLink.astro";
-import EditorialLink from "../../components/EditorialLink.astro";
+LoanLens answers common **U.S. student loan and college financial aid** questions using educational explanations and models. The FAQ is about what this website actually does; it does not provide personal borrowing advice.
 
-## Who this applies to
+## How can I estimate my monthly student loan payment?
 
-Borrowers deciding which federal student loan plan or transition rule to check first.
+Open the [student loan calculator](/calculator/) and enter a current loan balance, annual interest rate and loan type. Income and household information may be required for some modeled repayment options. Compare the resulting monthly estimate with the total projected cost and the displayed assumptions.
 
-<CalculatorLink />
+Your actual bill may differ. For account-specific choices and eligibility, use the [official Federal Student Aid Repayment Calculator](https://studentaid.gov/articles/repayment-calculator/) and your servicer.
 
-## Repayment questions
+## Is the lowest monthly payment the cheapest repayment option?
 
-### Why did I get a SAVE notice?
+Not necessarily. A smaller monthly payment can extend the repayment period and result in a higher amount paid overall. Other repayment options can change with income, loan type and program rules. Compare **starting payment, repayment length, total projected paid and assumptions** rather than choosing only by the first dollar figure.
 
-Your servicer is giving you a window to select a different eligible plan. Check the <EditorialLink slug="save-ended-what-now">SAVE transition guide</EditorialLink> for both notice windows and what happens when they expire.
+Read [How to compare repayment plans](/guides/compare-student-loan-repayment/) for a worked example.
 
-### Can I use both RAP and IBR?
+## Why does the estimate differ from my loan servicer’s statement?
 
-Some borrowers with older federal Direct Loans can choose between them. The <EditorialLink slug="rap-vs-ibr">RAP and IBR comparison</EditorialLink> explains how a new loan can change eligibility.
+LoanLens models interest using monthly approximations. Federal loan servicing commonly uses actual daily interest calculations, dates, balance changes and loan-specific rules. Your statement can also include unpaid accrued interest or other adjustments the calculator cannot see.
 
-### Why does my monthly RAP bill change with dependents?
+Read [How student loan interest works](/guides/student-loan-interest-explained/) and compare with your account statement.
 
-RAP reduces the amount for the dependents claimed on the tax return used in the calculation. The [income tool](/rap-payment-by-income/) shows the effect within each income band.
+## Can I compare two college financial aid letters?
 
-### Which dependents do I enter if I am married?
+Yes. The [college aid comparison tool](/tools/compare-college-aid-offers/) takes each school's **annual cost of attendance**, grants, scholarships and the amount you plan to borrow. It shows net price and a remaining funding gap.
 
-Enter the joint-return count when comparing joint filing, and only your own claimed dependents for separate filing. Compare both in the [married RAP tool](/tools/married-rap-impact/).
+**A loan does not reduce the school's net price:** it is a way of financing that cost. Work-study is generally earned through work and should not be counted as an automatic tuition discount. Read [How to read a college aid offer](/guides/understand-college-aid-types/) for more context.
 
-### Can RAP payments count for PSLF?
+## Can LoanLens tell me if I qualify for PSLF?
 
-They can count when you meet the loan, employment and payment requirements. Use the <EditorialLink slug="rap-and-pslf">RAP and PSLF guide</EditorialLink> to check which record to use.
+No. The [PSLF tracker](/tools/pslf-payment-tracker/) projects possible remaining qualifying payment periods **from a count you supply**. It cannot confirm your employment, past payment history, eligible loans or forgiveness.
 
-### Can Parent PLUS borrowers move to IBR?
+Check your actual record with [StudentAid.gov](https://studentaid.gov/) and use the [PSLF Help Tool](https://studentaid.gov/pslf/) for official actions.
 
-A limited route may apply to older Direct Consolidation Loans that repaid Parent PLUS. The [Parent PLUS checker](/tools/parent-plus-consolidation-checker/) identifies which dates and payment records to find.
+## Can LoanLens tell me which deadline applies to my account?
 
-### Does a Tiered Standard term change as I pay down the loan?
+The [repayment deadline helper](/deadlines/) can organize dates and show illustrative deadlines from the notice information you enter. It cannot read your servicer messages or determine a binding personal deadline. **Use the exact date and instructions in your official notice** when they differ.
 
-The tier is based on the Direct Loan amount when repayment begins. The <EditorialLink slug="tiered-standard">Tiered Standard guide</EditorialLink> explains how to compare the tier with time left on a current schedule.
+## Does LoanLens require a login or collect my loan account information?
 
-### Is the projected forgiveness amount the tax I might owe?
+No LoanLens account is required. Calculations use numbers you type into the webpage. Do not enter private identifiers. Shared scenario links may contain the values you entered and should be handled cautiously. Read the [privacy policy](/privacy/) for the details, including hosting and potential advertising.
 
-The number in the estimate is the balance the plan could discharge. The <EditorialLink slug="idr-forgiveness-taxes">tax guide</EditorialLink> explains why the tax effect depends on the type and year of discharge.
+## Is LoanLens a lender or the U.S. Department of Education?
 
-## Sources
+No. LoanLens is an independent educational website, not a loan servicer, bank, lender or government agency. Its [open-source repository](https://github.com/aritzgsc/LoanLens) documents its logic and tests, and the [Sources page](/sources/) links to official references.
 
-- [Federal Student Aid repayment plans](https://studentaid.gov/manage-loans/repayment/plans)
-- [Federal Student Aid’s SAVE transition FAQ](https://studentaid.gov/articles/save/)
+## Where can I report an error?
+
+Use the [Contact page](/contact/) to reach the project's public GitHub issue tracker. Describe the page and use made-up example values to reproduce the problem; do not include personal or financial account records.
+
+For more on the website's limitations, see the [disclaimer](/disclaimer/) and [editorial policy](/editorial-policy/).
