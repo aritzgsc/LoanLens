@@ -36,7 +36,8 @@ const trustSummaries:Record<string,{eyebrow:string;summary:string;focus:string}>
   accessibility:{eyebrow:'Accessibility support',summary:'How to report an accessibility barrier, and how to find readable alternatives to chart data.',focus:'Public bug reports should never include private account information.'}
 };
 const trustInfo=trustSummaries[entry.id]??{eyebrow:'LoanLens information',summary:description,focus:'Check official sources for account-specific decisions.'};
-const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && ['about','contact','sources','editorial-policy','privacy','advertising','disclaimer'].includes(id) && !entries.some(e=>e.id===id && e.data.status==='draft')).slice(0,5);
+const publishedTrustIds=new Set((await visible()).filter(e=>e.data.category==='trust').map(e=>e.id));
+const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustIds.has(id)).slice(0,5);
 
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
