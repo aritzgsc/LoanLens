@@ -71,7 +71,7 @@ try {
           // Check CTA contrast explicitly. Automated accessibility audits may miss styles that
           // are hidden behind interactive states or an anchor overriding a button class.
           const badButtons = await page.evaluate(() => {
-            const toRgb = (value) => (value.match(/[\\d.]+/g) ?? []).slice(0,3).map(Number);
+            const toRgb = (value) => (value.match(/[0-9.]+/g) ?? []).slice(0,3).map(Number);
             const luminance = (rgb) => rgb.map((n) => {
               const channel = n / 255;
               return channel <= .04045 ? channel / 12.92 : ((channel + .055) / 1.055) ** 2.4;
