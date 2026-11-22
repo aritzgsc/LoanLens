@@ -5,8 +5,8 @@ import { AxeBuilder } from '@axe-core/playwright';
 
 const [origin = 'http://localhost:4321', output = 'audit-artifacts', dist = 'dist'] = process.argv.slice(2);
 const reportDir = resolve(output);
-const widths = [390, 768, 1280];
-const heights = { 390: 844, 768: 1024, 1280: 800 };
+const widths = [320, 390, 768, 1024, 1440];
+const heights = { 320: 740, 390: 844, 768: 1024, 1024: 768, 1440: 900 };
 const routes = ['/', '/calculator/', '/deadlines/', '/tools/', '/tools/married-rap-impact/',
   '/tools/compare-college-aid-offers/', '/guides/compare-college-financial-aid-offers/', '/tools/parent-plus-consolidation-checker/', '/tools/pslf-payment-tracker/', '/rap-payment-by-income/',
   '/guides/', '/guides/compare-student-loan-repayment/', '/guides/save-ended-what-now/', '/guides/rap-vs-ibr/', '/guides/rap-and-pslf/'];
@@ -19,7 +19,8 @@ const allPages = (await readdir(resolve(dist), { recursive: true }))
 
 await mkdir(reportDir, { recursive: true });
 const browser = await chromium.launch({ channel: process.env.AUDIT_BROWSER_CHANNEL });
-const report = { origin, urls: allPages, pages: [], screenshots: [], failures: [] };
+const report = { origin, urls: allPages, pages: [], screenshots: [], assets: [], failures: [] };
+const inspectedAssets = new Set();
 const textMetrics = () => {
   const { document, innerHeight } = globalThis;
   const wordCount = text => [...new Intl.Segmenter('en-US', { granularity: 'word' }).segment(text)]
@@ -71,6 +72,33 @@ const fieldRowAlignment = () => {
   }
   return failures;
 };
+// Detect defects that don't trigger axe: narrow-screen overflow, clipped controls,
+// invisible images, unusable click targets and off-screen HTML text elements.
+const visualGeometry = () => {
+  const problems = [];
+  const viewport = document.documentElement.clientWidth;
+  if (document.documentElement.scrollWidth > viewport + 2) {
+    const offenders = [...document.querySelectorAll('body *')].filter(element => {
+      const style = getComputedStyle(element);
+      if (style.position === 'fixed' || style.visibility === 'hidden') return false;
+      const r = element.getBoundingClientRect();
+      return r.width > 0 && (r.right > viewport + 2 || r.left < -2);
+    }).slice(0, 5).map(el=>el.tagName.toLowerCase()+(el.className && typeof el.className==='string' ? '.'+el.className.trim().split(/\\s+/).slice(0,2).join('.') : ''));
+    problems.push('horizontal overflow: ' + document.documentElement.scrollWidth + 'px vs ' + viewport + 'px; nodes: ' + offenders.join(', '));
+  }
+  for (const img of document.querySelectorAll('main img, header img, footer img')) {
+    if (!img.complete || !img.naturalWidth) problems.push('image failed to load: ' + img.currentSrc);
+  }
+  for (const el of document.querySelectorAll('.field input:not([type=hidden]),.field select,.actions button,.hero-actions a,.site-nav a')) {
+    if (!el.getClientRects().length) continue;
+    const b = el.getBoundingClientRect();
+    if (b.left < -2 || b.right > viewport + 2) problems.push('control outside viewport: ' + el.outerHTML.slice(0, 130));
+    if ((el.matches('button,a') && (b.width < 24 || b.height < 24)) || (el.matches('input,select') && b.height < 40)) {
+      problems.push('too-small control: ' + el.outerHTML.slice(0, 130));
+    }
+  }
+  return problems.slice(0, 15);
+};
 const visit = async (page, route) => {
   const response = await page.goto(new URL(route, origin).href, { waitUntil: 'load' });
   if (response?.status() !== 200) throw new Error(route + ' returned HTTP ' + response?.status());
@@ -92,7 +120,7 @@ try {
               report.screenshots.push(file);
             }
           };
-          if (routes.includes(route)) await capture(prefix);
+          if (colorScheme === 'light' || width === 320 || width === 1440) await capture(prefix);
           // Check CTA contrast explicitly. Automated accessibility audits may miss styles that
           // are hidden behind interactive states or an anchor overriding a button class.
           const badButtons = await page.evaluate(() => {
@@ -112,6 +140,28 @@ try {
               }).filter(item => item && item.ratio < 4.5);
           });
           if (badButtons.length) throw new Error('Insufficient action-text contrast: ' + JSON.stringify(badButtons));
+          const visualIssues = await page.evaluate(visualGeometry);
+          if (visualIssues.length) throw new Error('Visual layout: ' + visualIssues.join('; '));
+          // Validate the actual generated social images and icons from the local build.
+          const assetHrefs = await page.locator('head link[rel="icon"], head link[rel="apple-touch-icon"], head meta[property="og:image"]').evaluateAll(els =>
+            els.map(el => el.getAttribute('href') || el.getAttribute('content')).filter(Boolean));
+          if (colorScheme === 'light' && width === 390) for (const href of assetHrefs) {
+            const pathname = new URL(href, origin).pathname;
+            if (inspectedAssets.has(pathname)) continue;
+            const response = await page.request.get(new URL(pathname, origin).href);
+            if (response.status() !== 200) throw new Error('Missing image/icon asset: ' + pathname + ' returned ' + response.status());
+            const mime = response.headers()['content-type'] || '';
+            if (!/^image\/(png|svg\+xml)/.test(mime)) throw new Error('Incorrect image MIME on ' + pathname + ': ' + mime);
+            const bytes = await response.body();
+            if (bytes.byteLength < 250) throw new Error('Incomplete image/icon: ' + pathname);
+            inspectedAssets.add(pathname);
+            report.assets.push({pathname, mime, bytes: bytes.byteLength});
+            if (pathname.startsWith('/og/') && pathname.endsWith('.png')) {
+              const filename = 'social-' + pathname.split('/').at(-1);
+              await writeFile(join(reportDir, filename), bytes);
+              report.screenshots.push(filename);
+            }
+          }
           const verticalIssues = await page.evaluate(fieldRowAlignment);
           if (verticalIssues.length) throw new Error('Vertical field alignment: ' + verticalIssues.join('; '));
           const metrics = await page.evaluate(textMetrics);
@@ -175,7 +225,7 @@ try {
   await writeFile(join(reportDir, 'browser.json'), JSON.stringify(report, null, 2) + '\n');
 }
 const highImpact = report.pages.flatMap(page => page.violations.filter(issue => issue.impact === 'serious' || issue.impact === 'critical'));
-console.log('Captured ' + report.screenshots.length + ' screenshots; ' + highImpact.length + ' serious/critical axe findings; ' + report.failures.length + ' audit errors.');
+console.log('Audited ' + report.urls.length + ' routes at ' + widths.join('/') + 'px in light/dark; captured ' + report.screenshots.length + ' screenshots; validated ' + report.assets.length + ' image/icon assets; ' + highImpact.length + ' serious/critical axe findings; ' + report.failures.length + ' audit errors.');
 for (const message of new Set(report.failures.map(failure => failure.message))) console.error(message);
 for (const id of new Set(highImpact.map(issue => issue.id))) console.error('Accessibility finding: ' + id);
 // Print a short, actionable sample of offending selectors in CI; the full report is saved to browser.json.
