@@ -1,18 +1,33 @@
 ---
-title: "LoanLens editorial policy"
-description: "See how LoanLens documents repayment rules, forecast assumptions and corrections."
+title: "LoanLens Editorial Policy and Corrections"
+description: "How LoanLens documents repayment estimates, links to official sources, tests calculation changes and handles corrections."
 category: "trust"
-status: "draft"
+status: "reviewed"
+reviewed: "2026-11-22"
 verified: "2026-11-22"
 updated: "2026-11-22"
 ---
 
-import EditorialLink from "../../components/EditorialLink.astro";
+## Purpose and independence
 
-## Evidence and estimates
+LoanLens publishes **educational, model-based** student loan tools and guides, not individualized financial, legal or tax advice. It is not affiliated with the U.S. Department of Education. Advertisements, when enabled, are separate from the model's outputs and do not decide which result is displayed.
 
-LoanLens cites federal student aid materials, regulations and other primary sources for repayment rules. The <EditorialLink slug="sources">sources page</EditorialLink> lists the references used in the comparison. A calculator result can include a flagged assumption when a published rule or the available inputs cannot establish an account-specific outcome.
+## Sources and verification
+
+Published repayment parameters are recorded in the [open-source rules inventory](https://github.com/aritzgsc/LoanLens/blob/main/src/data/rules.json) with source links, effective dates, retrieval dates and verification labels. Our [source list](/sources/) points to Federal Student Aid, federal regulations and relevant agencies.
+
+When rules or servicing practices are unclear, the calculator can show **unverified assumption warnings** or decline to produce an account-specific comparison. A source label of *verified* means that the stated rule was cross-checked against a referenced publication; it does not guarantee the rule applies to every borrower.
+
+## Methodology and testing
+
+The calculator uses estimated monthly interest and payments, rather than connecting to your account. The [documented modeling assumptions](https://github.com/aritzgsc/LoanLens/blob/main/docs/ASSUMPTIONS.md) explain how estimates can differ from servicing records. Automated tests, link checks and browser audits run when code changes are proposed. These tests help catch regressions but cannot verify every personal borrowing situation.
 
 ## Corrections
 
-Report a factual error through <EditorialLink slug="contact">Contact</EditorialLink>. Include a link to the page, the sentence or result you think is wrong, and the source if you have it. The editorial status describes the page; it does not certify a borrower’s eligibility.
+If you spot an error, [open a public correction report](https://github.com/aritzgsc/LoanLens/issues/new) with a page link, an explanation and an official source if possible. **Only use made-up example numbers**, never your own identifying or sensitive records.
+
+We aim to correct confirmed errors in the source code or guide and retain the change history in the public repository. We cannot promise a response time or official repayment guidance.
+
+## Updates and limitations
+
+Guides show update dates. A publication date or automated test success does not mean a future regulatory change has been incorporated. Verify time-sensitive decisions with [Federal Student Aid's current repayment plans](https://studentaid.gov/manage-loans/repayment/plans).
