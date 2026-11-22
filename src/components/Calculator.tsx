@@ -5,6 +5,7 @@ import type { Inputs, Loan, LoanType, Result } from '../lib/engine';
 
 const labels: Record<LoanType,string> = {'subsidized':'Direct Subsidized','unsubsidized':'Direct Unsubsidized','grad-plus':'Graduate PLUS','direct-consolidation':'Direct Consolidation','subsidized-consolidation':'Subsidized Direct Consolidation','parent-plus':'Parent PLUS','parent-consolidation':'Consolidated Parent PLUS','ffel':'FFEL or Perkins','private':'Private'};
 const steps = ['Loans', 'Income and household', 'Goals'];
+const stepHints = ['Enter loan balances and rates', 'Add income and family details', 'Review assumptions and compare'];
 const colors = ['var(--accent)', 'var(--chart-alt)', 'var(--ink)'];
 const today = () => new Date().toISOString().slice(0,7);
 const fresh = (): Inputs => ({...example, start:today(), loans:[{balance:0,rate:0,type:'unsubsidized'}], income:0, growth:0, vintage:'unknown'});
@@ -118,14 +119,25 @@ export default function Calculator() {
   }
   const cost = rows.find(r=>r.badges.includes('Lowest total cost'));
   const low = rows.find(r=>r.badges.includes('Lowest monthly'));
+  const highlights = [
+    ['Lowest monthly','Lowest starting payment'],
+    ['Lowest total cost','Lowest modeled total paid'],
+    ['Fastest','Fastest projected payoff'],
+    ['Best for PSLF','Lowest modeled PSLF payments'],
+  ].map(([badge,label])=>({badge,label,winners:rows.filter(row=>row.badges.includes(badge))}))
+    .filter(item=>item.winners.length>0);
   return <div class="calculator">
     <div class="wizard card" id="wizard">
-    <div class="wizard-top"><button type="button" class="primary" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');}}>Use example borrower</button></div>
+    <div class="wizard-top">
+      <div class="wizard-intro"><span class="eyebrow">Build your repayment estimate</span><p>Three steps. Use your own figures, or try a sample without entering personal information.</p></div>
+      <button type="button" class="secondary wizard-example" onClick={()=>{setInput(sample());setVersion(v=>v+1);setSubmitted(true);setMessage('Example borrower loaded.');requestAnimationFrame(()=>resultHeading.current?.focus());}}>Use example borrower</button>
+    </div>
       <nav aria-label="Calculator steps" class="steps">{steps.map((label,i)=><button type="button" key={label} class={step===i?'current':''} aria-current={step===i?'step':undefined} onClick={()=>go(i)}><span>{i+1}</span>{label}</button>)}</nav>
       <form key={version} onSubmit={e=>{e.preventDefault();if(e.currentTarget.querySelector('[aria-invalid="true"]')) {setMessage('Correct the highlighted values before continuing.');return;}
         if(step===0&&!hasBalance) {setMessage('Enter at least one positive loan balance.');return;}
         if(step<2) go(step+1); else if(!hasBalance || !monthOk(input.start)) {setMessage('Enter a positive loan balance and valid projection start month.');}
         else {setSubmitted(true);setMessage('Comparison updated.');requestAnimationFrame(()=>resultHeading.current?.focus());}}}>
+        <p class="wizard-step-caption"><strong>Step {step+1} of {steps.length}</strong><span aria-hidden="true"> · </span>{stepHints[step]}</p>
         <h2 ref={heading} tabIndex={-1}>{['Add your loans','Describe your household','Set your repayment goals'][step]}</h2>
         {step===0 && <>
           <p>Use the balances and fixed rates shown in your loan account. <a href={rules.interestRates.source}>Check rates for the current disbursement year</a>.</p>
@@ -172,17 +184,12 @@ export default function Calculator() {
         : !rows.length ? <>This scenario needs an eligibility check or a positive loan balance. Choose your borrowing history and review the <a href="/tools/parent-plus-consolidation-checker/">Parent PLUS checker</a> or <a href="/deadlines/">transition guidance</a> if applicable.</>
           : <>{low?.title} has the lowest starting payment ({money(low?.starting ?? 0)}). {cost?.title} has the lowest projected out-of-pocket payments ({money(cost?.paid ?? 0)}) before any forgiveness tax.</>}</div>
       {rows.length>0 && <>
+      <p class="results-update-hint">Estimates update automatically if you change the inputs above. They are not official plan quotes.</p>
       <section class="best-plans" aria-labelledby="best-plans-title">
         <h3 id="best-plans-title">Highlights from these modeled estimates</h3>
-        <ul>{[
-          ['Lowest monthly', 'Lowest starting payment'],
-          ['Lowest total cost', 'Lowest modeled total paid'],
-          ['Fastest', 'Fastest projected payoff'],
-          ['Best for PSLF', 'Lowest modeled PSLF payments'],
-        ].map(([badge,label]) => {
-          const winners = rows.filter(row => row.badges.includes(badge));
-          return <li key={badge}><strong>{label}</strong><span>{winners.map(row => row.title).join(' / ') || 'No match in this estimate'}</span></li>;
-        })}</ul>
+        <ul>{highlights.map(({badge,label,winners}) =>
+          <li key={badge}><strong>{label}</strong><span>{winners.map(row=>row.title).join(' / ')}</span></li>
+        )}</ul>
       </section>
       <p class="muted">Educational estimates only. These highlights compare the scenarios entered, not your eligibility or which plan you should choose. Verify choices with Federal Student Aid and your servicer.</p>
       {alerts.length>0 && <section class="assumptions" aria-label="Unverified projection assumptions">

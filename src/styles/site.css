@@ -956,3 +956,30 @@ main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1020px);m
 .home-question-list details p{padding:.65rem 2rem .35rem 0;line-height:1.7}
 .home-question-list details summary:hover{color:#086b60}
 @media(max-width:480px){.home-question-list details{padding:.8rem 1rem}.home-question-list details p{padding-right:0}}
+
+/* Guided calculator: compact step indicators, discoverable examples and useful result highlights. */
+.wizard-top{align-items:center;gap:.85rem 1.25rem;border-bottom:1px solid #e7eee8;padding-bottom:1.1rem;margin-bottom:.2rem}
+.wizard-intro{display:grid;gap:.35rem;min-width:0;flex:1 1 300px}
+.wizard-intro .eyebrow{font-size:.76rem;letter-spacing:.07em}
+.wizard-intro p{font-size:.91rem;line-height:1.65;color:#526d5e;max-width:67ch}
+.wizard-example{flex:0 0 auto;white-space:normal;text-align:center}
+.wizard-step-caption{display:flex;align-items:center;flex-wrap:wrap;gap:.15rem .4rem;font-size:.8rem;color:#567366;letter-spacing:.005em}
+.wizard-step-caption strong{color:#076c58;font-size:.83rem}
+.wizard .steps{margin-top:1.2rem;gap:.6rem}
+.wizard .steps button{display:flex;align-items:center;gap:.5rem;justify-content:flex-start;min-width:0;padding:.65rem .75rem;font-size:.86rem;line-height:1.45}
+.wizard .steps button span{display:grid;place-items:center;min-width:28px;width:28px;height:28px;flex:0 0 28px;border-radius:9px;margin:0;font-size:.8rem;background:#eaf4ed;color:#355d48}
+.wizard .steps .current{box-shadow:inset 0 0 0 1px #086b6040}
+.wizard .steps .current span{background:#086b60;color:white}
+.wizard .actions{padding-top:.4rem;gap:.65rem}
+.results-update-hint{padding:.65rem .9rem;border:1px solid #dceae1;background:#f7fbf8;border-radius:10px;color:#4d6a5a;font-size:.88rem;line-height:1.55}
+.best-plans ul{grid-template-columns:repeat(auto-fit,minmax(min(210px,100%),1fr))}
+.best-plans li{border:1px solid #d6eadd;gap:.4rem;padding:1rem}
+.best-plans li strong{font-size:.92rem;color:#265241}
+.best-plans li span{font-size:.92rem;line-height:1.55}
+@media(max-width:620px){
+  .wizard-top{align-items:stretch}
+  .wizard-example{width:100%}
+  .wizard .steps{gap:.35rem}
+  .wizard .steps button{flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:.5rem .25rem;font-size:.78rem;min-height:66px}
+  .wizard .steps button span{width:27px;height:27px;flex-basis:27px}
+}
