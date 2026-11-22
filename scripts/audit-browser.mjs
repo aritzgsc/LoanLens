@@ -390,6 +390,20 @@ try {
                 await finder.locator('[data-goal-panel]:visible').count()!==1)
               throw new Error('Intent picker keyboard selection or hidden panels are incorrect');
             if (colorScheme==='light' && [320,390,1440].includes(width)) await capture(prefix+'-goal-picked');
+            if (width >= 1024) {
+              const cardLayout = await page.locator('[data-resource-card]:visible').evaluateAll(cards => {
+                const rows = new Map();
+                for (const card of cards) {
+                  const rect=card.getBoundingClientRect();
+                  const row=Math.round(rect.top/3)*3;
+                  if (!rows.has(row)) rows.set(row,[]);
+                  rows.get(row).push(rect.height);
+                }
+                return [...rows.values()].filter(heights=>heights.length>1)
+                  .some(heights=>Math.max(...heights)-Math.min(...heights)>3);
+              });
+              if (cardLayout) throw new Error('Cards sharing a directory row must align to the same height');
+            }
             const search=page.locator('[data-resource-search]');
             await search.fill('pslf');
             const visibleCards=page.locator('[data-resource-card]:visible');

@@ -10,7 +10,7 @@ const specialized = goalPaths.slice(4);
     <div>
       <span class="eyebrow">Start with your situation</span>
       <h2 id={id+'-title'}>What are you trying to figure out?</h2>
-      <p>You do not need to know which loan program or calculator you want. Choose a situation and we will show you a sensible starting point.</p>
+      <p>Pick the situation that sounds most like yours. We'll show what to use, what to bring, and what you'll learn.</p>
     </div>
     <span class="goal-privacy">No sign-in · No financial information requested</span>
   </div>
@@ -22,17 +22,17 @@ const specialized = goalPaths.slice(4);
             data-goal-choice={goal.id}
             aria-pressed={i===0}
             aria-controls={id+'-'+goal.id}>
-          <span>{goal.choice}</span><span aria-hidden="true" class="goal-choice-arrow">↗</span>
+          <span class="goal-choice-number" aria-hidden="true">{String(i+1).padStart(2,'0')}</span><span class="goal-choice-text">{goal.choice}</span><span aria-hidden="true" class="goal-choice-arrow">↗</span>
         </button>)}
       </div>
       <details class="goal-more">
         <summary>My situation is more specific <span aria-hidden="true">+</span></summary>
         <div class="goal-choices goal-choices-more">
-          {specialized.map(goal => <button type="button" class="goal-choice"
+          {specialized.map((goal,i) => <button type="button" class="goal-choice"
               data-goal-choice={goal.id}
               aria-pressed="false"
               aria-controls={id+'-'+goal.id}>
-            <span>{goal.choice}</span><span aria-hidden="true" class="goal-choice-arrow">↗</span>
+            <span class="goal-choice-number" aria-hidden="true">{String(i+5).padStart(2,'0')}</span><span class="goal-choice-text">{goal.choice}</span><span aria-hidden="true" class="goal-choice-arrow">↗</span>
           </button>)}
         </div>
       </details>
@@ -58,7 +58,7 @@ const specialized = goalPaths.slice(4);
       })}
     </div>
   </div>
-  <p class="goal-bottom">None of these exactly? <a href={mode==='tools'?'#browse-tools':'#browse-guides'}>See every {mode==='tools'?'tool':'guide'}</a> or try the search below.</p>
+  <p class="goal-bottom">Still deciding? <a href={mode==='tools'?'#browse-tools':'#browse-guides'}>See every {mode==='tools'?'tool':'guide'}</a> or try the search below.</p>
 </section>
 <script>
   for (const root of document.querySelectorAll<HTMLElement>('[data-goal-finder]')) {
