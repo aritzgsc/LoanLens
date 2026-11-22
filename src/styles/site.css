@@ -1006,3 +1006,15 @@ main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1020px);m
   .resource-filter{flex:0 0 auto;white-space:nowrap}
   .resource-search{max-width:none}
 }
+
+/* Prevent tiny chart text on phones: chart remains zoom-readable and keyboard-scrollable. */
+.chart-scroll{max-width:100%;min-width:0;overflow-x:auto;overscroll-behavior-inline:contain;scrollbar-width:thin;scrollbar-color:#9bbdab transparent}
+.chart-scroll:focus-visible{outline:3px solid #086b60;outline-offset:3px;border-radius:7px}
+.chart-scroll svg{display:block;min-width:0}
+.chart-scroll-hint{display:none;font-size:.78rem;line-height:1.55;color:#607568;margin-top:.25rem}
+.plan .amount{font-size:clamp(1.75rem,3.5vw,2.3rem);overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.plan :is(dt,dd),.tool-pane dd{font-variant-numeric:tabular-nums}
+@media(max-width:600px){
+  .chart-scroll svg{width:600px;min-width:600px;height:auto}
+  .chart-scroll-hint{display:block}
+}

@@ -202,6 +202,13 @@ try {
             await page.getByRole('button', { name: /Loans/ }).click();
             await page.evaluate(() => globalThis.scrollTo(0, 0));
             await capture(prefix + '-example');
+            if (width<=390) {
+              const chartInfo=await page.locator('.chart-scroll').first().evaluate(el=>({
+                viewport:el.clientWidth,content:el.scrollWidth
+              }));
+              if (chartInfo.content <= chartInfo.viewport+20)
+                throw new Error('Loan chart is not horizontally explorable on phones');
+            }
             const resultsAxe = await new AxeBuilder({ page }).analyze();
             report.pages.push({ route, width, colorScheme, state: 'example', ...await page.evaluate(textMetrics),
               violations: resultsAxe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),

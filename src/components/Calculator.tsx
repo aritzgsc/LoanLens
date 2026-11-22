@@ -59,6 +59,7 @@ function Chart({rows,metric}:{rows:Result[];metric:'balance'|'payment'}) {
   }).map(point => point.join(',')).join(' ');
   return <figure class="chart card">
     <figcaption><h3>{title}</h3></figcaption>
+    <div class="chart-scroll" role="region" tabIndex={0} aria-label={title+' chart. Scroll horizontally on small screens.'}>
     <svg viewBox="0 0 600 205" role="img" aria-label={title+' in dollars by year. Detailed points follow in a table.'}>
       <text x="85" y="18">{metric === 'balance' ? 'Loan balance (USD)' : 'Monthly payment (USD)'}</text>
       {[0,.5,1].map(part => <g key={part}>
@@ -69,6 +70,8 @@ function Chart({rows,metric}:{rows:Result[];metric:'balance'|'payment'}) {
       <text x="330" y="195" text-anchor="middle">Years</text>
       {rows.map((row,i) => <polyline key={row.plan} points={coords(row)} fill="none" stroke={colors[i]} stroke-dasharray={dash[i]} stroke-width="3"/>)}
     </svg>
+    </div>
+    <p class="chart-scroll-hint">On a narrow screen, scroll the chart sideways to read the full scale.</p>
     <ul class="legend chart-legend">{rows.map((row,i) => <li key={row.plan}><svg viewBox="0 0 26 8" aria-hidden="true" focusable="false"><path d="M0 4H26" stroke={colors[i]} stroke-dasharray={dash[i]} stroke-width="3"/></svg>{row.title}</li>)}</ul>
     <p class="muted">Each line ends at the projected payoff or forgiveness date.</p>
     <details><summary>View chart data</summary><div class="table-wrap" role="region" tabIndex={0} aria-label={title + " data"}><table><thead><tr><th scope="col">Plan</th><th scope="col">Month</th><th scope="col">Amount</th></tr></thead>
