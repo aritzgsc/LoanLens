@@ -53,6 +53,8 @@
         ad.style.display = 'block';
         ad.dataset.adClient = slot.dataset.adClient;
         ad.dataset.adSlot = slot.dataset.adUnit;
+        ad.dataset.adFormat = 'auto';
+        ad.dataset.fullWidthResponsive = 'true';
         slot.replaceChildren(ad);
         try { (window.adsbygoogle ||= []).push({}); } catch { ad.remove(); slot.removeAttribute('data-ad-active'); }
       }
