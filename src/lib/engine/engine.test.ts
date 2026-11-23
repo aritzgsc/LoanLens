@@ -1,6 +1,17 @@
 import { describe, expect, it } from 'vitest';
 import { compare, example, paymentAtRate, poverty, rapPayment, remainingPslf, rules } from './index';
 
+describe('financial source transparency', () => {
+ it('does not present an unknown value as verified', () => {
+  for(const [key, rule] of Object.entries(rules)) {
+   const item=rule as {status:string;value:unknown;source:string;retrieved:string};
+   expect(['VERIFIED','UNVERIFIED'],key).toContain(item.status);
+   if(item.value===null) expect(item.status,key).toBe('UNVERIFIED');
+   expect(item.source,key).toMatch(/^https:\/\//);
+   expect(item.retrieved,key).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  }
+ });
+});
 describe('repayment estimates', () => {
   it('uses the RAP floor and full AGI brackets', () => {
     expect(rapPayment(0, 0)).toBe(10);

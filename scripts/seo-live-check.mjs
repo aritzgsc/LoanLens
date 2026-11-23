@@ -89,6 +89,31 @@ if(sitemap){
   for(const path of pages){
     if(!indexed.has(origin+path))failures.push('Sitemap missing published page '+path);
   }
+  const checked=new Set(results.map(row=>row.path));
+  for(const loc of [...indexed].sort()) {
+    if(!loc.startsWith(origin+'/')) {failures.push('Sitemap page points to another origin: '+loc);continue;}
+    const path=new URL(loc).pathname;
+    if(checked.has(path))continue;
+    const data=await load(path);
+    if(!data)continue;
+    const html=data.body;
+    const canonical=html.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i)?.[1]??'';
+    const robotsMeta=html.match(/<meta\s+name="robots"\s+content="([^"]+)"/i)?.[1]??'';
+    const title=html.match(/<title>([^<]+)<\/title>/i)?.[1]??'';
+    const description=html.match(/<meta\s+name="description"\s+content="([^"]+)"/i)?.[1]??'';
+    if(canonical!==loc)failures.push(path+': canonical mismatch ('+canonical+')');
+    if(!/\bindex\b/i.test(robotsMeta)||/\bnoindex\b/i.test(robotsMeta))failures.push(path+': indexability blocked');
+    if(!title||!description)failures.push(path+': title or description missing');
+    if((html.match(/<h1(?=\s|>)/gi)||[]).length!==1)failures.push(path+': expected one H1');
+    if(!html.includes('application/ld+json'))failures.push(path+': missing JSON-LD');
+    results.push({path,status:data.response.status,canonical,robots:robotsMeta,title});
+    checked.add(path);
+  }
+}
+const seenTitles=new Set();
+for(const row of results) {
+  if(seenTitles.has(row.title))failures.push(row.path+': duplicate public HTML title '+row.title);
+  seenTitles.add(row.title);
 }
 console.log('LoanLens public SEO healthcheck: '+results.length+' HTML routes tested');
 for(const result of results)console.log(result.status+' '+result.path+' | '+result.robots);

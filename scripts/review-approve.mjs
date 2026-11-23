@@ -29,7 +29,7 @@ for (const name of selected) {
     console.log(name + ' is already reviewed.');
     continue;
   }
-  console.log(name + '\n  [ ] Verify factual claims and src/data references.\n  [ ] Fill real author and contact information.\n  [ ] Check internal and primary source links.');
+  console.log(name + '\n  [ ] Verify factual claims and src/data references.\n  [ ] Confirm truthful publisher attribution and public issue-report route (no fictitious name/email).\n  [ ] Check internal and primary source links.');
   const newline = header[0].includes('\r\n') ? '\r\n' : '\n';
   const fields = header[1].split(/\r?\n/).filter(line => !/^reviewed:/.test(line));
   const statusIndex = fields.findIndex(line => /^status:/.test(line));
