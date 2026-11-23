@@ -1,5 +1,7 @@
 import { useState } from 'preact/hooks';
 import { annualMonths, dateAfter, dateLabel, example, formatUSD, rapPayment, remainingPslf, rules } from '../lib/engine';
+import { deadlineFromNotice } from '../lib/deadline-guidance';
+import { formatPercent } from '../lib/presentation';
 const money = formatUSD;
 export type Tool = 'deadlines'|'married'|'parent'|'pslf'|'income';
 export const toolTitles: Record<Tool,{title:string;description:string}> = {
@@ -11,23 +13,18 @@ export const toolTitles: Record<Tool,{title:string;description:string}> = {
 };
 const currentMonth = () => new Date().toISOString().slice(0,7);
 const usd = (amount: number) => formatUSD(amount, 'whole');
-const day = (value:string, add:number) => {
-  const date = new Date(value+'T00:00:00Z');
-  if (!Number.isFinite(date.valueOf())) return 'Enter a valid notice date';
-  date.setUTCDate(date.getUTCDate()+add);
-  return date.toISOString().slice(0,10);
-};
 function N({label,help,value,max=100000000,currency=false,change}:{label:string;help:string;value:number;max?:number;currency?:boolean;change:(value:number)=>void}) {
   const [editing,setEditing]=useState<string|null>(null);
   const formatted = (amount:number) => currency ? formatUSD(amount, Number.isInteger(amount) ? 'whole' : 'exact') : String(amount);
   const parse = (raw:string):number|null => {
     const normalized = raw.replaceAll(',', '').replace(/^\$/, '');
-    const valid = currency ? /^\d*(?:\.\d{0,2})?$/.test(normalized) : /^\d*$/.test(normalized);
+    const valid = currency ? /^\d+(?:\.\d{0,2})?$/.test(normalized) : /^\d+$/.test(normalized);
     const amount = Number(normalized);
     return valid && Number.isFinite(amount) && amount >= 0 && amount <= max ? amount : null;
   };
+  const invalid = editing !== null && parse(editing) === null;
   return <label class="field"><span>{label}</span>
-    <input inputMode={currency ? 'decimal' : 'numeric'}
+    <input inputMode={currency ? 'decimal' : 'numeric'} aria-invalid={invalid ? 'true' : undefined}
       value={editing ?? formatted(value)}
       // Select instead of mutating the value on focus: DOM value changes during
       // focus can invalidate the browser's "select all" in a quick paste/fill.
@@ -35,10 +32,10 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
       onBlur={event => {
         // Read the DOM value before formatting so fast edits are committed
         // even if Preact has not rendered the last input event yet.
-        const parsed = parse(event.currentTarget.value);
-        if (parsed !== null) change(parsed);
-        event.currentTarget.value = formatted(parsed ?? value);
-        setEditing(null);
+        const raw = event.currentTarget.value;
+        const parsed = parse(raw);
+        if (parsed !== null) {change(parsed);setEditing(null);}
+        else setEditing(raw); // Keep invalid content visible until corrected.
       }}
       onInput={event => {
         const raw = event.currentTarget.value;
@@ -47,6 +44,7 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
         if (parsed !== null) change(parsed);
       }}/>
     <small class="field-hint">{help}</small>
+    {invalid && <small class="field-error" role="alert">Enter a valid {currency?'dollar amount (up to two decimal places)':'whole number'} from 0 to {max.toLocaleString('en-US')}. Correct this value; the previous valid figure is used until then.</small>}
   </label>;
 }
 function Deadlines() {
@@ -54,6 +52,7 @@ function Deadlines() {
   const [notice,setNotice]=useState('');
   const [noticeType,setNoticeType]=useState('first');
   const days = noticeType==='first'?rules.saveNoticeDays.value:rules.saveFinalNoticeDays.value;
+  const estimate = deadlineFromNotice(notice,days);
   return <>
     <ol class="tool-pane card">
       <li><strong>{rules.newLoanDate.value}.</strong> RAP and Tiered Standard take effect. New Direct Loans can change options across the portfolio.</li>
@@ -64,10 +63,15 @@ function Deadlines() {
     <label class="field">Current plan or situation<small class="field-hint">Use the plan listed in your servicer account.</small><select value={plan} onChange={e=>setPlan(e.currentTarget.value)}>
       <option value="save">SAVE</option><option value="paye">PAYE</option><option value="icr">ICR</option><option value="parent">Parent PLUS</option><option value="other">Another plan or unsure</option>
     </select></label>
-    {plan==='save' && <div class="fields"><label class="field">Notice date<input type="date" value={notice} onInput={e=>setNotice(e.currentTarget.value)}/></label><label class="field">Notice type<select value={noticeType} onChange={e=>setNoticeType(e.currentTarget.value)}><option value="first">First notice</option><option value="final">Final notice</option></select></label></div>}
-    <p class="notice" aria-live="polite">{plan==='save'?notice?`Estimated deadline: ${day(notice,days)}. Use the date printed in your notice when it differs.`:'Check your servicer inbox for your personal deadline.'
-      :plan==='paye'||plan==='icr'?`Choose an eligible replacement before ${rules.sunsetDate.value}. Contact your servicer if Parent PLUS debt is involved.`
-        :plan==='parent'?<a href="/tools/parent-plus-consolidation-checker/">Check the Parent PLUS transition pathway</a>:'Confirm your current plan and messages in your servicer account.'}</p>
+    {plan==='save' && <>
+      <p class="field-hint">Use the date you received the SAVE notice from <strong>your loan servicer</strong>, not a general Federal Student Aid email. Check the instructions and actual deadline in your servicer inbox.</p>
+      <div class="fields"><label class="field">Notice date<small class="field-hint">Date you received the notice from your loan servicer</small><input type="date" value={notice} onInput={e=>setNotice(e.currentTarget.value)}/></label><label class="field">Notice type<select value={noticeType} onChange={e=>setNoticeType(e.currentTarget.value)}><option value="first">First 90-day notice</option><option value="final">Final 30-day notice</option></select></label></div>
+    </>}
+    <div class="notice deadline-result" aria-live="polite">{plan==='save' ? (estimate
+      ? <><strong>Estimated deadline: {estimate.iso} ({estimate.label}).</strong> <strong class="deadline-state">{estimate.state==='passed'?`This estimated date has already passed (${estimate.days} days ago).`:estimate.state==='today'?'This estimated date is today.':`This estimated date is coming up in ${estimate.days} days.`}</strong> <span>Your servicer's actual deadline may differ. {estimate.state==='passed'?'Check your latest notice, current plan and possible final 30-day notice; contact your servicer.':'Follow your servicer notice instructions and confirm the date.'} This tool cannot determine which plan you were assigned.</span></>
+      : 'Check your loan servicer inbox for your personal SAVE transition deadline. A general FSA email does not start the 90-day period.')
+      :plan==='paye'||plan==='icr'?`Review options before ${rules.sunsetDate.value}, but use your servicer notice for account-specific requirements and dates.`
+        :plan==='parent'?<a href="/tools/parent-plus-consolidation-checker/">Check the Parent PLUS transition pathway</a>:'Confirm your current plan and messages in your servicer account.'}</div>
     {plan==='save' && <p class="warning">Prior payment credit is unverified for this scenario. {rules.saveHistory.note}</p>}
     <a href={rules.saveNoticeDays.source}>Read Federal Student Aid’s SAVE guidance</a></section>
   </>;
@@ -104,7 +108,7 @@ function Parent() {
     <div class="notice" aria-live="polite">{choice==='before'?(payment==='yes'?'Ask your servicer to confirm that you qualify for the IBR transition and that your ICR payment is recorded.':`Ask your servicer about timely ICR enrollment and the required payment before the ${rules.sunsetDate.value} transition.`)
       :choice==='after'||choice==='never'?'Consolidating now generally does not open this ICR-to-IBR pathway. Ask which fixed repayment options apply to your loans.'
         :'Check the consolidation disbursement date and underlying loan types in your aid history.'}</div>
-    <p class="warning"><strong>Operational cutoff unverified.</strong> {rules.parentOperationalCutoff.note}</p>
+    {choice==='before' && payment!=='yes' && <p class="warning"><strong>Operational timing requires confirmation.</strong> {rules.parentOperationalCutoff.note}</p>}
     <a href={rules.parentIcrPayments.source}>Read Federal Student Aid’s Parent PLUS guidance</a>
   </section>;
 }
@@ -125,10 +129,10 @@ function Income() {
   const table = rules.rapBands.value.map(([limit,rate],i)=>{
     const lower = i===0?0:rules.rapBands.value[i-1][0]??0;
     return {range:i===0?`Up to ${usd(limit ?? 0)}`:limit===null?`Above ${usd(lower)}`:`Above ${usd(lower)} through ${usd(limit)}`,
-      rate:(rate??0)*100,example:limit ?? lower+10000};
+      rate:formatPercent(rate??0),example:limit ?? lower+10000};
   });
   return <section class="tool-pane card"><N label="Dependents claimed on your return" help="Use the count from the tax return that supplies your income." value={dependents} max={30} change={setDependents}/>
-    <div class="table-wrap" role="region" tabIndex={0} aria-label="RAP payments by income bracket"><table><caption>Borrower with no eligible spouse debt. Starting monthly payment uses the sample AGI.</caption><thead><tr><th scope="col">AGI bracket</th><th scope="col">Full AGI rate</th><th scope="col">Sample AGI</th><th scope="col">Monthly payment</th></tr></thead><tbody>{table.map(row=><tr key={row.range}><th scope="row">{row.range}</th><td>{row.rate}%</td><td>{usd(row.example)}</td><td>{money(rapPayment(row.example,dependents))}</td></tr>)}</tbody></table></div>
+    <div class="table-wrap" role="region" tabIndex={0} aria-label="RAP payments by income bracket"><table><caption>Borrower with no eligible spouse debt. Starting monthly payment uses the sample AGI.</caption><thead><tr><th scope="col">AGI bracket</th><th scope="col">Full AGI rate</th><th scope="col">Sample AGI</th><th scope="col">Monthly payment</th></tr></thead><tbody>{table.map(row=><tr key={row.range}><th scope="row">{row.range}</th><td>{row.rate}</td><td>{usd(row.example)}</td><td>{money(rapPayment(row.example,dependents))}</td></tr>)}</tbody></table></div>
     <p>The assigned rate applies to full AGI, divided by {annualMonths}, before the dependent reduction and payment floor.</p>
   </section>;
 }
