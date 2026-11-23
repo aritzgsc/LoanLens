@@ -34,6 +34,14 @@ Remove-Item Env:PUBLISH_DRAFTS
 
 Use `npm run preview` to serve the last static build. Check HTML in `dist` with `npm run check:links`; the script verifies one H1, unique titles, canonicals, JSON-LD, reserved results slots, local assets and draft publication rules.
 
+## Vercel Web Analytics — traffic before monetization
+
+The project includes **`@vercel/analytics@2.0.1`** and mounts its official Astro `<Analytics mode="production" />` component once in `src/layouts/Base.astro`. This covers all public routes without separate page scripts, advertising, Google Analytics, custom events or tracking cookies. It does **not** change Search Console, AdSense or the advertising CMP.
+
+To view traffic, enable Web Analytics in the **`loan-lens` Vercel project** under Analytics/Web Analytics. After publishing a verified `main` deployment, visit `https://myloanlens.vercel.app/` with a browser that does not block analytics, move to `/tools/` and `/guides/`, and look for page-view requests under the Vercel analytics endpoint shown in its dashboard (Vercel v2 may use a unique path instead of `/_vercel/insights/`). Inspect the Vercel dashboard's Visitors, Page Views, Pages and Referrers. No personal borrower values should be included in events.
+
+To measure search discovery separately, use Search Console **Pages** and **Performance → Search results**; sending a sitemap does not by itself mean pages are indexed. See [the monitoring checklist](docs/TRAFFIC_MONITORING.md).
+
 ## Configuration
 
 | Variable | Behavior |
