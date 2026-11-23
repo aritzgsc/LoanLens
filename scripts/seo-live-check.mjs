@@ -9,6 +9,7 @@ const expected='https://myloanlens.vercel.app';
 const pages=['/','/tools/','/guides/','/calculator/','/about/','/contact/','/guides/faq/'];
 const failures=[];
 const results=[];
+const expectedSha=process.env.EXPECTED_DEPLOY_SHA?.trim();
 if(origin!==expected) {
   console.error('Expected the canonical public origin: '+expected);
   process.exit(2);
@@ -46,6 +47,29 @@ for(const path of pages) {
   if(!/^text\/html\b/i.test(response.headers.get('content-type')??''))failures.push(path+': not served as HTML');
   if((body.match(/<h1(?=\s|>)/gi)||[]).length!==1)failures.push(path+': expected one H1');
   results.push({path,status:response.status,canonical,robots:meta,title});
+}
+const version=await load('/version.json');
+if(version) {
+  try {
+    const data=JSON.parse(version.body);
+    if(!/^[a-f0-9]{40}$/.test(data.sha))failures.push('version.json: missing deployment SHA');
+    if(expectedSha && data.sha!==expectedSha)failures.push('Deployed SHA '+data.sha+' does not match expected '+expectedSha);
+    console.log('Production release SHA: '+data.sha);
+  }catch{ failures.push('version.json: not valid JSON'); }
+}
+const redirects=[
+ ['/rap-calculator/','/calculator/'],
+ ['/compare/','/calculator/'],
+ ['/pslf-tracker/','/tools/pslf-payment-tracker/'],
+ ['/guides/what-if-i-do-nothing/','/guides/save-ended-what-now/'],
+];
+for(const [from,to] of redirects){
+  try{
+    const response=await fetch(origin+from,{redirect:'manual',signal:AbortSignal.timeout(15000)});
+    const location=response.headers.get('location')??'';
+    if(response.status!==301 || new URL(location,origin).pathname!==to)
+      failures.push(from+': expected 301 to '+to+', got '+response.status+' → '+location);
+  } catch(error){failures.push(from+': '+String(error));}
 }
 const robots=await load('/robots.txt');
 if(robots) {
