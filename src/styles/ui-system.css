@@ -553,3 +553,6 @@ main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1040px);m
    the v6 vertical rhythm independent from older page-specific selectors. */
 .page-section{margin-block:var(--ll-page-section-gap)}
 .home-explain.page-section,.home-questions.page-section,.support.page-section{padding-block:0}
+
+/* The standalone college-aid comparison is a full member of the Tools family. */
+#aid-comparison-form{scroll-margin-top:1.2rem}
