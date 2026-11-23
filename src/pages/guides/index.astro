@@ -51,6 +51,11 @@ const introductions:Record<string,{title:string;forYou:string;outcome:string}>={
     forYou:'You have public-service employment or an official PSLF count.',
     outcome:'What 120 means, how to read your count and when to seek review.'
   },
+  'faq':{
+    title:'Common student loan questions, answered',
+    forYou:'You need a quick answer before choosing a tool.',
+    outcome:'Short explanations and links to relevant calculators and official references.'
+  },
 };
 const resources=entries.map(entry=>({
   href:entryPath(entry),
@@ -59,8 +64,9 @@ const resources=entries.map(entry=>({
   forYou:introductions[entry.id]?.forYou??'You want an explanation of this topic.',
   outcome:introductions[entry.id]?.outcome??'Context, examples and links to official sources.',
   topic:topicsById[entry.id]??'repayment',
-  kind:topicsById[entry.id]==='college'?'College costs':topicsById[entry.id]==='forgiveness'?'Forgiveness':'Repayment',
-  detail:'Step-by-step guide',
+  kind:entry.id==='faq'?'FAQ':topicsById[entry.id]==='college'?'College costs':topicsById[entry.id]==='forgiveness'?'Forgiveness':'Repayment',
+  detail:entry.id==='faq'?'Quick answers':'Step-by-step guide',
+  action:entry.id==='faq'?'Read common answers':'Read the guide',
   featured:order.slice(0,3).includes(entry.id),
 })).sort((a,b)=>{
   const aIndex=order.indexOf(a.href.split('/').filter(Boolean).at(-1)??'');
