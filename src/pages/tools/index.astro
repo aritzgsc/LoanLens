@@ -3,13 +3,13 @@ import Base from '../../layouts/Base.astro';
 import ResourceExplorer from '../../components/ResourceExplorer.astro';
 import GoalFinder from '../../components/GoalFinder.astro';
 const resources = [
-  {href:'/tools/compare-college-aid-offers/',title:'Which college will cost me less?',description:'Compare two offer letters without treating loans as free aid.',forYou:'You have offers from two schools.',outcome:'Annual net price, loans and funding gap side by side.',kind:'College costs',detail:'Side-by-side comparison',topic:'college',featured:true},
-  {href:'/calculator/',title:'What might my monthly payment be?',description:'Compare projected payments and full repayment cost—not just the starting amount.',forYou:'You have a loan balance and interest rate.',outcome:'Estimated payments, total paid, time and assumptions.',kind:'Repayment',detail:'Three-step calculator',topic:'repayment',featured:true},
-  {href:'/rap-payment-by-income/',title:'How does income affect RAP estimates?',description:'See sample payments across income ranges and dependent counts.',forYou:'You want to understand the RAP formula.',outcome:'A sample-income table with monthly estimates.',kind:'Repayment',detail:'Income reference table',topic:'repayment'},
-  {href:'/tools/married-rap-impact/',title:'Does my spouse’s income change this estimate?',description:'Compare illustrative RAP payments under different household assumptions.',forYou:'You and your spouse have income or loan debt.',outcome:'A side-by-side modeled household comparison.',kind:'Household',detail:'Two-scenario estimate',topic:'repayment'},
-  {href:'/deadlines/',title:'What deadline should I check?',description:'Use the date from your repayment notice to explore a possible deadline.',forYou:'You received a notice or are changing plans.',outcome:'A calculated date to verify in your real notice.',kind:'Timeline',detail:'Date helper',topic:'repayment'},
-  {href:'/tools/pslf-payment-tracker/',title:'How far am I from 120 PSLF payments?',description:'See a projected milestone using an official count for one loan.',forYou:'You already have a certified PSLF count.',outcome:'Remaining payment periods and target month.',kind:'Forgiveness',detail:'Milestone tracker',topic:'forgiveness'},
-  {href:'/tools/parent-plus-consolidation-checker/',title:'Which Parent PLUS questions should I ask?',description:'Understand what consolidation dates and payment history to verify.',forYou:'You have Parent PLUS or consolidation history.',outcome:'A practical checklist for your loan servicer.',kind:'Special cases',detail:'Guided checklist',topic:'special'},
+  {href:'/tools/compare-college-aid-offers/',title:'Which college will cost me less?',description:'Compare two offer letters without treating loans as free aid.',forYou:'You have offers from two schools.',outcome:'Annual net price, loans and funding gap side by side.',kind:'College costs',detail:'Side-by-side comparison',action:'Compare two offers',topic:'college',featured:true},
+  {href:'/calculator/',title:'What might my monthly payment be?',description:'Compare projected payments and full repayment cost—not just the starting amount.',forYou:'You have a loan balance and interest rate.',outcome:'Estimated payments, total paid, time and assumptions.',kind:'Repayment',detail:'Three-step calculator',action:'Estimate loan payments',topic:'repayment',featured:true},
+  {href:'/rap-payment-by-income/',title:'How does income affect RAP estimates?',description:'See sample payments across income ranges and dependent counts.',forYou:'You want to understand the RAP formula.',outcome:'A sample-income table with monthly estimates.',kind:'Repayment',detail:'Income reference table',action:'Explore RAP by income',topic:'repayment'},
+  {href:'/tools/married-rap-impact/',title:'Does my spouse’s income change this estimate?',description:'Compare illustrative RAP payments under different household assumptions.',forYou:'You and your spouse have income or loan debt.',outcome:'A side-by-side modeled household comparison.',kind:'Household',detail:'Two-scenario estimate',action:'Compare household estimates',topic:'repayment'},
+  {href:'/deadlines/',title:'What deadline should I check?',description:'Use the date from your repayment notice to explore a possible deadline.',forYou:'You received a notice or are changing plans.',outcome:'A calculated date to verify in your real notice.',kind:'Timeline',detail:'Date helper',action:'Check a notice date',topic:'repayment'},
+  {href:'/tools/pslf-payment-tracker/',title:'How far am I from 120 PSLF payments?',description:'See a projected milestone using an official count for one loan.',forYou:'You already have a certified PSLF count.',outcome:'Remaining payment periods and target month.',kind:'Forgiveness',detail:'Milestone tracker',action:'Track PSLF progress',topic:'forgiveness'},
+  {href:'/tools/parent-plus-consolidation-checker/',title:'Which Parent PLUS questions should I ask?',description:'Understand what consolidation dates and payment history to verify.',forYou:'You have Parent PLUS or consolidation history.',outcome:'A practical checklist for your loan servicer.',kind:'Special cases',detail:'Guided checklist',action:'Check Parent PLUS options',topic:'special'},
 ];
 const topics=[
   {value:'college',label:'Before college'},
@@ -26,7 +26,7 @@ const topics=[
       <p>Compare college costs, estimate loan payments, check deadlines or track progress. Choose a question and go straight to the matching tool.</p>
       <div class="hero-actions">
         <a class="primary button-link" href="#find-a-tool">Help me choose</a>
-        <a class="secondary button-link" href="/guides/">Learn the basics first</a>
+        <a class="secondary button-link" href="#browse-tools">Browse all 7 tools</a>
       </div>
       <p class="hero-microcopy">Free · No account required · Independent educational estimates</p>
     </div>

@@ -1,6 +1,8 @@
 export const siteName = import.meta.env.PUBLIC_SITE_NAME?.trim() || 'LoanLens';
-export const author = {name:'{{AUTHOR_NAME}}',bio:'{{AUTHOR_BIO}}'};
-export const contact = '{{CONTACT_EMAIL}}';
+// Project attribution, not a claim of professional or individually signed review.
+// An editor and private support address must be added only when genuinely available.
+export const author = {name:'LoanLens',bio:'Independent educational website maintained through its public GitHub repository. No individual professional reviewer is claimed.'};
+export const contact = ''; // No private support inbox is currently published.
 // Public AdSense publisher ID. Production can override it with a valid ID.
 const publisherOverride = (import.meta.env.PUBLIC_ADSENSE_CLIENT || '').trim();
 export const publisher = /^ca-pub-\d+$/.test(publisherOverride) ? publisherOverride : 'ca-pub-8177969374546909';
@@ -16,7 +18,7 @@ export const trustLinks = [
 export const toolLinks = [
   ['/tools/compare-college-aid-offers/','Compare college aid offers','Compare net price, planned borrowing, and what remains to pay.'],
   ['/deadlines/','Repayment deadlines','Find the next date that applies to your loans.'],
-  ['/tools/married-rap-impact/','Married RAP impact','Compare separate and joint repayment estimates.'],
+  ['/tools/married-rap-impact/','Married RAP payment calculator','Compare separate and joint repayment estimates.'],
   ['/tools/parent-plus-consolidation-checker/','Parent PLUS options','Check how consolidation timing can affect eligibility.'],
   ['/tools/pslf-payment-tracker/','PSLF payment tracker','Estimate when you could reach the payment requirement.'],
   ['/rap-payment-by-income/','RAP payments by income','Explore payment ranges by income and dependents.']

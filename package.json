@@ -8,7 +8,7 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run verify-data && astro build",
+    "build": "npm run verify-data && astro build && node scripts/write-version.mjs",
     "preview": "astro preview",
     "lint": "eslint .",
     "typecheck": "astro check",

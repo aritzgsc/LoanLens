@@ -99,7 +99,7 @@
       gppConsent = Boolean(response?.signalStatus === 'ready' && applies && !denied);
       refresh();
     };
-    window.__gpp('addEventListener',(e,ok)=>{
+    window.__gpp('addEventListener',(_event,ok)=>{
       if (ok) {
         gppConsent=false;
         refresh();

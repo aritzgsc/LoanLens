@@ -5,8 +5,8 @@ import { AxeBuilder } from '@axe-core/playwright';
 
 const [origin = 'http://localhost:4321', output = 'audit-artifacts', dist = 'dist'] = process.argv.slice(2);
 const reportDir = resolve(output);
-const widths = [320, 390, 768, 1024, 1440];
-const heights = { 320: 740, 390: 844, 768: 1024, 1024: 768, 1440: 900 };
+const widths = [320, 375, 390, 768, 1024, 1440, 1920];
+const heights = { 320: 740, 375: 844, 390: 844, 768: 1024, 1024: 768, 1440: 900, 1920: 1080 };
 const routeName = path => path === '/' ? 'home' : path.slice(1, -1).replaceAll('/', '--');
 const allPages = (await readdir(resolve(dist), { recursive: true }))
   .map(path => path.replaceAll('\\', '/'))
@@ -241,6 +241,32 @@ try {
               await page.getByRole('button',{name:'Reset',exact:true}).click();
             }
           }
+          if (route === '/calculator/' && colorScheme==='light' && [320,1440].includes(width)) {
+            const loan=page.getByRole('group',{name:'Loan 1'});
+            const balance=loan.getByRole('textbox',{name:'Current balance'});
+            const rate=loan.getByRole('textbox',{name:'Annual interest rate'});
+            const type=loan.getByLabel('Loan type');
+            const history=page.getByLabel('Federal borrowing history');
+            await balance.fill('30000');
+            await rate.fill('7');
+            await rate.press('Tab'); await rate.focus();
+            if (await rate.inputValue()!=='7') throw new Error('Interest edit reintroduced binary float for 7%');
+            await rate.fill('6.53'); await rate.press('Tab'); await rate.focus();
+            if (await rate.inputValue()!=='6.53') throw new Error('Interest edit reintroduced binary float for 6.53%');
+            await page.getByRole('button',{name:'Continue'}).click();
+            await page.getByText('Check your federal borrowing history').first().waitFor();
+            if (await page.getByRole('heading',{name:'Describe your household'}).count())
+              throw new Error('Unknown loan vintage advanced to a misleading zero-plan result');
+            await history.selectOption('old');
+            for (const loanType of ['ffel','perkins','parent-plus','private']) {
+              await type.selectOption(loanType);
+              await page.getByRole('button',{name:'Continue'}).click();
+              await page.getByText('This loan mix needs a plan-by-plan check').first().waitFor();
+            }
+            await type.selectOption('unsubsidized');
+            await page.getByRole('button',{name:'Continue'}).click();
+            await page.getByRole('heading',{name:'Describe your household'}).waitFor();
+          }
           if (route === '/tools/compare-college-aid-offers/') {
             const cost = page.getByRole('group', { name: 'School A', exact: true })
               .getByRole('textbox', { name: 'Annual cost of attendance (USD)' });
@@ -289,8 +315,11 @@ try {
           if (route === '/deadlines/') {
             await page.getByLabel('Notice date').fill('2026-11-05');
             await page.getByText(/Estimated deadline/).waitFor();
+            await page.getByText(/coming up/).waitFor();
+            await page.getByLabel('Notice date').fill('2026-07-01');
+            await page.getByText(/already passed/).waitFor();
             await page.getByLabel('Current plan or situation').selectOption('paye');
-            await page.getByText(/Choose an eligible replacement/).waitFor();
+            await page.getByText(/Review options before/).waitFor();
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-plan-changed');
           }
           if (route === '/tools/married-rap-impact/') {
@@ -311,12 +340,25 @@ try {
                 ' afterNotice=' + afterNotice.slice(0,130));
             const issues = await page.evaluate(fieldRowAlignment);
             if (issues.length) throw new Error('Married RAP: ' + issues.join('; '));
+            if (colorScheme==='light' && [320,1440].includes(width)) {
+              await income.fill('abc'); await income.press('Tab');
+              if (await income.getAttribute('aria-invalid')!=='true' || await income.inputValue()!=='abc')
+                throw new Error('Invalid married RAP income was silently reset');
+              await page.getByRole('alert').getByText(/valid dollar amount/).waitFor();
+              await income.fill('45000'); await income.press('Tab');
+              if (await income.getAttribute('aria-invalid')==='true') throw new Error('Corrected married RAP field remained invalid');
+            }
             if (colorScheme === 'light' && [320, 390, 1440].includes(width)) await capture(prefix + '-edited');
           }
           if (route === '/tools/parent-plus-consolidation-checker/') {
             await page.getByLabel(/When was your Parent PLUS consolidation loan disbursed/).selectOption('before');
             await page.getByLabel(/Made an ICR payment/).selectOption('yes');
             await page.getByText(/Ask your servicer to confirm/).waitFor();
+            if(await page.locator('.warning').filter({hasText:/Operational timing/}).count())
+              throw new Error('Irrelevant cutoff warning is visible after confirmed ICR payment');
+            await page.getByLabel(/When was your Parent PLUS consolidation loan disbursed/).selectOption('never');
+            if(await page.locator('.warning').filter({hasText:/Operational timing/}).count())
+              throw new Error('Irrelevant cutoff warning is visible when never consolidated');
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-eligible-path');
           }
           if (route === '/tools/pslf-payment-tracker/') {
@@ -331,7 +373,17 @@ try {
             await dependents.fill('2');
             await dependents.press('Tab');
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
+            const rates=await page.getByRole('table').locator('tbody tr td:nth-child(2)').allTextContents();
+            if (rates.some(rate=>!/^(?:[0-9]|10)%$/.test(rate.trim())))
+              throw new Error('RAP income rate exposes imprecise percentages: '+rates.join(', '));
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
+          }
+          if (['/terms/','/accessibility/','/guides/faq/'].includes(route)) {
+            const title=await page.title();
+            const branding=(title.match(/\| LoanLens/g)||[]).length;
+            if(branding!==1) throw new Error('Duplicate or missing LoanLens brand suffix in '+route+': '+title);
+            const h1=await page.locator('main h1').innerText();
+            if(/\| LoanLens/.test(h1)) throw new Error('Redundant brand suffix in H1: '+h1);
           }
           if (['/about/','/contact/','/privacy/','/sources/','/editorial-policy/',
                '/advertising/','/disclaimer/','/terms/','/accessibility/'].includes(route)) {
