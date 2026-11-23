@@ -111,11 +111,17 @@ const designConsistency = () => {
   const radius = parseFloat(style.borderTopLeftRadius);
   const padding = parseFloat(style.paddingLeft);
   const headlineSize = type ? parseFloat(type.fontSize) : 0;
-  if (radius < 15 || radius > 22) issues.push('Inconsistent hero radius: ' + radius);
+  const expectedRadius = innerWidth <= 650 ? 16 : 20;
+  if (Math.abs(radius - expectedRadius) > .6)
+    issues.push('Inconsistent hero radius: expected ' + expectedRadius + 'px, got ' + radius + 'px');
   if (padding < 16 || padding > 48) issues.push('Inconsistent hero inset: ' + padding);
   if (!style.backgroundImage.includes('linear-gradient')) issues.push('Hero has a different background treatment');
   if (style.textAlign !== 'left') issues.push('Hero hierarchy is not left aligned: ' + style.textAlign);
-  if (!type || headlineSize < 28 || headlineSize > 66) issues.push('Inconsistent hero heading scale: ' + headlineSize);
+  const expectedTitle = innerWidth <= 650
+    ? Math.max(29.6, Math.min(innerWidth * .05, 33.6))
+    : Math.max(32, Math.min(innerWidth * .043, 52));
+  if (!type || (location.pathname !== '/' && Math.abs(headlineSize - expectedTitle) > 2))
+    issues.push('Inconsistent hero heading scale: expected ' + expectedTitle + 'px, got ' + headlineSize + 'px');
   if (style.borderTopStyle !== 'solid' || parseFloat(style.borderTopWidth) < 1) issues.push('Hero border is missing');
   if (heroRect.width < Math.min(250, innerWidth-50)) issues.push('Hero unexpectedly narrow: ' + heroRect.width);
   return {issues,metrics:{radius,padding,headlineSize,background:style.backgroundImage,

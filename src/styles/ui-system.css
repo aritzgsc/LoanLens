@@ -507,7 +507,7 @@ body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
   .hero.tool-detail-hero.page-hero h1,
   .trust-page .trust-hero.page-hero h1,
   .editorial-frame:not(.trust-page) .page-hero h1{
-    font-size:clamp(1.85rem,7.8vw,2.45rem);
+    font-size:clamp(1.85rem,5vw,2.1rem);
     line-height:1.13;
     max-width:26ch;
   }
@@ -526,6 +526,12 @@ body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
 @media(prefers-reduced-motion:reduce){
   .resource-card,.resource-path,.guide-link,.contact-option,.trust-next-grid a{transition:none}
 }
+
+/* Guides and trust/legal documents are both reading experiences, so their
+   headings and breadcrumb line follow one measured column. */
+.trust-page,.editorial-frame:not(.trust-page){width:min(100%,1040px)}
+main:has(> .trust-page) > .crumbs,
+main:has(> .editorial-frame:not(.trust-page)) > .crumbs{width:min(100%,1040px);margin-inline:auto}
 
 /* Shared spacing class applied by page templates; explicit specificity keeps
    the v6 vertical rhythm independent from older page-specific selectors. */
