@@ -93,4 +93,20 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
     </div>
   </section>}
   </div>
+  <script>
+    // Editorial content may contain tables wider than a phone screen.
+    // Keyboard and assistive-technology users must be able to focus any
+    // horizontally scrollable table or its existing scroll-region wrapper.
+    for (const [index, table] of [...document.querySelectorAll<HTMLTableElement>('.article-body table')].entries()) {
+      const region = table.closest<HTMLElement>('.table-wrap') ?? table;
+      if (region.tabIndex < 0) region.tabIndex = 0;
+      const name = table.querySelector('caption')?.textContent?.trim() || 'Guide data table ' + (index + 1);
+      if (region === table) {
+        if (!table.hasAttribute('aria-label')) table.setAttribute('aria-label', name);
+      } else {
+        region.setAttribute('role','region');
+        if (!region.getAttribute('aria-label')) region.setAttribute('aria-label', name);
+      }
+    }
+  </script>
 </Base>
