@@ -1,11 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useId, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { compare, dateLabel, example, money, rules } from '../lib/engine';
 import { scenarioIssue } from '../lib/scenario-guidance';
 import { formatEditableNumber } from '../lib/presentation';
 import type { Inputs, Loan, LoanType, Result } from '../lib/engine';
 
-const labels: Record<LoanType,string> = {'subsidized':'Direct Subsidized','unsubsidized':'Direct Unsubsidized','grad-plus':'Grad PLUS (existing or limited transition exception)','direct-consolidation':'Direct Consolidation','subsidized-consolidation':'Subsidized Direct Consolidation','parent-plus':'Parent PLUS','parent-consolidation':'Consolidated Parent PLUS','ffel':'FFEL Stafford (not Perkins)','perkins':'Federal Perkins','private':'Private'};
+const labels: Record<LoanType,string> = {'subsidized':'Direct Subsidized','unsubsidized':'Direct Unsubsidized','grad-plus':'Grad PLUS (existing or limited transition exception)','direct-consolidation':'Direct Consolidation (no Parent PLUS)','subsidized-consolidation':'Subsidized Direct Consolidation (no Parent PLUS)','parent-plus':'Parent PLUS','parent-consolidation':'Consolidated Parent PLUS','ffel':'FFEL Stafford (not Perkins)','perkins':'Federal Perkins','private':'Private'};
 const steps = ['Loans', 'Income and household', 'Goals'];
 const stepHints = ['Enter loan balances and rates', 'Add income and family details', 'Review assumptions and compare'];
 const colors = ['var(--accent)', 'var(--chart-alt)', 'var(--ink)'];
@@ -32,14 +32,18 @@ function NumberField({label,value,onChange,prefix='',suffix='',max=100000000,min
   label:string;value:number;onChange:(n:number)=>void;prefix?:string;suffix?:string;max?:number;min?:number;integer?:boolean;
 }) {
   const [editing,setEditing] = useState<string|null>(null);
-  const n = Number(editing?.replaceAll(',','') || 0);
-  const invalid = editing !== null && (!safe(n,max,min) || (integer && !Number.isInteger(n)));
+  const validationId = useId();
+  const raw = editing?.trim() ?? '';
+  const validNumber = /^-?(?:\d+(?:\.\d+)?|\d{1,3}(?:,\d{3})+(?:\.\d+)?)$/.test(raw);
+  const n = Number(raw.replaceAll(',',''));
+  const invalid = editing !== null && (!validNumber || !safe(n,max,min) || (integer && !Number.isInteger(n)));
   return <label class="field"><span>{label}</span><span class="numeric">{prefix && <span aria-hidden="true">{prefix}</span>}<input
-    inputMode={integer?'numeric':'decimal'} value={editing ?? numberFormat.format(value)} aria-invalid={invalid}
+    inputMode={integer?'numeric':'decimal'} value={editing ?? numberFormat.format(value)} aria-invalid={invalid} aria-describedby={invalid?validationId:undefined}
     onFocus={()=>setEditing(previous=>previous ?? formatEditableNumber(value))} onBlur={()=>{if (!invalid) setEditing(null);}}
     onInput={e=>{const raw=e.currentTarget.value; setEditing(raw); const next=Number(raw.replaceAll(',',''));
-      if (safe(next,max,min) && (!integer || Number.isInteger(next))) onChange(next);}}/>{suffix && <span aria-hidden="true">{suffix}</span>}</span>
-    {invalid && <small role="alert">Enter {integer?'a whole number':'an amount'} from {min} to {numberFormat.format(max)}.</small>}</label>;
+      if (/^-?(?:\d+(?:\.\d+)?|\d{1,3}(?:,\d{3})+(?:\.\d+)?)$/.test(raw.trim())
+        && safe(next,max,min) && (!integer || Number.isInteger(next))) onChange(next);}}/>{suffix && <span aria-hidden="true">{suffix}</span>}</span>
+    {invalid && <small id={validationId} role="alert">Enter {integer?'a whole number':'an amount'} from {min} to {numberFormat.format(max)}. Do not leave this value empty.</small>}</label>;
 }
 function Field({label,children}:{label:string;children:ComponentChildren}) {
   return <label class="field"><span>{label}</span>{children}</label>;
@@ -161,7 +165,7 @@ export default function Calculator() {
             <NumberField label="Current balance" prefix="$" value={loan.balance} onChange={balance=>updateLoan(i,{balance})}/>
             <NumberField label="Annual interest rate" suffix="%" value={loan.rate*100} max={100} onChange={rate=>updateLoan(i,{rate:rate/100})}/>
             <Field label="Loan type"><select value={loan.type} onChange={e=>updateLoan(i,{type:e.currentTarget.value as LoanType})}>{Object.entries(labels).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></Field>
-          </div>{loan.type==='grad-plus' && <p class="field-hint">New Grad PLUS borrowing is generally unavailable after July 1, 2026, except for limited transition cases. Check <a href="https://studentaid.gov/understand-aid/types/loans/plus/grad">official Grad PLUS exception details</a>.</p>}{input.loans.length>1 && <button type="button" class="text-button" onClick={()=>{setVersion(v=>v+1);update('loans',input.loans.filter((_,ix)=>ix!==i));}}>Remove loan {i+1}</button>}</fieldset>)}
+          </div>{['direct-consolidation','subsidized-consolidation'].includes(loan.type) && <p class="field-hint">Select this only if the consolidation loan did <strong>not</strong> repay Parent PLUS debt. Otherwise select Consolidated Parent PLUS and verify eligibility with Federal Student Aid.</p>}{loan.type==='grad-plus' && <p class="field-hint">New Grad PLUS borrowing is generally unavailable after July 1, 2026, except for limited transition cases. Check <a href="https://studentaid.gov/understand-aid/types/loans/plus/grad">official Grad PLUS exception details</a>.</p>}{input.loans.length>1 && <button type="button" class="text-button" onClick={()=>{setVersion(v=>v+1);update('loans',input.loans.filter((_,ix)=>ix!==i));}}>Remove loan {i+1}</button>}</fieldset>)}
           {input.loans.length<30 && <button type="button" class="secondary" onClick={()=>update('loans',[...input.loans,{balance:0,rate:0,type:'unsubsidized'}])}>+ Add another loan</button>}
           <Field label="Federal borrowing history"><select value={input.vintage} onChange={e=>update('vintage',e.currentTarget.value as Inputs['vintage'])}>
             <option value="unknown">I'm not sure — check my loan records</option>

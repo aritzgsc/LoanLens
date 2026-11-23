@@ -1,6 +1,6 @@
 # Editorial review packet
 
-These checks are for the publisher. Page status remains draft until the publisher runs approval with `--yes`. Review only the specific pages whose claims, placeholders and links you have checked.
+These checklists remain for **future** edits and publisher verification. Ten new topic guides were independently source-checked for their stated educational claims on 2026-11-23 and now have `status: reviewed`. That **does not** mean a named lawyer, CPA or official reviewer certified them. Reopen any page as `draft` if a rule changes or its cited evidence is not valid. The project deliberately has no invented personal author, mailbox or professional credentials.
 
 ```powershell
 npm run review:list

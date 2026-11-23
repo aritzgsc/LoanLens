@@ -1,4 +1,4 @@
-import { useState } from 'preact/hooks';
+import { useId, useState } from 'preact/hooks';
 import { annualMonths, dateAfter, dateLabel, example, formatUSD, rapPayment, remainingPslf, rules } from '../lib/engine';
 import { deadlineFromNotice } from '../lib/deadline-guidance';
 import { formatPercent } from '../lib/presentation';
@@ -15,6 +15,7 @@ const currentMonth = () => new Date().toISOString().slice(0,7);
 const usd = (amount: number) => formatUSD(amount, 'whole');
 function N({label,help,value,max=100000000,currency=false,change}:{label:string;help:string;value:number;max?:number;currency?:boolean;change:(value:number)=>void}) {
   const [editing,setEditing]=useState<string|null>(null);
+  const validationId=useId();
   const formatted = (amount:number) => currency ? formatUSD(amount, Number.isInteger(amount) ? 'whole' : 'exact') : String(amount);
   const parse = (raw:string):number|null => {
     const normalized = raw.replaceAll(',', '').replace(/^\$/, '');
@@ -24,7 +25,7 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
   };
   const invalid = editing !== null && parse(editing) === null;
   return <label class="field"><span>{label}</span>
-    <input inputMode={currency ? 'decimal' : 'numeric'} aria-invalid={invalid ? 'true' : undefined}
+    <input inputMode={currency ? 'decimal' : 'numeric'} aria-invalid={invalid ? 'true' : undefined} aria-describedby={invalid?validationId:undefined}
       value={editing ?? formatted(value)}
       // Select instead of mutating the value on focus: DOM value changes during
       // focus can invalidate the browser's "select all" in a quick paste/fill.
@@ -44,7 +45,7 @@ function N({label,help,value,max=100000000,currency=false,change}:{label:string;
         if (parsed !== null) change(parsed);
       }}/>
     <small class="field-hint">{help}</small>
-    {invalid && <small class="field-error" role="alert">Enter a valid {currency?'dollar amount (up to two decimal places)':'whole number'} from 0 to {max.toLocaleString('en-US')}. Correct this value; the previous valid figure is used until then.</small>}
+    {invalid && <small id={validationId} class="field-error" role="alert">Enter a valid {currency?'dollar amount (up to two decimal places)':'whole number'} from 0 to {max.toLocaleString('en-US')}. Correct this value; the previous valid figure is used until then.</small>}
   </label>;
 }
 function Deadlines() {

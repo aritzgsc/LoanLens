@@ -24,6 +24,11 @@ it('keeps annual net price separate from the gap after planned borrowing', () =>
   });
 });
 
+it('matches the new glossary net-price example without treating borrowing as gift aid',()=>{
+ expect(calculateAidOffer(2500000,1000000,0,500000)).toEqual({
+  netPrice:1500000,gapBeforeLoans:1500000,gapAfterLoans:1000000,borrowed:500000
+ });
+});
 it('floors the uncovered amount at zero even when aid exceeds cost', () => {
   expect(calculateAidOffer(10, 8, 5, 0).netPrice).toBe(0);
   expect(calculateAidOffer(10, 1, 1, 12).gapAfterLoans).toBe(0);

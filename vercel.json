@@ -19,8 +19,8 @@
     },
     {
       "source": "/guides/what-if-i-do-nothing/",
-      "destination": "/deadlines/",
-      "statusCode": 307
+      "destination": "/guides/save-ended-what-now/",
+      "statusCode": 301
     }
   ],
   "headers": [

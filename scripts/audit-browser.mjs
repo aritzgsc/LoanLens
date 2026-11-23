@@ -248,6 +248,11 @@ try {
             const type=loan.getByLabel('Loan type');
             const history=page.getByLabel('Federal borrowing history');
             await balance.fill('30000');
+            await balance.fill('');
+            await page.getByRole('button',{name:'Continue'}).click();
+            if(await balance.getAttribute('aria-invalid')!=='true')
+              throw new Error('Blank calculator balance was silently accepted');
+            await balance.fill('30000');
             await rate.fill('7');
             await rate.press('Tab'); await rate.focus();
             if (await rate.inputValue()!=='7') throw new Error('Interest edit reintroduced binary float for 7%');
@@ -459,7 +464,8 @@ try {
             const search=page.locator('[data-resource-search]');
             await search.fill('pslf');
             const visibleCards=page.locator('[data-resource-card]:visible');
-            if (await visibleCards.count() !== 1) throw new Error('Resource search did not narrow to one PSLF item on '+route);
+            if (route==='/tools/' ? await visibleCards.count() !== 1 : await visibleCards.count() < 2)
+              throw new Error('Resource search did not reveal expected PSLF guides/tools on '+route);
             await search.fill('nothing-matches-this-test');
             await page.getByText('No matching resources.').waitFor();
             if (await page.locator('.resource-filter-count').count() !== await page.locator('.resource-filter').count())

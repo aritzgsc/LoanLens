@@ -11,14 +11,36 @@ const topicsById:Record<string,string>={
   'student-loan-interest-explained':'repayment',
   'prepare-for-student-loan-repayment':'repayment',
   'pslf-payment-count-checklist':'forgiveness',
+  'rap-and-pslf':'forgiveness',
+  'idr-forgiveness-taxes':'forgiveness',
+  'rap-vs-ibr':'repayment',
+  'rap-payment-calculation':'repayment',
+  'save-ended-what-now':'repayment',
+  'tiered-standard':'repayment',
+  'married-filing-rap':'repayment',
+  'parent-plus-consolidation':'special',
+  'refinance-federal-loans':'repayment',
+  'glossary':'repayment',
+  'faq':'repayment',
 };
 const order=[
   'compare-college-financial-aid-offers',
   'understand-college-aid-types',
   'compare-student-loan-repayment',
   'student-loan-interest-explained',
+  'rap-payment-calculation',
+  'rap-vs-ibr',
+  'tiered-standard',
+  'married-filing-rap',
   'prepare-for-student-loan-repayment',
-  'pslf-payment-count-checklist'
+  'save-ended-what-now',
+  'parent-plus-consolidation',
+  'pslf-payment-count-checklist',
+  'rap-and-pslf',
+  'idr-forgiveness-taxes',
+  'refinance-federal-loans',
+  'glossary',
+  'faq'
 ];
 const introductions:Record<string,{title:string;forYou:string;outcome:string}>={
   'compare-college-financial-aid-offers':{
@@ -56,6 +78,16 @@ const introductions:Record<string,{title:string;forYou:string;outcome:string}>={
     forYou:'You need a quick answer before choosing a tool.',
     outcome:'Short explanations and links to relevant calculators and official references.'
   },
+  'rap-payment-calculation':{title:'How is a RAP payment calculated?',forYou:'You know your AGI and dependent count.',outcome:'A step-by-step RAP formula and examples at income brackets.'},
+  'rap-vs-ibr':{title:'Should I compare RAP and IBR?',forYou:'You have qualifying pre-July 2026 federal loans.',outcome:'Differences in income, repayment time and plan eligibility.'},
+  'tiered-standard':{title:'How long is the Tiered Standard term?',forYou:'Your Direct Loan uses the new fixed plan.',outcome:'Debt brackets, term thresholds and what to check.'},
+  'married-filing-rap':{title:'How does marriage affect RAP payments?',forYou:'You file jointly or separately from a spouse.',outcome:'How each spouse’s income and eligible debt affect one payment.'},
+  'save-ended-what-now':{title:'SAVE ended: what should I do next?',forYou:'You received a SAVE notice or have a pending application.',outcome:'First/final deadlines and next actions tied to your servicer.'},
+  'parent-plus-consolidation':{title:'Can my Parent PLUS consolidation use IBR?',forYou:'A consolidation loan repaid Parent PLUS debt.',outcome:'The dates, ICR payment history and conditions to verify.'},
+  'rap-and-pslf':{title:'Do RAP payments count toward PSLF?',forYou:'You work in public service and have a payment count.',outcome:'The qualifying-payment conditions and a milestone example.'},
+  'idr-forgiveness-taxes':{title:'Will I pay taxes on loan forgiveness?',forYou:'A projected repayment plan ends in forgiveness.',outcome:'IDR versus PSLF federal tax treatment and exceptions.'},
+  'refinance-federal-loans':{title:'What do I lose if I refinance federal loans?',forYou:'A private lender has offered to refinance your loans.',outcome:'A checklist of federal protections, rates and total costs.'},
+  'glossary':{title:'What do student loan terms mean?',forYou:'You are reading an aid letter or repayment statement.',outcome:'Plain-English definitions and a net-price example.'},
 };
 const resources=entries.map(entry=>({
   href:entryPath(entry),
@@ -73,7 +105,7 @@ const resources=entries.map(entry=>({
   const bIndex=order.indexOf(b.href.split('/').filter(Boolean).at(-1)??'');
   return (aIndex<0?999:aIndex)-(bIndex<0?999:bIndex);
 });
-const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',label:'Paying back loans'},{value:'forgiveness',label:'Forgiveness'}];
+const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',label:'Paying back loans'},{value:'forgiveness',label:'Forgiveness'},{value:'special',label:'Parent PLUS'}];
 ---
 <Base title="Student Loan and College Financial Aid Guides" description="Browse practical guides about college financial aid, loan interest, repayment costs, PSLF progress and decisions to verify with official sources." og="guides">
   <header class="resource-hero resource-hero-slim">
@@ -91,6 +123,14 @@ const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',la
 
   <GoalFinder id="find-my-guide" mode="guides"/>
 
+  <section id="browse-guides" class="resource-section" aria-labelledby="browse-guides-title">
+    <div class="resource-section-head">
+      <div><span class="eyebrow">Explore all explanations</span><h2 id="browse-guides-title">Browse every guide</h2></div>
+      <p>Find the question you're researching. Each guide explains what you'll learn and when it is relevant.</p>
+    </div>
+    <ResourceExplorer label="Search LoanLens guides" items={resources} topics={topics} placeholder="Try: interest, scholarships, monthly cost, PSLF…" />
+  </section>
+
   <section class="resource-section" aria-labelledby="learning-paths">
     <div class="resource-section-head">
       <div><span class="eyebrow">Guided paths</span><h2 id="learning-paths">Start where you are.</h2></div>
@@ -101,14 +141,6 @@ const topics=[{value:'college',label:'Choosing a college'},{value:'repayment',la
       <a class="resource-path" href="/guides/compare-student-loan-repayment/"><span class="resource-path-index">02 / Repaying</span><strong>Choosing how to compare plans</strong><span>Look beyond the first monthly payment to the total projected cost.</span><span class="resource-path-arrow">Start learning ↗</span></a>
       <a class="resource-path" href="/guides/pslf-payment-count-checklist/"><span class="resource-path-index">03 / Forgiveness</span><strong>Checking PSLF progress</strong><span>Understand what your official count does—and does not—confirm.</span><span class="resource-path-arrow">Start learning ↗</span></a>
     </div>
-  </section>
-
-  <section id="browse-guides" class="resource-section" aria-labelledby="browse-guides-title">
-    <div class="resource-section-head">
-      <div><span class="eyebrow">Explore all explanations</span><h2 id="browse-guides-title">Browse every guide</h2></div>
-      <p>Find the question you're researching. Each guide explains what you'll learn and when it is relevant.</p>
-    </div>
-    <ResourceExplorer label="Search LoanLens guides" items={resources} topics={topics} placeholder="Try: interest, scholarships, monthly cost, PSLF…" />
   </section>
 
   <section class="resource-split" aria-labelledby="guides-apply-title">
