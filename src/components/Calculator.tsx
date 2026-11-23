@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { compare, dateLabel, example, money, rules } from '../lib/engine';
+import { scenarioIssue } from '../lib/scenario-guidance';
+import { formatEditableNumber } from '../lib/presentation';
 import type { Inputs, Loan, LoanType, Result } from '../lib/engine';
 
-const labels: Record<LoanType,string> = {'subsidized':'Direct Subsidized','unsubsidized':'Direct Unsubsidized','grad-plus':'Graduate PLUS','direct-consolidation':'Direct Consolidation','subsidized-consolidation':'Subsidized Direct Consolidation','parent-plus':'Parent PLUS','parent-consolidation':'Consolidated Parent PLUS','ffel':'FFEL or Perkins','private':'Private'};
+const labels: Record<LoanType,string> = {'subsidized':'Direct Subsidized','unsubsidized':'Direct Unsubsidized','grad-plus':'Grad PLUS (existing or limited transition exception)','direct-consolidation':'Direct Consolidation','subsidized-consolidation':'Subsidized Direct Consolidation','parent-plus':'Parent PLUS','parent-consolidation':'Consolidated Parent PLUS','ffel':'FFEL Stafford (not Perkins)','perkins':'Federal Perkins','private':'Private'};
 const steps = ['Loans', 'Income and household', 'Goals'];
 const stepHints = ['Enter loan balances and rates', 'Add income and family details', 'Review assumptions and compare'];
 const colors = ['var(--accent)', 'var(--chart-alt)', 'var(--ink)'];
@@ -34,7 +36,7 @@ function NumberField({label,value,onChange,prefix='',suffix='',max=100000000,min
   const invalid = editing !== null && (!safe(n,max,min) || (integer && !Number.isInteger(n)));
   return <label class="field"><span>{label}</span><span class="numeric">{prefix && <span aria-hidden="true">{prefix}</span>}<input
     inputMode={integer?'numeric':'decimal'} value={editing ?? numberFormat.format(value)} aria-invalid={invalid}
-    onFocus={()=>setEditing(previous=>previous ?? String(value))} onBlur={()=>{if (!invalid) setEditing(null);}}
+    onFocus={()=>setEditing(previous=>previous ?? formatEditableNumber(value))} onBlur={()=>{if (!invalid) setEditing(null);}}
     onInput={e=>{const raw=e.currentTarget.value; setEditing(raw); const next=Number(raw.replaceAll(',',''));
       if (safe(next,max,min) && (!integer || Number.isInteger(next))) onChange(next);}}/>{suffix && <span aria-hidden="true">{suffix}</span>}</span>
     {invalid && <small role="alert">Enter {integer?'a whole number':'an amount'} from {min} to {numberFormat.format(max)}.</small>}</label>;
@@ -108,6 +110,7 @@ export default function Calculator() {
   const rows = useMemo(()=>submitted ? compare(input) : [],[input,submitted]);
   const alerts = [...new Set(rows.flatMap(row=>row.flags))];
   const hasBalance = input.loans.some(l=>l.balance>0);
+  const issue = scenarioIssue(input);
   const update = <K extends keyof Inputs>(key:K,value:Inputs[K])=>setInput(prev=>({...prev,[key]:value}));
   const updateLoan = (index:number, patch:Partial<Loan>)=>setInput(prev=>({...prev,loans:prev.loans.map((l,i)=>i===index?{...l,...patch}:l)}));
   function go(index:number) { setMoved(true); setStep(index); setMessage(''); }
@@ -137,9 +140,15 @@ export default function Calculator() {
     </div>
       <nav aria-label="Calculator steps" class="steps">{steps.map((label,i)=><button type="button" key={label} class={step===i?'current':''} aria-current={step===i?'step':undefined} onClick={()=>go(i)}><span>{i+1}</span>{label}</button>)}</nav>
       <form key={version} onSubmit={e=>{e.preventDefault();const firstInvalid=e.currentTarget.querySelector<HTMLInputElement>('[aria-invalid="true"]');if(firstInvalid) {setMessage('Correct the highlighted values before continuing.');firstInvalid.focus();return;}
-        if(step===0&&!hasBalance) {setMessage('Enter at least one positive loan balance.');return;}
-        if(step<2) go(step+1); else if(!hasBalance || !monthOk(input.start)) {setMessage('Enter a positive loan balance and valid projection start month.');}
-        else {setSubmitted(true);setMessage('Comparison updated.');requestAnimationFrame(()=>resultHeading.current?.focus());}}}>
+        if(step===0 && issue) {
+          setMessage(issue.title);
+          requestAnimationFrame(()=>document.getElementById('scenario-guidance')?.focus());
+          return;
+        }
+        if(step<2) go(step+1);
+        else if(!hasBalance || !monthOk(input.start) || issue) {
+          setMessage(issue?.detail ?? 'Enter a positive balance and valid projection start month.');
+        } else {setSubmitted(true);setMessage('Comparison updated.');requestAnimationFrame(()=>resultHeading.current?.focus());}}}>
         <p class="wizard-step-caption"><strong>Step {step+1} of {steps.length}</strong><span aria-hidden="true"> · </span>{stepHints[step]}</p>
         <h2 ref={heading} tabIndex={-1}>{['Add your loans','Describe your household','Set your repayment goals'][step]}</h2>
         {step===0 && <>
@@ -151,10 +160,15 @@ export default function Calculator() {
           </div>{input.loans.length>1 && <button type="button" class="text-button" onClick={()=>{setVersion(v=>v+1);update('loans',input.loans.filter((_,ix)=>ix!==i));}}>Remove loan {i+1}</button>}</fieldset>)}
           {input.loans.length<30 && <button type="button" class="secondary" onClick={()=>update('loans',[...input.loans,{balance:0,rate:0,type:'unsubsidized'}])}>+ Add another loan</button>}
           <Field label="Federal borrowing history"><select value={input.vintage} onChange={e=>update('vintage',e.currentTarget.value as Inputs['vintage'])}>
-            <option value="unknown">Choose the description that fits</option>
+            <option value="unknown">I'm not sure — check my loan records</option>
             <option value="old">Prior Direct or FFEL balance at the July 2014 cutoff, still in the older IBR group</option>
             <option value="new-ibr">New borrower for IBR from July 2014, all Direct loans before July 2026</option>
             <option value="new-direct">Any Direct Loan made on or after July 1, 2026</option></select></Field>
+          <p class="field-hint">Find your original disbursement dates and loan types on <a href="https://studentaid.gov/" rel="noopener noreferrer">StudentAid.gov</a>. If you do not know, do not guess to unlock a comparison.</p>
+          {issue && <div id="scenario-guidance" class="scenario-guidance warning" role="status" tabIndex={-1}>
+            <strong>{issue.title}</strong><p>{issue.detail}</p>
+            <a href={issue.link} rel="noopener noreferrer">Check the official repayment guidance ↗</a>
+          </div>}
         </>}
         {step===1 && <><p>Adjusted gross income is the amount reported on your tax return.</p><div class="fields">
           <NumberField label={input.filing==='joint'?'Your share of joint AGI':'Your adjusted gross income'} prefix="$" value={input.income} onChange={n=>update('income',n)}/>
@@ -175,7 +189,7 @@ export default function Calculator() {
             <NumberField label="Previously used IBR subsidy months" integer max={rules.ibrInterestSubsidyMonths.value} value={input.ibrSubsidyUsed} onChange={n=>update('ibrSubsidyUsed',n)}/>
             <NumberField label="Confirmed eligible IBR months" integer max={rules.ibrOld.value.months} value={input.ibrMonthsAlready} onChange={n=>update('ibrMonthsAlready',n)}/>
             <NumberField label="Confirmed eligible RAP months" integer max={rules.rapMonths.value} value={input.rapMonthsAlready} onChange={n=>update('rapMonthsAlready',n)}/>
-          </div><p>Estimates assume on-time monthly payments and stable family circumstances. Taxes are excluded.</p></details>
+          </div><p>Estimates assume on-time monthly payments and stable family circumstances. Your servicer may calculate daily interest rather than this monthly APR/12 approximation. Taxes are excluded.</p></details>
         </>}
         <p class="notice-line" role="status">{message}</p>
         <div class="actions">{step>0 && <button type="button" class="secondary" onClick={()=>go(step-1)}>Back</button>}<button type="submit" class="primary">{step===2?'Compare repayment plans':'Continue'}</button><button type="button" class="text-button" onClick={reset}>Reset</button></div>
@@ -184,7 +198,7 @@ export default function Calculator() {
     <section class="results" id="results" aria-labelledby="results-title">
       <div class="results-head"><div><span class="eyebrow">Your estimates</span><h2 id="results-title" ref={resultHeading} tabIndex={-1}>Compare your options</h2></div><span class="stamp">Rules last verified: <time>{rules.rapBands.retrieved}</time></span></div>
       <div class="notice" aria-live="polite">{!submitted ? 'Complete the calculator or load an example to compare starting payments, lifetime costs and payoff dates.'
-        : !rows.length ? <>This scenario needs an eligibility check or a positive loan balance. Choose your borrowing history and review the <a href="/tools/parent-plus-consolidation-checker/">Parent PLUS checker</a> or <a href="/deadlines/">transition guidance</a> if applicable.</>
+        : !rows.length ? <><strong>{issue?.title ?? 'This scenario cannot be safely estimated yet.'}</strong> {issue?.detail ?? 'Review your loan and account details with Federal Student Aid.'} <a href={issue?.link ?? 'https://studentaid.gov/articles/repayment-calculator/'} rel="noopener noreferrer">Check official options ↗</a></>
           : <>{low?.title} has the lowest starting payment ({money(low?.starting ?? 0)}). {cost?.title} has the lowest projected out-of-pocket payments ({money(cost?.paid ?? 0)}) before any forgiveness tax.</>}</div>
       {rows.length>0 && <>
       <p class="results-update-hint">Estimates update automatically if you change the inputs above. They are not official plan quotes.</p>
@@ -194,10 +208,10 @@ export default function Calculator() {
           <li key={badge}><strong>{label}</strong><span>{winners.map(row=>row.title).join(' / ')}</span></li>
         )}</ul>
       </section>
-      <p class="muted">Educational estimates only. These highlights compare the scenarios entered, not your eligibility or which plan you should choose. Verify choices with Federal Student Aid and your servicer.</p>
+      <p class="muted">Educational estimates only. This model uses monthly APR/12 rather than your servicer's daily interest calculation. IDR forgiveness in 2026 or later is generally federally taxable; PSLF generally is not. Tax effects and personal eligibility are not included in any ranking. Verify options with <a href="https://studentaid.gov/articles/repayment-calculator/">Federal Student Aid</a> and see the <a href="https://www.taxpayeradvocate.irs.gov/news/tax-tips/what-to-know-about-student-loan-forgiveness-and-your-taxes/2026/03/">IRS Taxpayer Advocate explanation</a>.</p>
       {alerts.length>0 && <section class="assumptions" aria-label="Unverified projection assumptions">
-        <p>Planning estimate. {alerts.length} {alerts.length === 1 ? 'assumption applies' : 'assumptions apply'}.</p>
-        <details><summary>See assumptions <span class="muted">(unverified)</span></summary>
+        <p class="assumptions-intro"><strong>Important modeling limits:</strong> {alerts.length} {alerts.length===1?'assumption affects':'assumptions affect'} these projections. They can change actual payments, forgiveness or payoff dates.</p>
+        <details><summary>Read scenario-specific assumptions <span class="muted">(unverified)</span></summary>
           <ul>{alerts.map(key => <li key={key}>{key === 'ibrRounding' ? 'Your servicer may round small IBR payments differently.' : rules[key].note}</li>)}</ul>
         </details>
       </section>}
