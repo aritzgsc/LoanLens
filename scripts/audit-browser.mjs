@@ -124,6 +124,17 @@ const designConsistency = () => {
     issues.push('Inconsistent hero heading scale: expected ' + expectedTitle + 'px, got ' + headlineSize + 'px');
   if (style.borderTopStyle !== 'solid' || parseFloat(style.borderTopWidth) < 1) issues.push('Hero border is missing');
   if (heroRect.width < Math.min(250, innerWidth-50)) issues.push('Hero unexpectedly narrow: ' + heroRect.width);
+  const cardSelectors = '.resource-card,.resource-path,.resource-prep,.guide-link,.home-info-card,.tool-explain-card,.contact-option,.trust-next-grid a';
+  const cards = [...document.querySelectorAll(cardSelectors)]
+    .filter(card => card.getClientRects().length && getComputedStyle(card).display !== 'none');
+  for (const card of cards.slice(0,25)) {
+    const cardStyle = getComputedStyle(card);
+    const cardRadius = parseFloat(cardStyle.borderTopLeftRadius);
+    if (Math.abs(cardRadius-16)>1)
+      issues.push('Different card radius: ' + cardRadius + 'px on ' + (card.className||card.tagName));
+    if (parseFloat(cardStyle.borderTopWidth)<1)
+      issues.push('Card missing system border: ' + (card.className||card.tagName));
+  }
   return {issues,metrics:{radius,padding,headlineSize,background:style.backgroundImage,
     textAlign:style.textAlign,width:Math.round(heroRect.width)}};
 };

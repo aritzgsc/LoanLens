@@ -210,7 +210,7 @@ input[aria-invalid="true"]{border-color:#af4237!important;box-shadow:0 0 0 1px #
   .tool-detail-hero .tool-brief{gap:.4rem}
   .tool-detail-hero .tool-brief>div{padding:.68rem .8rem;gap:.18rem}
   .tool-detail-hero .tool-brief strong{font-size:.82rem;line-height:1.46}
-  .tool-detail-hero{padding:1.05rem!important;gap:.6rem!important}
+  .tool-detail-hero{padding:1.2rem!important;gap:.7rem!important}
   .tool-detail-hero>p{font-size:.92rem!important}
   .tool-workspace{margin-top:.85rem}
   .editorial-frame:not(.trust-page) .hero{padding:1.1rem}
