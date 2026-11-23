@@ -3,7 +3,7 @@ import rules from '../../data/rules.json';
 export { rules };
 export type Region = keyof typeof rules.poverty.value;
 export type Filing = 'single' | 'joint' | 'separate';
-export type LoanType = 'subsidized' | 'unsubsidized' | 'grad-plus' | 'direct-consolidation' | 'subsidized-consolidation' | 'parent-plus' | 'parent-consolidation' | 'ffel' | 'private';
+export type LoanType = 'subsidized' | 'unsubsidized' | 'grad-plus' | 'direct-consolidation' | 'subsidized-consolidation' | 'parent-plus' | 'parent-consolidation' | 'ffel' | 'perkins' | 'private';
 export type Plan = 'rap' | 'ibr' | 'standard' | 'tiered';
 export interface Loan { balance: number; rate: number; type: LoanType; }
 export interface Inputs {
