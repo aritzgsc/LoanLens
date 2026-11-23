@@ -75,9 +75,9 @@ const context:Record<Tool,{
 const info=context[kind];
 ---
 <Base {title} {description} og={kind}>
-  <header class="hero tool-detail-hero">
+  <header class="hero tool-detail-hero page-hero">
     <a class="tool-back" href="/tools/">← All planning tools</a>
-    <span class="eyebrow">Interactive planning tool</span>
+    <span class="eyebrow page-hero-kicker">Interactive planning tool</span>
     <h1>{title}</h1>
     <p>{description}</p>
     <a class="primary button-link tool-start" href="#tool-workspace">Use this tool <span aria-hidden="true">↓</span></a>
@@ -107,7 +107,7 @@ const info=context[kind];
       link.addEventListener('click',()=>requestAnimationFrame(()=>document.getElementById('tool-workspace')?.focus({preventScroll:true})));
     });
   </script>
-  <section class="tool-explain" aria-labelledby="tool-read-result">
+  <section class="tool-explain page-section" aria-labelledby="tool-read-result">
     <div class="resource-section-head">
       <div><span class="eyebrow">Make sense of your estimate</span><h2 id="tool-read-result">What to do with the result</h2></div>
       <p>The tool is designed to help you ask better questions, not replace information held by Federal Student Aid.</p>

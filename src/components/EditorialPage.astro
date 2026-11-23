@@ -42,8 +42,8 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
 ---
 <Base {title} {description} kind={guide?'Article':undefined} {draft} {updated} og={category+'-'+entry.id}>
   <div class:list={['editorial-frame',{'trust-page':!guide}]}>
-  <header class:list={['hero',{'trust-hero':!guide}]}>
-    {!guide && <span class="eyebrow">{trustInfo.eyebrow}</span>}
+  <header class:list={['hero','page-hero',{'trust-hero':!guide}]}>
+    <span class="eyebrow page-hero-kicker">{guide?'Student loan guide':trustInfo.eyebrow}</span>
     <h1>{title}</h1>
     <p>{guide?description:trustInfo.summary}</p>
   {guide && <p class="editorial-meta">{!author.name.includes('{{') && <>Published by {author.name} <span aria-hidden="true">·</span> </>}Updated <time datetime={updated}>{updated}</time>{verified!==updated && <> <span aria-hidden="true">·</span> Last verified <time datetime={verified}>{verified}</time></>}{reviewed && reviewed!==updated && reviewed!==verified && <> <span aria-hidden="true">·</span> Reviewed <time datetime={reviewed}>{reviewed}</time></>}</p>}
@@ -77,11 +77,11 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
       <div class="trust-sidebar-note"><strong>Need an account-specific answer?</strong><p>For your actual student loan, consult Federal Student Aid or your servicer.</p><a href="https://studentaid.gov/" rel="noopener noreferrer">Visit StudentAid.gov <span aria-hidden="true">↗</span></a></div>
     </aside>}
   </div>
-  {guide && <section class="support"><h2>Related tools and guides</h2><div class="guide-grid">
+  {guide && <section class="support page-section"><h2>Related tools and guides</h2><div class="guide-grid">
   <a class="guide-link" href="/calculator/"><strong>Compare repayment plans</strong><span>See your estimated monthly payments and total costs.</span></a>
     {suggestions.map(e=><a class="guide-link" href={entryPath(e)}><strong>{e.data.title}</strong><span>{e.data.description}</span></a>)}
   </div></section>}
-  {!guide && <section class="trust-next" aria-labelledby="trust-next-title">
+  {!guide && <section class="trust-next page-section" aria-labelledby="trust-next-title">
     <div class="trust-next-intro">
       <span class="eyebrow">Your next step</span><h2 id="trust-next-title">Explore with more confidence.</h2>
       <p>Understand the estimates, verify the assumptions and choose a useful starting point.</p>

@@ -81,7 +81,7 @@ export default function CollegeAidComparison() {
   }
 
   return <>
-    <form class="tool-pane card" noValidate onSubmit={event => {
+    <form id="aid-comparison-form" aria-label="Compare two college financial aid offers" class="tool-pane card" noValidate onSubmit={event => {
       event.preventDefault();
       calculate(offers);
     }} onReset={event => {
