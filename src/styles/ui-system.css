@@ -237,3 +237,288 @@ input[aria-invalid="true"]{border-color:#af4237!important;box-shadow:0 0 0 1px #
   .tool-brief-details{padding:.55rem .8rem}
   .tool-brief-details .tool-brief{grid-template-columns:1fr}
 }
+
+/* ============================================================
+   LoanLens unified interface v6
+   Source of truth for shared page hierarchy, spacing and surfaces.
+   The home page may use a two-column composition; guides keep a
+   narrower reading measure. Neither creates a different visual theme.
+   ============================================================ */
+:root {
+  --ll-page-canvas: #f6f9f7;
+  --ll-page-surface: #fff;
+  --ll-page-ink: #203d31;
+  --ll-page-muted: #526b5e;
+  --ll-page-border: #dbe7df;
+  --ll-page-border-strong: #b5d4c1;
+  --ll-page-accent: #086b60;
+  --ll-page-accent-soft: #ebf7ef;
+  --ll-page-radius: 16px;
+  --ll-page-radius-lg: 20px;
+  --ll-page-shadow: 0 5px 22px #193e3210;
+  --ll-page-hero-bg: linear-gradient(116deg,#eaf7ef 0%,#f7fbf8 58%,#fff 100%);
+  --ll-page-pad: clamp(1.15rem,3.5vw,2.75rem);
+  --ll-page-card-pad: clamp(1rem,2vw,1.4rem);
+  --ll-page-section-gap: clamp(2rem,4.5vw,3.5rem);
+  --ll-page-h1: clamp(2rem,4.3vw,3.25rem);
+  --ll-page-h2: clamp(1.5rem,2.8vw,2.15rem);
+  --ll-page-lead: clamp(1rem,1.55vw,1.13rem);
+}
+body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
+.shell{width:min(1180px,calc(100% - clamp(1.4rem,4vw,3.2rem)))}
+.site-head{background:var(--ll-page-surface);box-shadow:0 1px 12px #193e320a;border-bottom:1px solid var(--ll-page-border)}
+.site-head .shell{min-height:74px}
+.site-nav a{border-radius:10px}
+.site-nav a[aria-current]{background:var(--ll-page-accent-soft)}
+.crumbs{font-size:.86rem;padding-top:1rem}
+.crumbs ol{gap:.4rem}
+.page-hero{
+  isolation:isolate;
+  min-width:0;
+  min-height:0;
+  margin-block:clamp(1rem,2.2vw,1.55rem) clamp(1.2rem,3vw,2rem);
+  padding:var(--ll-page-pad);
+  border:1px solid var(--ll-page-border);
+  border-radius:var(--ll-page-radius-lg);
+  background:var(--ll-page-hero-bg);
+  box-shadow:var(--ll-page-shadow);
+  text-align:left;
+  align-content:center;
+  gap:.8rem;
+}
+.page-hero :is(h1,h2){
+  color:var(--ll-page-ink);
+  letter-spacing:-.042em;
+  line-height:1.12;
+  text-wrap:balance;
+  max-width:27ch;
+  margin:0;
+}
+.page-hero h1{font-size:var(--ll-page-h1)}
+.page-hero :is(>p,.resource-hero-copy>p:not(.hero-microcopy),.decision-intro>p:not(.hero-microcopy)){
+  color:var(--ll-page-muted);
+  font-size:var(--ll-page-lead);
+  line-height:1.65;
+  max-width:65ch;
+}
+.page-hero .eyebrow,.page-hero-kicker{
+  display:inline-flex;
+  width:fit-content;
+  align-items:center;
+  gap:.45rem;
+  margin:0;
+  padding:0;
+  border:0;
+  background:none;
+  border-radius:0;
+  color:var(--ll-page-accent);
+  font-size:.76rem;
+  font-weight:800;
+  letter-spacing:.075em;
+  line-height:1.4;
+  text-transform:uppercase;
+}
+.page-hero .decision-eyebrow::before{width:.44rem;height:.44rem;box-shadow:none}
+.page-hero .hero-microcopy{font-size:.83rem!important;line-height:1.5;color:var(--ll-page-muted)!important}
+.page-hero .hero-actions{gap:.7rem}
+.page-hero .button-link{min-height:46px;padding:.67rem 1rem;border-radius:10px}
+.page-hero .button-link.secondary{color:var(--ll-page-ink)}
+.page-hero .button-link.primary{color:#fff}
+.page-hero :is(.editorial-meta,.trust-hero-meta){
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-start;
+  align-items:center;
+  margin-top:.3rem;
+  gap:.35rem .65rem;
+  padding-top:.6rem;
+  border-top:1px solid var(--ll-page-border);
+  color:var(--ll-page-muted)!important;
+  font-size:.83rem!important;
+  font-weight:600;
+  line-height:1.6!important;
+  text-align:left;
+}
+.page-hero .trust-hero-meta time{color:var(--ll-page-ink)}
+/* The landing hero uses the same visual language but preserves its choice panel. */
+.decision-hero.page-hero{
+  grid-template-columns:minmax(0,1.13fr) minmax(300px,.87fr);
+  align-items:center;
+  gap:clamp(1.4rem,3.8vw,2.8rem);
+  overflow:hidden;
+}
+.decision-hero.page-hero::before{display:none}
+.decision-hero.page-hero .decision-intro h1{font-size:clamp(2.1rem,4.6vw,3.6rem);max-width:16ch}
+.decision-hero.page-hero .decision-options{
+  background:var(--ll-page-surface);
+  border-color:var(--ll-page-border);
+  border-radius:var(--ll-page-radius);
+  box-shadow:none;
+}
+.decision-hero.page-hero .decision-option{
+  border-color:var(--ll-page-border);
+  border-radius:12px;
+  background:#fbfdfb;
+}
+.decision-hero.page-hero .decision-option:hover{border-color:var(--ll-page-border-strong);background:var(--ll-page-accent-soft)}
+.resource-hero.page-hero{display:grid;grid-template-columns:minmax(0,1fr)}
+.resource-hero.page-hero .resource-hero-copy{max-width:930px;gap:.8rem;justify-items:start}
+.resource-hero.page-hero .resource-hero-copy h1{font-size:var(--ll-page-h1);max-width:27ch;line-height:1.12}
+.resource-hero.page-hero .resource-hero-copy>p:not(.hero-microcopy){color:var(--ll-page-muted);font-size:var(--ll-page-lead);line-height:1.65;max-width:65ch}
+.hero.tool-detail-hero.page-hero{display:grid;justify-items:start;gap:.8rem}
+.hero.tool-detail-hero.page-hero h1{font-size:var(--ll-page-h1);max-width:27ch}
+.hero.tool-detail-hero.page-hero>p:not(.tool-quick-prep){color:var(--ll-page-muted);font-size:var(--ll-page-lead);line-height:1.65;max-width:65ch}
+.hero.tool-detail-hero.page-hero .tool-back{margin-bottom:.25rem}
+.hero.tool-detail-hero.page-hero .tool-quick-prep{color:var(--ll-page-muted);font-size:.91rem;line-height:1.6}
+.trust-page .trust-hero.page-hero{
+  width:100%;
+  display:grid;
+  align-content:center;
+  justify-items:start;
+  gap:.8rem;
+  padding:var(--ll-page-pad);
+  margin-block:clamp(1rem,2.2vw,1.55rem) clamp(1.2rem,3vw,2rem);
+  border:1px solid var(--ll-page-border);
+  border-radius:var(--ll-page-radius-lg);
+  background:var(--ll-page-hero-bg);
+  box-shadow:var(--ll-page-shadow);
+  text-align:left;
+}
+.trust-page .trust-hero.page-hero :is(h1,p){margin-inline:0;text-align:left}
+.trust-page .trust-hero.page-hero h1{font-size:var(--ll-page-h1);max-width:27ch;line-height:1.12}
+.trust-page .trust-hero.page-hero>p:first-of-type{font-size:var(--ll-page-lead);line-height:1.65;max-width:65ch;color:var(--ll-page-muted)}
+.trust-page .trust-hero.page-hero .trust-hero-meta{justify-content:flex-start}
+.editorial-frame:not(.trust-page) .page-hero{
+  width:100%;
+  padding:var(--ll-page-pad);
+  border-radius:var(--ll-page-radius-lg);
+  background:var(--ll-page-hero-bg);
+  border-color:var(--ll-page-border);
+  margin-block:clamp(1rem,2.2vw,1.55rem) clamp(1.2rem,3vw,2rem);
+}
+.editorial-frame:not(.trust-page) .page-hero h1{font-size:var(--ll-page-h1);max-width:27ch}
+.editorial-frame:not(.trust-page) .page-hero p:not(.editorial-meta){font-size:var(--ll-page-lead);line-height:1.65}
+.hero-calculator.page-hero:not(.page-hero-embedded){
+  padding:var(--ll-page-pad);
+  border:1px solid var(--ll-page-border);
+  background:var(--ll-page-hero-bg);
+  border-radius:var(--ll-page-radius-lg);
+  box-shadow:var(--ll-page-shadow);
+  margin-block:clamp(1rem,2.2vw,1.55rem) clamp(1.2rem,3vw,2rem);
+}
+.hero-calculator.page-hero-embedded{
+  padding:0 0 1.1rem;
+  margin-block:var(--ll-page-section-gap) 1.1rem;
+  background:none;
+  box-shadow:none;
+  border:0;
+  border-bottom:1px solid var(--ll-page-border);
+  border-radius:0;
+}
+.hero-calculator.page-hero-embedded h2{font-size:var(--ll-page-h2)}
+.hero-calculator.page-hero-embedded p{font-size:.98rem;max-width:65ch;color:var(--ll-page-muted)}
+/* Content cards belong to one family, with variants only for meaning. */
+:where(.resource-card,.resource-path,.resource-prep,.guide-link,.home-info-card,
+.tool-explain-card,.contact-option,.trust-next-grid a,.trust-sidebar-block,
+.trust-article,.article-body,.tool-pane.card,.wizard.card){
+  min-width:0;
+  border:1px solid var(--ll-page-border);
+  border-radius:var(--ll-page-radius);
+  background:var(--ll-page-surface);
+  box-shadow:var(--ll-page-shadow);
+}
+:where(.resource-card,.resource-path,.resource-prep,.guide-link,.home-info-card,
+.tool-explain-card,.contact-option,.trust-next-grid a){padding:var(--ll-page-card-pad)}
+.resource-card,.resource-path,.home-info-card,.tool-explain-card{gap:.7rem}
+.resource-card>strong,.resource-path>strong,.guide-link strong,.home-info-card h3,
+.tool-explain-card h3,.contact-option strong{
+  font-size:clamp(1.07rem,1.6vw,1.22rem);
+  line-height:1.4;
+  letter-spacing:-.02em;
+  color:var(--ll-page-ink);
+}
+.resource-card-description,.resource-card-answers>span,.guide-link span,.home-info-card p,
+.tool-explain-card p,.resource-path>span:not(.resource-path-index):not(.resource-path-arrow),
+.contact-option>span:not(.contact-option-type):not(.contact-option-action){
+  color:var(--ll-page-muted);
+  font-size:.91rem;
+  line-height:1.65;
+}
+:where(.resource-card,.resource-path,.guide-link,.contact-option,.trust-next-grid a):hover{
+  border-color:var(--ll-page-border-strong);
+  background:#fbfefc;
+  box-shadow:0 8px 25px #193e3214;
+  transform:none;
+}
+:where(.resource-card,.resource-path,.guide-link,.contact-option,.trust-next-grid a):focus-visible{outline:3px solid var(--ll-page-accent);outline-offset:3px}
+.article-columns{margin-top:1.1rem}
+.article-body,.trust-page .trust-article{
+  padding:clamp(1.2rem,2.7vw,2rem);
+  border-radius:var(--ll-page-radius-lg);
+  border-color:var(--ll-page-border);
+  background:var(--ll-page-surface);
+  box-shadow:var(--ll-page-shadow);
+  line-height:1.75;
+}
+.article-body h2,.trust-page .trust-article>h2{color:var(--ll-page-ink);font-size:clamp(1.4rem,2.2vw,1.75rem);line-height:1.25;margin-top:1.2rem}
+.article-body h3{font-size:clamp(1.13rem,1.9vw,1.35rem);line-height:1.33;color:var(--ll-page-ink)}
+.article-body :is(p,li){font-size:.96rem;line-height:1.75}
+.trust-page .trust-article :is(p,li){font-size:.96rem;line-height:1.75}
+.trust-page .trust-article>h2{padding-top:1rem}
+.trust-page .trust-columns{margin-top:1.1rem}
+.trust-page .trust-next{background:#f0f8f3;border:1px solid var(--ll-page-border);box-shadow:none}
+:where(.resource-filter-bar,.tool-brief-details,.home-question-list,.goal-finder){
+  border:1px solid var(--ll-page-border);
+  border-radius:var(--ll-page-radius);
+  box-shadow:var(--ll-page-shadow);
+}
+:where(.resource-section-head h2,.home-section-intro h2,.tool-workspace-heading h2,
+.tool-explain h2,.support h2,.trust-next-intro h2){font-size:var(--ll-page-h2);color:var(--ll-page-ink);line-height:1.2}
+:where(.resource-section-head,.tool-workspace-heading){border-bottom:1px solid var(--ll-page-border);padding-bottom:1rem}
+:where(.resource-section,.resource-split,.home-explain,.home-questions,.tool-explain,.support){
+  margin-block:var(--ll-page-section-gap);
+}
+:where(.home-explain,.home-questions,.support){padding-block:0}
+:where(.home-section-intro,.resource-section-head>div){gap:.55rem}
+.tool-workspace{margin-top:clamp(1.25rem,3vw,2rem)}
+.tool-workspace-heading{margin-bottom:.15rem}
+.tool-brief-details,.tool-plain-help{max-width:100%}
+.tool-pane.card,.wizard{padding:clamp(1rem,2.4vw,1.8rem)}
+.guide-grid,.resource-grid,.home-cards,.tool-explain-grid,.resource-path-grid{gap:1rem}
+.guide-link{min-height:0}
+.site-footer{background:#f0f7f2;border-top:1px solid var(--ll-page-border)}
+/* Narrow screens: same hierarchy and comfortable tap targets on every page. */
+@media(max-width:1024px){
+  .decision-hero.page-hero{grid-template-columns:minmax(0,1fr)}
+}
+@media(max-width:650px){
+  .page-hero,.trust-page .trust-hero.page-hero,
+  .hero.tool-detail-hero.page-hero,.editorial-frame:not(.trust-page) .page-hero,
+  .hero-calculator.page-hero:not(.page-hero-embedded){
+    padding:1.2rem;
+    margin-block:.85rem 1.35rem;
+    border-radius:16px;
+    gap:.7rem;
+  }
+  .page-hero h1,.decision-hero.page-hero .decision-intro h1,
+  .resource-hero.page-hero .resource-hero-copy h1,
+  .hero.tool-detail-hero.page-hero h1,
+  .trust-page .trust-hero.page-hero h1,
+  .editorial-frame:not(.trust-page) .page-hero h1{
+    font-size:clamp(1.85rem,7.8vw,2.45rem);
+    line-height:1.13;
+    max-width:26ch;
+  }
+  .page-hero .eyebrow,.page-hero-kicker{font-size:.72rem}
+  .page-hero :is(>p,.resource-hero-copy>p:not(.hero-microcopy),.decision-intro>p:not(.hero-microcopy)),
+  .hero.tool-detail-hero.page-hero>p:not(.tool-quick-prep),
+  .trust-page .trust-hero.page-hero>p:first-of-type{font-size:.96rem;line-height:1.65}
+  .hero-calculator.page-hero-embedded{padding:0 0 1rem;margin-block:2rem 1rem}
+  .resource-grid,.resource-path-grid,.guide-grid{grid-template-columns:minmax(0,1fr)}
+  .article-body,.trust-page .trust-article{padding:1.1rem;border-radius:16px}
+  .resource-card,.resource-path,.home-info-card,.tool-explain-card,.guide-link{padding:1.05rem}
+  .home-questions{gap:1.25rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .resource-card,.resource-path,.guide-link,.contact-option,.trust-next-grid a{transition:none}
+}

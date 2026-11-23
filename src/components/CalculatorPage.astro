@@ -19,14 +19,14 @@ const nextSteps = [
   }),
 ];
 ---
-<header id={embedded ? 'repayment-estimator' : undefined} class="hero hero-calculator">
-  <span class="eyebrow">Repayment estimate · 3 steps</span>
+<header id={embedded ? 'repayment-estimator' : undefined} class:list={['hero','hero-calculator','page-hero',{'page-hero-embedded':embedded}]}>
+  <span class="eyebrow page-hero-kicker">Repayment estimate · 3 steps</span>
   {embedded ? <h2>{title}</h2> : <h1>{title}</h1>}
   <p>Enter a loan balance and rate to compare monthly payments, lifetime costs and projected repayment dates.</p>
 </header>
 <Calculator client:load />
 <AdSlot kind="results" />
 <PartnerOffers />
-<section class="support"><h2>Explore your next step</h2><div class="guide-grid">
+<section class="support page-section"><h2>Explore your next step</h2><div class="guide-grid">
   {nextSteps.map(step => <a class="guide-link" href={step.href}><strong>{step.title}</strong><span>{step.description}</span></a>)}
 </div></section>
