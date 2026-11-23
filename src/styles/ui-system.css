@@ -322,6 +322,17 @@ body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
 }
 .page-hero .decision-eyebrow::before{width:.44rem;height:.44rem;box-shadow:none}
 .page-hero .hero-microcopy{font-size:.83rem!important;line-height:1.5;color:var(--ll-page-muted)!important}
+/* The legacy .hero:not(.hero-calculator) selector is more specific than
+   .page-hero. Explicitly normalize every standalone .hero first (including 404
+   and specialty tools), while excluding the home-embedded calculator heading. */
+.hero.page-hero:not(.page-hero-embedded){
+  margin-block:clamp(1rem,2.2vw,1.55rem) clamp(1.2rem,3vw,2rem);
+  padding:var(--ll-page-pad);
+  border:1px solid var(--ll-page-border);
+  border-radius:var(--ll-page-radius-lg);
+  background:var(--ll-page-hero-bg);
+  box-shadow:var(--ll-page-shadow);
+}
 .page-hero .hero-actions{gap:.7rem}
 .page-hero .button-link{min-height:46px;padding:.67rem 1rem;border-radius:10px}
 .page-hero .button-link.secondary{color:var(--ll-page-ink)}
@@ -517,6 +528,11 @@ body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
   .page-hero .decision-intro>p:not(.hero-microcopy),
   .hero.tool-detail-hero.page-hero>p:not(.tool-quick-prep),
   .trust-page .trust-hero.page-hero>p:first-of-type{font-size:.96rem;line-height:1.65}
+  .hero.page-hero:not(.page-hero-embedded){
+    padding:1.2rem;
+    margin-block:.85rem 1.35rem;
+    border-radius:16px;
+  }
   .hero-calculator.page-hero-embedded{padding:0 0 1rem;margin-block:2rem 1rem}
   .resource-grid,.resource-path-grid,.guide-grid{grid-template-columns:minmax(0,1fr)}
   .article-body,.trust-page .trust-article{padding:1.1rem;border-radius:16px}
