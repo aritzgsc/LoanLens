@@ -1,6 +1,7 @@
 ---
 import '../styles/site.css';
 import '../styles/ui-system.css';
+import Analytics from '@vercel/analytics/astro';
 import { author, publisher, robotsNoIndex, siteName, trustLinks, validPublisher } from '../lib/site';
 import { visible } from '../lib/content';
 interface Props { title:string; description:string; kind?:'WebApplication'|'Article'; draft?:boolean; updated?:string; og?:string; }
@@ -63,6 +64,8 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
   {import.meta.env.PUBLIC_BING_SITE_VERIFICATION && <meta name="msvalidate.01" content={import.meta.env.PUBLIC_BING_SITE_VERIFICATION}/>}
   {!noindex && validPublisher && <meta name="google-adsense-account" content={publisher}/>}
   <script type="application/ld+json" set:html={JSON.stringify(schema).replaceAll('<','\\u003c')} />
+  {/* Production-only, cookie-free aggregate traffic measurement on all 36 public routes. */}
+  <Analytics mode="production" />
   {cmpUrl && <>
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
