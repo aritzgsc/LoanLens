@@ -91,7 +91,7 @@ export default function CollegeAidComparison() {
       setResults(null);
       setErrors({});
     }}>
-      <p id="aid-input-help">Use the same academic year for both schools. Enter total annual costs; list grants and scholarships separately from any loans you plan to accept. Leave an optional amount blank to count it as zero.</p>
+      <p id="aid-input-help">Use the same academic year for both schools. List grants and scholarships separately from loans: borrowing is not a price discount. Blank optional amounts are calculated as zero; if you do not know one of those amounts yet, your comparison is only provisional.</p>
       <div class="result-grid">
         {schools.map((school, index) => <fieldset class="loan-row" key={school}>
           <legend>{school}</legend>
@@ -155,6 +155,7 @@ export default function CollegeAidComparison() {
             </dl>
           </section>)}
         </div> : <p>Compare two offers to see what you may have left to cover.</p>}
+        {results && offers.some(offer=>['grants','scholarships','loans'].some(field=>!offer[field as Field].trim())) && <p class="warning" role="status">Provisional comparison: at least one optional aid amount was left blank and counted as zero. Confirm unknown grants, scholarships or loans against each school's offer before making a decision.</p>}
         {results && <section class="aid-insights card" aria-labelledby="aid-insights-heading">
           <span class="eyebrow">What these figures tell you</span>
           <h3 id="aid-insights-heading">The differences that matter</h3>

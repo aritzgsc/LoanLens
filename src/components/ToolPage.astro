@@ -91,13 +91,18 @@ const info=context[kind];
     <summary>New to these terms? See a plain-English explanation and example</summary>
     <div><p>{info.plain}</p><p><strong>Try it:</strong> {info.example}</p></div>
   </details>
-  <section class="tool-workspace" id="tool-workspace" aria-labelledby="tool-workspace-heading">
+  <section class="tool-workspace" id="tool-workspace" aria-labelledby="tool-workspace-heading" tabindex="-1">
     <div class="tool-workspace-heading">
       <div><span class="eyebrow">Interactive tool</span><h2 id="tool-workspace-heading">Try it with your numbers</h2></div>
       <p>Enter the details you know. Read the explanation below to interpret your estimate.</p>
     </div>
     <Tools client:load {kind}/>
   </section>
+  <script>
+    document.querySelectorAll<HTMLAnchorElement>('a.tool-start[href="#tool-workspace"]').forEach(link=>{
+      link.addEventListener('click',()=>requestAnimationFrame(()=>document.getElementById('tool-workspace')?.focus({preventScroll:true})));
+    });
+  </script>
   <section class="tool-explain" aria-labelledby="tool-read-result">
     <div class="resource-section-head">
       <div><span class="eyebrow">Make sense of your estimate</span><h2 id="tool-read-result">What to do with the result</h2></div>

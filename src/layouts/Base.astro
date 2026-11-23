@@ -5,6 +5,8 @@ import { author, publisher, robotsNoIndex, siteName, trustLinks, validPublisher 
 import { visible } from '../lib/content';
 interface Props { title:string; description:string; kind?:'WebApplication'|'Article'; draft?:boolean; updated?:string; og?:string; }
 const {title,description,kind,draft=false,updated,og='home'} = Astro.props;
+const editorialTitle = title.replace(/\s*\|\s*LoanLens\s*$/i,'').trim();
+const browserTitle = editorialTitle.length + siteName.length + 3 <= 70 ? editorialTitle + ' | ' + siteName : editorialTitle;
 const root = Astro.site ?? new URL('https://loanlens.example');
 const canonical = new URL(Astro.url.pathname,root);
 const ogImage = new URL('/og/'+og+'.png',root);
@@ -22,12 +24,12 @@ const breadcrumb = [{title:'Home',url:'/'},...crumbs,{title,url:Astro.url.pathna
 const schema = {'@context':'https://schema.org','@graph':[
   {'@type':'WebSite','@id':new URL('/#website',root).href,name:siteName,url:root.href},
   {'@type':'Organization','@id':new URL('/#organization',root).href,name:siteName,url:root.href,logo:new URL('/icon.svg',root).href},
-  {'@type':'WebPage','@id':canonical.href+'#webpage',url:canonical.href,name:title,description,
+  {'@type':'WebPage','@id':canonical.href+'#webpage',url:canonical.href,name:editorialTitle,description,
     inLanguage:'en-US',isPartOf:{'@id':new URL('/#website',root).href},
     primaryImageOfPage:{'@type':'ImageObject',url:ogImage.href}},
   ...(segments.length?[{'@type':'BreadcrumbList',itemListElement:breadcrumb.map((b,i)=>({'@type':'ListItem',position:i+1,name:b.title,item:new URL(b.url,root).href}))}]:[]),
-  ...(kind?[{'@type':kind,name:title,headline:title,description,url:canonical.href,image:ogImage.href,
-      ...(kind==='Article'?{dateModified:updated,...(!author.name.includes('{{') && {author:{'@type':'Person',name:author.name}}),publisher:{'@id':new URL('/#organization',root).href}}:
+  ...(kind?[{'@type':kind,name:editorialTitle,headline:editorialTitle,description,url:canonical.href,image:ogImage.href,
+      ...(kind==='Article'?{dateModified:updated,...(!author.name.includes('{{') && {author:{'@type':'Organization',name:author.name}}),publisher:{'@id':new URL('/#organization',root).href}}:
       {applicationCategory:'FinanceApplication',operatingSystem:'Any',isAccessibleForFree:true,offers:{'@type':'Offer',price:0,priceCurrency:'USD'}})}]:[])
 ]};
 const cmp = import.meta.env.PUBLIC_GOOGLE_CMP_URL || '';
@@ -39,7 +41,7 @@ const cmpUrl = !robotsNoIndex && policiesPublished && validPublisher && /^https:
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title.length + siteName.length + 3 < 60 ? title + ' | ' + siteName : title}</title>
+  <title>{browserTitle}</title>
   <meta name="description" content={description} />
   <meta name="robots" content={noindex?'noindex, follow':'index, follow'} />
   <link rel="canonical" href={canonical.href} />

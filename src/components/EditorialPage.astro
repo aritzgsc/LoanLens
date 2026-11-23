@@ -46,9 +46,8 @@ const trustNavigation=trustLinks.filter(([id])=>id!==entry.id && publishedTrustI
     {!guide && <span class="eyebrow">{trustInfo.eyebrow}</span>}
     <h1>{title}</h1>
     <p>{guide?description:trustInfo.summary}</p>
-  {guide && <p>{!author.name.includes('{{') && <>By {author.name} · </>}Updated <time>{updated}</time> · Last verified <time>{verified}</time></p>}
+  {guide && <p class="editorial-meta">{!author.name.includes('{{') && <>Published by {author.name} <span aria-hidden="true">·</span> </>}Updated <time datetime={updated}>{updated}</time>{verified!==updated && <> <span aria-hidden="true">·</span> Last verified <time datetime={verified}>{verified}</time></>}{reviewed && reviewed!==updated && reviewed!==verified && <> <span aria-hidden="true">·</span> Reviewed <time datetime={reviewed}>{reviewed}</time></>}</p>}
     {!guide && <div class="trust-hero-meta"><span>Independent educational reference</span><span aria-hidden="true">·</span><span>Reviewed <time datetime={reviewed??updated}>{reviewed??updated}</time></span></div>}
-    {guide && reviewed && <p>Reviewed <time datetime={reviewed}>{reviewed}</time></p>}
     {draft && <p class="warning">Editorial draft awaiting review.</p>}
   </header>
   <div class:list={['article-columns',{'trust-columns':!guide}]}>
