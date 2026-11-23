@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { compare, example, paymentAtRate, poverty, rapPayment, remainingPslf, rules } from './index';
+import { compare, example, ibrPayment, paymentAtRate, poverty, rapPayment, remainingPslf, rules } from './index';
 
 describe('financial source transparency', () => {
  it('does not present an unknown value as verified', () => {
@@ -10,6 +10,19 @@ describe('financial source transparency', () => {
    expect(item.source,key).toMatch(/^https:\/\//);
    expect(item.retrieved,key).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   }
+ });
+});
+describe('source-checked guide example invariants',()=>{
+ it('matches the 2026 RAP $60,001 bracket and equal-spouse-debt guide case',()=>{
+  expect(rapPayment(60000,0)).toBe(250);
+  expect(rapPayment(60001,0)).toBe(300.01);
+  expect(rapPayment(70000,0)).toBe(350);
+  expect(rapPayment(75000,1,30000,30000)).toBe(193.75);
+ });
+ it('calculates both illustrative IBR rates for the guide using documented one-person poverty guideline',()=>{
+  const old={...example,vintage:'old' as const,filing:'single' as const,dependents:0,otherFamily:0,region:'contiguous' as const};
+  expect(ibrPayment(old,45000,30000,333.06)).toBe(263.25);
+  expect(ibrPayment({...old,vintage:'new-ibr'},45000,30000,333.06)).toBe(175.5);
  });
 });
 describe('repayment estimates', () => {

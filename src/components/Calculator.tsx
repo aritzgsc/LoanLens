@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'preact/hooks';
+import { useEffect, useId, useMemo, useRef, useState } from 'preact/hooks';
 import type { ComponentChildren } from 'preact';
 import { compare, dateLabel, example, money, rules } from '../lib/engine';
 import { scenarioIssue } from '../lib/scenario-guidance';
@@ -32,17 +32,18 @@ function NumberField({label,value,onChange,prefix='',suffix='',max=100000000,min
   label:string;value:number;onChange:(n:number)=>void;prefix?:string;suffix?:string;max?:number;min?:number;integer?:boolean;
 }) {
   const [editing,setEditing] = useState<string|null>(null);
+  const validationId = useId();
   const raw = editing?.trim() ?? '';
   const validNumber = /^-?(?:\d+(?:\.\d+)?|\d{1,3}(?:,\d{3})+(?:\.\d+)?)$/.test(raw);
   const n = Number(raw.replaceAll(',',''));
   const invalid = editing !== null && (!validNumber || !safe(n,max,min) || (integer && !Number.isInteger(n)));
   return <label class="field"><span>{label}</span><span class="numeric">{prefix && <span aria-hidden="true">{prefix}</span>}<input
-    inputMode={integer?'numeric':'decimal'} value={editing ?? numberFormat.format(value)} aria-invalid={invalid}
+    inputMode={integer?'numeric':'decimal'} value={editing ?? numberFormat.format(value)} aria-invalid={invalid} aria-describedby={invalid?validationId:undefined}
     onFocus={()=>setEditing(previous=>previous ?? formatEditableNumber(value))} onBlur={()=>{if (!invalid) setEditing(null);}}
     onInput={e=>{const raw=e.currentTarget.value; setEditing(raw); const next=Number(raw.replaceAll(',',''));
       if (/^-?(?:\d+(?:\.\d+)?|\d{1,3}(?:,\d{3})+(?:\.\d+)?)$/.test(raw.trim())
         && safe(next,max,min) && (!integer || Number.isInteger(next))) onChange(next);}}/>{suffix && <span aria-hidden="true">{suffix}</span>}</span>
-    {invalid && <small role="alert">Enter {integer?'a whole number':'an amount'} from {min} to {numberFormat.format(max)}.</small>}</label>;
+    {invalid && <small id={validationId} role="alert">Enter {integer?'a whole number':'an amount'} from {min} to {numberFormat.format(max)}. Do not leave this value empty.</small>}</label>;
 }
 function Field({label,children}:{label:string;children:ComponentChildren}) {
   return <label class="field"><span>{label}</span>{children}</label>;

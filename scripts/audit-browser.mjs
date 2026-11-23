@@ -248,6 +248,11 @@ try {
             const type=loan.getByLabel('Loan type');
             const history=page.getByLabel('Federal borrowing history');
             await balance.fill('30000');
+            await balance.fill('');
+            await page.getByRole('button',{name:'Continue'}).click();
+            if(await balance.getAttribute('aria-invalid')!=='true')
+              throw new Error('Blank calculator balance was silently accepted');
+            await balance.fill('30000');
             await rate.fill('7');
             await rate.press('Tab'); await rate.focus();
             if (await rate.inputValue()!=='7') throw new Error('Interest edit reintroduced binary float for 7%');
