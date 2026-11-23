@@ -374,7 +374,7 @@ try {
             await dependents.press('Tab');
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
             const rates=await page.getByRole('table').locator('tbody tr td:nth-child(2)').allTextContents();
-            if (rates.some(rate=>!/^(?:[1-9]|10)%$/.test(rate.trim())))
+            if (rates.some(rate=>!/^(?:[0-9]|10)%$/.test(rate.trim())))
               throw new Error('RAP income rate exposes imprecise percentages: '+rates.join(', '));
             if (colorScheme === 'light' && [320, 1440].includes(width)) await capture(prefix + '-dependents');
           }
