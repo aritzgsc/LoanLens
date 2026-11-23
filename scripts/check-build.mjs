@@ -27,6 +27,10 @@ const resultsAdsConfigured = /^ca-pub-\d+$/.test(adClient) && /^\d+$/.test(resul
 const sitemapUrls = new Set();
 for(const file of files) {
   const html=await readFile(file,'utf8');
+  // Future pages must load the official Vercel Analytics component exactly
+  // once, so counts are neither silently missing nor duplicated.
+  const analyticsTagCount = (html.match(/<vercel-analytics\b/g) || []).length;
+  if (analyticsTagCount !== 1) errors.push(file + ' must render exactly one Vercel Analytics component, found ' + analyticsTagCount);
   if (/\{\{(?:AUTHOR_NAME|AUTHOR_BIO|CONTACT_EMAIL)\}\}/.test(html)) errors.push(file + ' exposes a publisher placeholder');
   if (/\| LoanLens \| LoanLens/.test(html.match(/<title>(.*?)<\/title>/)?.[1] ?? '')) errors.push(file+' duplicates site title suffix');
   const title=html.match(/<title>(.*?)<\/title>/)?.[1];
