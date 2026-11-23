@@ -96,6 +96,31 @@ const visualGeometry = () => {
   }
   return problems.slice(0, 15);
 };
+// Keep page-level design consistency testable, instead of relying on visual
+// impressions or comparing screenshots manually. Every public route has one
+// primary hero using the same tokens and left-aligned reading hierarchy.
+const designConsistency = () => {
+  const hero = document.querySelector('main .page-hero:not(.page-hero-embedded)');
+  const issues = [];
+  if (!hero) return {issues:['No unified primary page hero'],metrics:null};
+  const heading = hero.querySelector('h1');
+  if (!heading) issues.push('Shared hero has no H1');
+  const style = getComputedStyle(hero);
+  const type = heading ? getComputedStyle(heading) : null;
+  const heroRect = hero.getBoundingClientRect();
+  const radius = parseFloat(style.borderTopLeftRadius);
+  const padding = parseFloat(style.paddingLeft);
+  const headlineSize = type ? parseFloat(type.fontSize) : 0;
+  if (radius < 15 || radius > 22) issues.push('Inconsistent hero radius: ' + radius);
+  if (padding < 16 || padding > 48) issues.push('Inconsistent hero inset: ' + padding);
+  if (!style.backgroundImage.includes('linear-gradient')) issues.push('Hero has a different background treatment');
+  if (style.textAlign !== 'left') issues.push('Hero hierarchy is not left aligned: ' + style.textAlign);
+  if (!type || headlineSize < 28 || headlineSize > 66) issues.push('Inconsistent hero heading scale: ' + headlineSize);
+  if (style.borderTopStyle !== 'solid' || parseFloat(style.borderTopWidth) < 1) issues.push('Hero border is missing');
+  if (heroRect.width < Math.min(250, innerWidth-50)) issues.push('Hero unexpectedly narrow: ' + heroRect.width);
+  return {issues,metrics:{radius,padding,headlineSize,background:style.backgroundImage,
+    textAlign:style.textAlign,width:Math.round(heroRect.width)}};
+};
 const visit = async (page, route) => {
   const response = await page.goto(new URL(route, origin).href, { waitUntil: 'load' });
   if (response?.status() !== 200) throw new Error(route + ' returned HTTP ' + response?.status());
@@ -159,6 +184,8 @@ try {
           }
           const visualIssues = await page.evaluate(visualGeometry);
           if (visualIssues.length) throw new Error('Visual layout: ' + visualIssues.join('; '));
+          const design = await page.evaluate(designConsistency);
+          if (design.issues.length) throw new Error('Design system drift: ' + design.issues.join('; '));
           // Validate the actual generated social images and icons from the local build.
           const assetHrefs = await page.locator('head link[rel="icon"], head link[rel="apple-touch-icon"], head meta[property="og:image"]').evaluateAll(els =>
             els.map(el => el.getAttribute('href') || el.getAttribute('content')).filter(Boolean));
@@ -183,7 +210,7 @@ try {
           if (verticalIssues.length) throw new Error('Vertical field alignment: ' + verticalIssues.join('; '));
           const metrics = await page.evaluate(textMetrics);
           const axe = await new AxeBuilder({ page }).analyze();
-          report.pages.push({ route, width, colorScheme, ...metrics,
+          report.pages.push({ route, width, colorScheme, ...metrics, design:design.metrics,
             violations: axe.violations.map(({ id, impact, nodes }) => ({ id, impact, targets: nodes.map(node => node.target) })),
           });
           if (route === '/') {

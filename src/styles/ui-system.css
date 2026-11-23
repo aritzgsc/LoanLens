@@ -295,7 +295,9 @@ body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
   margin:0;
 }
 .page-hero h1{font-size:var(--ll-page-h1)}
-.page-hero :is(>p,.resource-hero-copy>p:not(.hero-microcopy),.decision-intro>p:not(.hero-microcopy)){
+.page-hero>p:not(.hero-microcopy),
+.page-hero .resource-hero-copy>p:not(.hero-microcopy),
+.page-hero .decision-intro>p:not(.hero-microcopy){
   color:var(--ll-page-muted);
   font-size:var(--ll-page-lead);
   line-height:1.65;
@@ -510,7 +512,9 @@ body{background:var(--ll-page-canvas);color:var(--ll-page-ink)}
     max-width:26ch;
   }
   .page-hero .eyebrow,.page-hero-kicker{font-size:.72rem}
-  .page-hero :is(>p,.resource-hero-copy>p:not(.hero-microcopy),.decision-intro>p:not(.hero-microcopy)),
+  .page-hero>p:not(.hero-microcopy),
+  .page-hero .resource-hero-copy>p:not(.hero-microcopy),
+  .page-hero .decision-intro>p:not(.hero-microcopy),
   .hero.tool-detail-hero.page-hero>p:not(.tool-quick-prep),
   .trust-page .trust-hero.page-hero>p:first-of-type{font-size:.96rem;line-height:1.65}
   .hero-calculator.page-hero-embedded{padding:0 0 1rem;margin-block:2rem 1rem}
