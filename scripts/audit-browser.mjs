@@ -459,7 +459,8 @@ try {
             const search=page.locator('[data-resource-search]');
             await search.fill('pslf');
             const visibleCards=page.locator('[data-resource-card]:visible');
-            if (await visibleCards.count() !== 1) throw new Error('Resource search did not narrow to one PSLF item on '+route);
+            if (route==='/tools/' ? await visibleCards.count() !== 1 : await visibleCards.count() < 2)
+              throw new Error('Resource search did not reveal expected PSLF guides/tools on '+route);
             await search.fill('nothing-matches-this-test');
             await page.getByText('No matching resources.').waitFor();
             if (await page.locator('.resource-filter-count').count() !== await page.locator('.resource-filter').count())
