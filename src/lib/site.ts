@@ -18,7 +18,7 @@ export const trustLinks = [
 export const toolLinks = [
   ['/tools/compare-college-aid-offers/','Compare college aid offers','Compare net price, planned borrowing, and what remains to pay.'],
   ['/deadlines/','Repayment deadlines','Find the next date that applies to your loans.'],
-  ['/tools/married-rap-impact/','Married RAP impact','Compare separate and joint repayment estimates.'],
+  ['/tools/married-rap-impact/','Married RAP payment calculator','Compare separate and joint repayment estimates.'],
   ['/tools/parent-plus-consolidation-checker/','Parent PLUS options','Check how consolidation timing can affect eligibility.'],
   ['/tools/pslf-payment-tracker/','PSLF payment tracker','Estimate when you could reach the payment requirement.'],
   ['/rap-payment-by-income/','RAP payments by income','Explore payment ranges by income and dependents.']

@@ -81,12 +81,16 @@ const info=context[kind];
     <h1>{title}</h1>
     <p>{description}</p>
     <a class="primary button-link tool-start" href="#tool-workspace">Use this tool <span aria-hidden="true">↓</span></a>
+    <p class="tool-quick-prep"><strong>Have ready:</strong> {info.need}</p>
+  </header>
+  <details class="tool-brief-details">
+    <summary>What this tool answers and how to interpret the result</summary>
     <div class="tool-brief">
       <div><span class="tool-brief-label">The question</span><strong>{info.question}</strong></div>
       <div><span class="tool-brief-label">What to have ready</span><strong>{info.need}</strong></div>
       <div><span class="tool-brief-label">What you will see</span><strong>{info.reading}</strong></div>
     </div>
-  </header>
+  </details>
   <details class="tool-plain-help">
     <summary>New to these terms? See a plain-English explanation and example</summary>
     <div><p>{info.plain}</p><p><strong>Try it:</strong> {info.example}</p></div>

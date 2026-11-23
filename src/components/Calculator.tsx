@@ -109,6 +109,7 @@ export default function Calculator() {
   useEffect(()=>{ if(moved) heading.current?.focus(); },[step,moved]);
   const rows = useMemo(()=>submitted ? compare(input) : [],[input,submitted]);
   const alerts = [...new Set(rows.flatMap(row=>row.flags))];
+  const importantAlerts = alerts.filter(key => ['priorPlanCredit','multiLoanAllocation','spouseBalanceForecast','fixedSchedule','ibrCapitalization'].includes(key)).slice(0,3);
   const hasBalance = input.loans.some(l=>l.balance>0);
   const issue = scenarioIssue(input);
   const update = <K extends keyof Inputs>(key:K,value:Inputs[K])=>setInput(prev=>({...prev,[key]:value}));
@@ -160,7 +161,7 @@ export default function Calculator() {
             <NumberField label="Current balance" prefix="$" value={loan.balance} onChange={balance=>updateLoan(i,{balance})}/>
             <NumberField label="Annual interest rate" suffix="%" value={loan.rate*100} max={100} onChange={rate=>updateLoan(i,{rate:rate/100})}/>
             <Field label="Loan type"><select value={loan.type} onChange={e=>updateLoan(i,{type:e.currentTarget.value as LoanType})}>{Object.entries(labels).map(([id,label])=><option key={id} value={id}>{label}</option>)}</select></Field>
-          </div>{input.loans.length>1 && <button type="button" class="text-button" onClick={()=>{setVersion(v=>v+1);update('loans',input.loans.filter((_,ix)=>ix!==i));}}>Remove loan {i+1}</button>}</fieldset>)}
+          </div>{loan.type==='grad-plus' && <p class="field-hint">New Grad PLUS borrowing is generally unavailable after July 1, 2026, except for limited transition cases. Check <a href="https://studentaid.gov/understand-aid/types/loans/plus/grad">official Grad PLUS exception details</a>.</p>}{input.loans.length>1 && <button type="button" class="text-button" onClick={()=>{setVersion(v=>v+1);update('loans',input.loans.filter((_,ix)=>ix!==i));}}>Remove loan {i+1}</button>}</fieldset>)}
           {input.loans.length<30 && <button type="button" class="secondary" onClick={()=>update('loans',[...input.loans,{balance:0,rate:0,type:'unsubsidized'}])}>+ Add another loan</button>}
           <Field label="Federal borrowing history"><select value={input.vintage} onChange={e=>update('vintage',e.currentTarget.value as Inputs['vintage'])}>
             <option value="unknown">I'm not sure — check my loan records</option>
@@ -199,7 +200,7 @@ export default function Calculator() {
       </form>
     </div>
     <section class="results" id="results" aria-labelledby="results-title">
-      <div class="results-head"><div><span class="eyebrow">Your estimates</span><h2 id="results-title" ref={resultHeading} tabIndex={-1}>Compare your options</h2></div><span class="stamp">Rules last verified: <time>{rules.rapBands.retrieved}</time></span></div>
+      <div class="results-head"><div><span class="eyebrow">Your estimates</span><h2 id="results-title" ref={resultHeading} tabIndex={-1}>Compare your options</h2></div><span class="stamp">Rule reference retrieved: <time>{rules.rapBands.retrieved}</time></span></div>
       <div class="notice" aria-live="polite">{!submitted ? 'Complete the calculator or load an example to compare starting payments, lifetime costs and payoff dates.'
         : !rows.length ? <><strong>{issue?.title ?? 'This scenario cannot be safely estimated yet.'}</strong> {issue?.detail ?? 'Review your loan and account details with Federal Student Aid.'} <a href={issue?.link ?? 'https://studentaid.gov/articles/repayment-calculator/'} rel="noopener noreferrer">Check official options ↗</a></>
           : <>{low?.title} has the lowest starting payment ({money(low?.starting ?? 0)}). {cost?.title} has the lowest projected out-of-pocket payments ({money(cost?.paid ?? 0)}) before any forgiveness tax.</>}</div>
@@ -214,6 +215,7 @@ export default function Calculator() {
       <p class="muted">Educational estimates only. This model uses monthly APR/12 rather than your servicer's daily interest calculation. IDR forgiveness in 2026 or later is generally federally taxable; PSLF generally is not. Tax effects and personal eligibility are not included in any ranking. Verify options with <a href="https://studentaid.gov/articles/repayment-calculator/">Federal Student Aid</a> and see the <a href="https://www.taxpayeradvocate.irs.gov/news/tax-tips/what-to-know-about-student-loan-forgiveness-and-your-taxes/2026/03/">IRS Taxpayer Advocate explanation</a>.</p>
       {alerts.length>0 && <section class="assumptions" aria-label="Unverified projection assumptions">
         <p class="assumptions-intro"><strong>Important modeling limits:</strong> {alerts.length} {alerts.length===1?'assumption affects':'assumptions affect'} these projections. They can change actual payments, forgiveness or payoff dates.</p>
+        {importantAlerts.length>0 && <ul class="assumption-highlights">{importantAlerts.map(key=><li key={key}>{rules[key].note}</li>)}</ul>}
         <details><summary>Read scenario-specific assumptions <span class="muted">(unverified)</span></summary>
           <ul>{alerts.map(key => <li key={key}>{key === 'ibrRounding' ? 'Your servicer may round small IBR payments differently.' : rules[key].note}</li>)}</ul>
         </details>

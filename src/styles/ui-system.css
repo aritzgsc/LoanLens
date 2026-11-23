@@ -222,3 +222,18 @@ input[aria-invalid="true"]{border-color:#af4237!important;box-shadow:0 0 0 1px #
   .footer-menu:last-child h2{grid-column:1/-1}
   .footer-menu a,.footer-privacy{min-height:44px}
 }
+
+/* Audit V5: move optional background out of the way of the tool itself. */
+.tool-detail-hero .tool-quick-prep{max-width:68ch;font-size:.91rem;line-height:1.6;color:#456652;margin-top:.1rem}
+.tool-detail-hero .tool-quick-prep strong{color:#234839}
+.tool-brief-details{border:1px solid #dce9df;background:#f9fcfa;border-radius:12px;padding:.7rem 1rem;margin-block:.65rem}
+.tool-brief-details>summary{display:flex;align-items:center;justify-content:space-between;min-height:42px;font-size:.91rem;color:#305742;font-weight:750}
+.tool-brief-details>summary::after{content:'+';font-size:1.25rem;padding-left:.6rem}
+.tool-brief-details[open]>summary::after{content:'−'}
+.tool-brief-details .tool-brief{margin-block:.7rem 0}
+.assumption-highlights{display:grid;gap:.35rem;margin:.55rem 0 .3rem;padding-left:1.2rem;font-size:.88rem;line-height:1.6;color:#455f4d;list-style:disc}
+@media(max-width:650px){
+  .tool-detail-hero .tool-quick-prep{font-size:.87rem}
+  .tool-brief-details{padding:.55rem .8rem}
+  .tool-brief-details .tool-brief{grid-template-columns:1fr}
+}
