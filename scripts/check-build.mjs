@@ -28,6 +28,7 @@ const sitemapUrls = new Set();
 for(const file of files) {
   const html=await readFile(file,'utf8');
   if (/\{\{(?:AUTHOR_NAME|AUTHOR_BIO|CONTACT_EMAIL)\}\}/.test(html)) errors.push(file + ' exposes a publisher placeholder');
+  if (/\| LoanLens \| LoanLens/.test(html.match(/<title>(.*?)<\/title>/)?.[1] ?? '')) errors.push(file+' duplicates site title suffix');
   const title=html.match(/<title>(.*?)<\/title>/)?.[1];
   if (!title || titles.has(title)) errors.push(file + ' missing or duplicate title');
   titles.add(title);

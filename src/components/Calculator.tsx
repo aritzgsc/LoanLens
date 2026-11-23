@@ -142,7 +142,10 @@ export default function Calculator() {
       <form key={version} onSubmit={e=>{e.preventDefault();const firstInvalid=e.currentTarget.querySelector<HTMLInputElement>('[aria-invalid="true"]');if(firstInvalid) {setMessage('Correct the highlighted values before continuing.');firstInvalid.focus();return;}
         if(step===0 && issue) {
           setMessage(issue.title);
-          requestAnimationFrame(()=>document.getElementById('scenario-guidance')?.focus());
+          requestAnimationFrame(()=>{
+            if(issue.kind==='balance') document.querySelector<HTMLInputElement>('.loan-row input')?.focus();
+            else document.getElementById('scenario-guidance')?.focus();
+          });
           return;
         }
         if(step<2) go(step+1);
@@ -165,7 +168,7 @@ export default function Calculator() {
             <option value="new-ibr">New borrower for IBR from July 2014, all Direct loans before July 2026</option>
             <option value="new-direct">Any Direct Loan made on or after July 1, 2026</option></select></Field>
           <p class="field-hint">Find your original disbursement dates and loan types on <a href="https://studentaid.gov/" rel="noopener noreferrer">StudentAid.gov</a>. If you do not know, do not guess to unlock a comparison.</p>
-          {issue && <div id="scenario-guidance" class="scenario-guidance warning" role="status" tabIndex={-1}>
+          {issue && hasBalance && <div id="scenario-guidance" class="scenario-guidance warning" role="status" tabIndex={-1}>
             <strong>{issue.title}</strong><p>{issue.detail}</p>
             <a href={issue.link} rel="noopener noreferrer">Check the official repayment guidance ↗</a>
           </div>}

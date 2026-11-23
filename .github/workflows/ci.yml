@@ -33,9 +33,9 @@ jobs:
         if: ${{ !cancelled() && steps.preview.outcome == 'success' }}
         run: PUBLISH_DRAFTS=true npm run check:links
   browser:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 24
     env:
       PUBLIC_SITE_URL: https://myloanlens.vercel.app
     steps:
