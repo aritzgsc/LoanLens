@@ -532,7 +532,7 @@ try {
             const selected=route==='/guides/'?'Choosing a college':'Before college';
             await page.getByRole('button',{name:selected,exact:true}).click();
             const topicCount=await visibleCards.count();
-            if (topicCount !== (route==='/guides/'?2:1)) throw new Error('Topic filter returned incorrect count: '+topicCount);
+            if (topicCount !== 2) throw new Error('Topic filter returned incorrect count: '+topicCount);
             await page.getByRole('button',{name:'All topics'}).click();
             if (colorScheme==='light' && [320,390,1440].includes(width)) await capture(prefix+'-directory');
           }
@@ -541,6 +541,22 @@ try {
             await help.locator('summary').click();
             if (!(await help.evaluate(element=>element.open))) throw new Error('Plain-language tool help did not expand');
             if (!(await help.innerText()).includes('Try it:')) throw new Error('Tool example is missing');
+          }
+          if (route === '/guides/rap-vs-ibr/') {
+            const income=page.getByLabel('Annual AGI (USD)');
+            await income.fill('60000');
+            await page.getByLabel('RAP tax dependents').fill('2');
+            await page.getByText('$150.00',{exact:true}).first().waitFor();
+            await page.getByLabel('Confirmed monthly IBR cap (USD)').fill('');
+            await page.getByText('Enter valid scenario values, including the IBR cap.',{exact:true}).waitFor();
+          }
+          if (route === '/guides/compare-college-financial-aid-offers/') {
+            await page.getByLabel('School A first-year cost (USD)').fill('10000');
+            await page.getByLabel('School A annual gift aid (USD)').fill('0');
+            await page.getByLabel('School A annual cost increase (%)').fill('0');
+            await page.getByText('$40,000.00',{exact:true}).first().waitFor();
+            await page.getByLabel('School A first-year cost (USD)').fill('');
+            await page.getByText('Enter valid costs, gift aid and renewal assumptions for both schools.',{exact:true}).waitFor();
           }
           if (route === '/tools/student-loan-payoff-calculator/') {
             await page.getByLabel('Outstanding balance (USD)').fill('1200');

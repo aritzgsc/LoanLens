@@ -1,15 +1,16 @@
 ---
-title: "RAP vs. IBR: federal student loan repayment plans"
-description: "Compare Repayment Assistance Plan (RAP) and Income-Based Repayment (IBR) eligibility, monthly payment formulas, interest and repayment periods."
+title: "RAP vs. IBR Calculator: Compare Monthly Payments"
+description: "Compare estimated starting RAP and IBR monthly payments for an eligible single borrower using income, household details and an IBR cap. Learn how the plans differ."
 category: "guide"
 status: "reviewed"
 reviewed: "2026-11-23"
 verified: "2026-11-23"
-updated: "2026-11-23"
+updated: "2026-11-24"
 shortAnswer: "Compare RAP and IBR only after confirming eligibility for both. IBR uses income above a poverty allowance, while RAP uses all adjusted gross income and a fixed reduction for each claimed dependent."
 related: ["rap-payment-calculation","tiered-standard","rap-and-pslf"]
 ---
 
+import RapIbrComparison from '../../components/RapIbrComparison';
 import { rules } from "../../lib/engine";
 import Example from "../../components/Example.astro";
 import CalculatorLink from "../../components/CalculatorLink.astro";
@@ -22,6 +23,14 @@ Start here if your federal student loans were issued before the new Direct borro
 <CalculatorLink />
 
 For a quick RAP-only estimate, use the [RAP payment calculator by income](/rap-payment-by-income/). To compare modeled repayment costs across plans, use the full calculator above.
+
+## Compare estimated starting monthly payments
+
+Use this example only if you have verified that both plans are available. The quick comparison assumes a single borrower, no eligible spouse debt, the published poverty guideline schedule and a known IBR payment cap. IBR family size and RAP tax dependents can differ. Check the cap and borrower classification with your servicer before using your own figures.
+
+<RapIbrComparison client:load />
+
+A lower starting payment does not establish lower lifetime cost or eligibility. Use the [full repayment calculator](/calculator/) to examine longer-term scenarios.
 
 ## What to check
 
