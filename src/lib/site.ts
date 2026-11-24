@@ -21,6 +21,6 @@ export const toolLinks = [
   ['/tools/married-rap-impact/','Married RAP payment calculator','Compare separate and joint repayment estimates.'],
   ['/tools/parent-plus-consolidation-checker/','Parent PLUS options','Check how consolidation timing can affect eligibility.'],
   ['/tools/pslf-payment-tracker/','PSLF payment tracker','Estimate when you could reach the payment requirement.'],
-  ['/rap-payment-by-income/','RAP payments by income','Explore payment ranges by income and dependents.']
+  ['/rap-payment-by-income/','RAP payment calculator by income','Estimate a starting payment and explore income brackets.']
 ] as const;
 export const robotsNoIndex = publishDrafts || !import.meta.env.PUBLIC_SITE_URL || import.meta.env.PUBLIC_SITE_URL.endsWith('.example');

@@ -5,11 +5,11 @@ import { formatPercent } from '../lib/presentation';
 const money = formatUSD;
 export type Tool = 'deadlines'|'married'|'parent'|'pslf'|'income';
 export const toolTitles: Record<Tool,{title:string;description:string}> = {
-  deadlines:{title:'Student loan repayment deadlines',description:'Find the timeline that applies to SAVE, PAYE, ICR and Parent PLUS borrowers.'},
-  married:{title:'Married RAP payment calculator',description:'See how joint income, a spouse’s eligible debt and dependents affect your monthly estimate.'},
+  deadlines:{title:'Student loan repayment deadlines',description:'Check an estimated SAVE transition notice deadline and see timelines to verify for PAYE, ICR and Parent PLUS loans.'},
+  married:{title:'Married RAP calculator: joint vs. separate filing',description:'Compare one borrower’s modeled RAP payments when married filing jointly or separately, using income, eligible spouse debt and dependents.'},
   parent:{title:'Parent PLUS consolidation deadline and options',description:'Check which questions to ask your servicer based on consolidation and repayment history.'},
-  pslf:{title:'PSLF payment tracker',description:'Use your certified count to estimate how many qualifying monthly payments remain.'},
-  income:{title:'RAP payment by income',description:'Explore how adjusted gross income and claimed dependents change estimated monthly payments.'},
+  pslf:{title:'PSLF payment tracker and milestone calculator',description:'Estimate remaining qualifying Public Service Loan Forgiveness payments and your projected 120-payment milestone using your certified count.'},
+  income:{title:'RAP payment calculator by income',description:'Estimate your starting monthly Repayment Assistance Plan payment from annual adjusted gross income and dependents, and explore RAP income brackets.'},
 };
 const currentMonth = () => new Date().toISOString().slice(0,7);
 const usd = (amount: number) => formatUSD(amount, 'whole');
@@ -126,15 +126,20 @@ function Pslf() {
   </section>;
 }
 function Income() {
+  const [income,setIncome]=useState(example.income);
   const [dependents,setDependents]=useState(0);
   const table = rules.rapBands.value.map(([limit,rate],i)=>{
     const lower = i===0?0:rules.rapBands.value[i-1][0]??0;
     return {range:i===0?`Up to ${usd(limit ?? 0)}`:limit===null?`Above ${usd(lower)}`:`Above ${usd(lower)} through ${usd(limit)}`,
       rate:formatPercent(rate??0),example:limit ?? lower+10000};
   });
-  return <section class="tool-pane card"><N label="Dependents claimed on your return" help="Use the count from the tax return that supplies your income." value={dependents} max={30} change={setDependents}/>
+  return <section class="tool-pane card"><div class="fields"><N label="Annual adjusted gross income (AGI)" help="Use annual AGI from your applicable tax return, not take-home pay." currency value={income} change={setIncome}/>
+    <N label="Dependents claimed on your return" help="Use the count from the tax return that supplies your income." value={dependents} max={30} change={setDependents}/></div>
+    <div class="notice" aria-live="polite"><strong>Estimated starting monthly RAP payment: {money(rapPayment(income,dependents))}</strong><p>Assumes no eligible spouse debt and does not determine plan eligibility.</p></div>
+    <h2>RAP monthly payment by income bracket</h2>
     <div class="table-wrap" role="region" tabIndex={0} aria-label="RAP payments by income bracket"><table><caption>Borrower with no eligible spouse debt. Starting monthly payment uses the sample AGI.</caption><thead><tr><th scope="col">AGI bracket</th><th scope="col">Full AGI rate</th><th scope="col">Sample AGI</th><th scope="col">Monthly payment</th></tr></thead><tbody>{table.map(row=><tr key={row.range}><th scope="row">{row.range}</th><td>{row.rate}</td><td>{usd(row.example)}</td><td>{money(rapPayment(row.example,dependents))}</td></tr>)}</tbody></table></div>
-    <p>The assigned rate applies to full AGI, divided by {annualMonths}, before the dependent reduction and payment floor.</p>
+    <p>For the lowest bracket, a separate annual amount applies. In other brackets, the assigned rate applies to full AGI, divided by {annualMonths}, before the dependent reduction and payment floor.</p>
+    <p>For joint filing with eligible spouse debt, use the <a href="/tools/married-rap-impact/">married RAP calculator</a>. Verify your options with <a href="https://studentaid.gov/articles/faqs-idr-plan/">Federal Student Aid’s income-driven repayment guidance</a>.</p>
   </section>;
 }
 export default function Tools({kind}:{kind:Tool}) {

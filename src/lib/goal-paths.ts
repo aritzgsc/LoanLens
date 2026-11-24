@@ -60,12 +60,12 @@ export const goalPaths: GoalPath[] = [
   },
   {
     id:'rap',stage:'Repaying',choice:'I want to understand RAP payments',
-    title:'See how RAP estimates change with income',
-    situation:'You want to explore the modeled starting RAP payment at different income ranges.',
-    needed:'A rough idea of the income range and number of claimed dependents.',
-    takeaway:'A table of sample starting monthly payments and their income assumptions.',
-    limitation:'This is a comparison table, not a confirmation of RAP eligibility.',
-    toolUrl:'/rap-payment-by-income/',toolLabel:'Explore RAP income examples',
+    title:'Calculate a starting RAP payment by income',
+    situation:'You want to estimate a starting RAP payment and explore different income ranges.',
+    needed:'Annual adjusted gross income and the number of claimed dependents.',
+    takeaway:'An estimated starting monthly payment and a table of sample income brackets.',
+    limitation:'This is an illustrative starting payment, not a confirmation of RAP eligibility.',
+    toolUrl:'/rap-payment-by-income/',toolLabel:'Calculate RAP payment',
     guideUrl:'/guides/compare-student-loan-repayment/',guideLabel:'Understand payment trade-offs',first:'tool',
   },
   {

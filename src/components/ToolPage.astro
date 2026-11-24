@@ -61,20 +61,20 @@ const context:Record<Tool,{
     next:'Verify the count for each loan and use the official PSLF Help Tool.'
   },
   income:{
-    question:'What happens to a starting RAP estimate across income ranges?',
-    need:'The number of dependents you expect to claim on the return used for the illustration.',
-    plain:'RAP is the Repayment Assistance Plan. AGI is adjusted gross income on a tax return; the table uses sample income figures, not your actual loan balance.',
-    example:'Change the dependent count from 0 to 2 and compare the sample monthly estimates at the same income row.',
-    reading:'Use the table to compare sample incomes, not to determine an exact account payment or plan eligibility.',
-    limitation:'The table uses sample AGIs and omits some account and household factors.',
-    guide:'/guides/compare-student-loan-repayment/',
-    guideLabel:'Learn to compare payments',
+    question:'What is my estimated starting RAP payment, and how does it change across income ranges?',
+    need:'Your annual adjusted gross income and number of dependents claimed on the applicable tax return.',
+    plain:'RAP is the Repayment Assistance Plan. AGI is adjusted gross income on a tax return. The calculator uses your entered AGI while the table uses sample income figures.',
+    example:'Enter an annual AGI, then change the dependent count from 0 to 2 to see the modeled payment and compare sample income brackets.',
+    reading:'Use your calculated starting payment and the table to explore income scenarios, not to determine an exact account payment or plan eligibility.',
+    limitation:'Both the estimate and the table assume no eligible spouse debt and omit account-specific eligibility and other household factors.',
+    guide:'/guides/rap-payment-calculation/',
+    guideLabel:'How RAP payments are calculated',
     next:'Enter your actual balances and other details in a broader calculator, then verify the result.'
   },
 };
 const info=context[kind];
 ---
-<Base {title} {description} og={kind}>
+<Base {title} {description} og={kind} kind="WebApplication">
   <header class="hero tool-detail-hero page-hero">
     <a class="tool-back" href="/tools/">← All planning tools</a>
     <span class="eyebrow page-hero-kicker">Interactive planning tool</span>

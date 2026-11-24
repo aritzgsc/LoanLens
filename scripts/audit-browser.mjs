@@ -421,6 +421,14 @@ try {
             const dependents = page.getByLabel(/Dependents claimed on your return/);
             await dependents.fill('2');
             await dependents.press('Tab');
+            const agi = page.getByLabel('Annual adjusted gross income (AGI)');
+            await agi.fill('60000');
+            await agi.press('Tab');
+            const estimate = page.getByText('Estimated starting monthly RAP payment: $150.00', {exact:true});
+            await estimate.waitFor();
+            await agi.fill('40000');
+            await agi.press('Tab');
+            await page.getByText('Estimated starting monthly RAP payment: $10.00', {exact:true}).waitFor();
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
             const rates=await page.getByRole('table').locator('tbody tr td:nth-child(2)').allTextContents();
             if (rates.some(rate=>!/^(?:[0-9]|10)%$/.test(rate.trim())))
