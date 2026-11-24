@@ -542,6 +542,15 @@ try {
             if (!(await help.evaluate(element=>element.open))) throw new Error('Plain-language tool help did not expand');
             if (!(await help.innerText()).includes('Try it:')) throw new Error('Tool example is missing');
           }
+          if (route === '/tools/student-loan-payoff-calculator/') {
+            await page.getByLabel('Outstanding balance (USD)').fill('1200');
+            await page.getByLabel('Annual fixed interest rate (%)').fill('0');
+            await page.getByLabel('Remaining repayment months').fill('12');
+            await page.getByLabel('Extra monthly payment (USD)').fill('100');
+            await page.getByText('6 months',{exact:true}).first().waitFor();
+            await page.getByLabel('Outstanding balance (USD)').fill('');
+            await page.getByText('Enter valid values in all four fields.',{exact:true}).waitFor();
+          }
           if (route === '/guides/student-loan-interest-explained/') {
             const principal=page.getByLabel('Outstanding principal (USD)');
             await principal.fill('10000');

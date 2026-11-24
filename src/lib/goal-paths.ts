@@ -69,6 +69,16 @@ export const goalPaths: GoalPath[] = [
     guideUrl:'/guides/compare-student-loan-repayment/',guideLabel:'Understand payment trade-offs',first:'tool',
   },
   {
+    id:'payoff',stage:'Repaying',choice:'I want to see what extra payments change',
+    title:'Compare fixed-rate payoff schedules',
+    situation:'You want to see how an extra monthly payment could affect a fixed-rate loan.',
+    needed:'Outstanding balance, annual rate, remaining term and hypothetical extra monthly amount.',
+    takeaway:'Estimated payoff time, interest and an annual balance schedule.',
+    limitation:'The monthly model does not account for forgiveness, subsidies or servicer payment allocation.',
+    toolUrl:'/tools/student-loan-payoff-calculator/',toolLabel:'Compare extra payments',
+    guideUrl:'/guides/student-loan-interest-explained/',guideLabel:'Understand interest',first:'tool',
+  },
+  {
     id:'household',stage:'Household',choice:'My spouse and I have different incomes',
     title:'Compare two illustrative household RAP scenarios',
     situation:'You want to see how joint or separate filing inputs might affect one borrower’s modeled RAP payment.',

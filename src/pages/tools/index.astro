@@ -5,6 +5,8 @@ import GoalFinder from '../../components/GoalFinder.astro';
 const resources = [
   {href:'/tools/compare-college-aid-offers/',title:'Which college will cost me less?',description:'Compare two offer letters without treating loans as free aid.',forYou:'You have offers from two schools.',outcome:'Annual net price, loans and funding gap side by side.',kind:'College costs',detail:'Side-by-side comparison',action:'Compare two offers',topic:'college',featured:true},
   {href:'/calculator/',title:'What might my monthly payment be?',description:'Compare projected payments and full repayment cost—not just the starting amount.',forYou:'You have a loan balance and interest rate.',outcome:'Estimated payments, total paid, time and assumptions.',kind:'Repayment',detail:'Three-step calculator',action:'Estimate loan payments',topic:'repayment',featured:true},
+  {href:'/tools/student-loan-payoff-calculator/',title:'What if I pay extra each month?',description:'Compare a fixed-rate loan payoff schedule with and without extra monthly payments.',forYou:'You have a balance, annual interest rate and remaining term.',outcome:'Payoff time, modeled interest savings and annual amortization schedule.',kind:'Repayment',detail:'Payoff and amortization calculator',action:'Calculate extra payments',topic:'repayment'},
+  {href:'/guides/student-loan-interest-explained/',title:'How much interest accrues per day?',description:'Calculate daily and period interest for a constant principal.',forYou:'You know the principal and annual rate.',outcome:'Daily interest and interest over a selected number of days.',kind:'Repayment',detail:'Daily interest calculator',action:'Calculate daily interest',topic:'repayment'},
   {href:'/rap-payment-by-income/',title:'What would my monthly RAP payment be?',description:'Calculate a starting monthly RAP payment from annual AGI and dependents, then explore income brackets.',forYou:'You know your AGI and claimed dependents.',outcome:'A starting payment estimate and sample-income table.',kind:'Repayment',detail:'RAP calculator and income table',action:'Calculate RAP payment',topic:'repayment'},
   {href:'/tools/married-rap-impact/',title:'Does my spouse’s income change this estimate?',description:'Compare illustrative RAP payments under different household assumptions.',forYou:'You and your spouse have income or loan debt.',outcome:'A side-by-side modeled household comparison.',kind:'Household',detail:'Two-scenario estimate',action:'Compare household estimates',topic:'repayment'},
   {href:'/deadlines/',title:'What deadline should I check?',description:'Use the date from your repayment notice to explore a possible deadline.',forYou:'You received a notice or are changing plans.',outcome:'A calculated date to verify in your real notice.',kind:'Timeline',detail:'Date helper',action:'Check a notice date',topic:'repayment'},
@@ -26,7 +28,7 @@ const topics=[
       <p>Compare college costs, estimate loan payments, check deadlines or track progress. Choose a question and go straight to the matching tool.</p>
       <div class="hero-actions">
         <a class="primary button-link" href="#find-a-tool">Help me choose</a>
-        <a class="secondary button-link" href="#browse-tools">Browse all 7 tools</a>
+        <a class="secondary button-link" href="#browse-tools">Browse all {resources.length} tools</a>
       </div>
       <p class="hero-microcopy">Free · No account required · Independent educational estimates</p>
     </div>

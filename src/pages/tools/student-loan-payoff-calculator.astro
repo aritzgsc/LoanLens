@@ -1,0 +1,23 @@
+---
+import Base from '../../layouts/Base.astro';
+import PayoffCalculator from '../../components/PayoffCalculator';
+const title='Student Loan Payoff & Extra Payment Calculator';
+const description='Compare fixed-rate student loan payoff time, total interest and monthly or annual amortization schedules with and without extra payments.';
+---
+<Base {title} {description} kind="WebApplication" og="payoff">
+ <header class="hero tool-detail-hero page-hero">
+  <a class="tool-back" href="/tools/">← All planning tools</a>
+  <span class="eyebrow page-hero-kicker">Interactive planning tool</span>
+  <h1>{title}</h1>
+  <p>{description}</p>
+  <a class="primary button-link tool-start" href="#payoff-workspace">Use this tool <span aria-hidden="true">↓</span></a>
+ </header>
+ <PayoffCalculator client:load />
+ <section class="support page-section">
+ <h2>How extra payments affect a fixed-rate payoff estimate</h2>
+ <p>This tool compares two otherwise identical monthly amortization schedules. It estimates a level payment from the balance, annual rate divided by 12 and remaining months. Each period's interest is calculated on the remaining principal; payment above interest reduces principal. It assumes no changes to the rate or scheduled payment.</p>
+ <h2>When is the comparison useful?</h2>
+ <p>Use it for hypothetical fixed-rate scenarios. It is not an income-driven repayment or forgiveness simulator. If you have federal loans, check your actual terms, payment allocation and any benefits before changing payments. Federal student loans generally accrue interest daily; this monthly model may differ from a servicer's payoff quote.</p>
+ <p>Read <a href="/guides/student-loan-interest-explained/">how student loan interest works</a>, compare <a href="/calculator/">federal repayment plans</a>, or visit <a href="https://studentaid.gov/manage-loans/repayment">Federal Student Aid's repayment guidance</a>.</p>
+ </section>
+</Base>

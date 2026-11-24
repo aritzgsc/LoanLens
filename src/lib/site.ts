@@ -17,6 +17,7 @@ export const trustLinks = [
 ] as const;
 export const toolLinks = [
   ['/tools/compare-college-aid-offers/','Compare college aid offers','Compare net price, planned borrowing, and what remains to pay.'],
+  ['/tools/student-loan-payoff-calculator/','Student loan payoff calculator','Compare fixed-rate schedules with extra payments.'],
   ['/deadlines/','Repayment deadlines','Find the next date that applies to your loans.'],
   ['/tools/married-rap-impact/','Married RAP payment calculator','Compare separate and joint repayment estimates.'],
   ['/tools/parent-plus-consolidation-checker/','Parent PLUS options','Check how consolidation timing can affect eligibility.'],
