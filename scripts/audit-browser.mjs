@@ -421,6 +421,14 @@ try {
             const dependents = page.getByLabel(/Dependents claimed on your return/);
             await dependents.fill('2');
             await dependents.press('Tab');
+            const agi = page.getByLabel('Annual adjusted gross income (AGI)');
+            await agi.fill('60000');
+            await agi.press('Tab');
+            const estimate = page.getByText('Estimated starting monthly RAP payment: $150.00', {exact:true});
+            await estimate.waitFor();
+            await agi.fill('40000');
+            await agi.press('Tab');
+            await page.getByText('Estimated starting monthly RAP payment: $10.00', {exact:true}).waitFor();
             if (await page.getByRole('table').count() !== 1) throw new Error('RAP table is not present');
             const rates=await page.getByRole('table').locator('tbody tr td:nth-child(2)').allTextContents();
             if (rates.some(rate=>!/^(?:[0-9]|10)%$/.test(rate.trim())))
@@ -524,7 +532,7 @@ try {
             const selected=route==='/guides/'?'Choosing a college':'Before college';
             await page.getByRole('button',{name:selected,exact:true}).click();
             const topicCount=await visibleCards.count();
-            if (topicCount !== (route==='/guides/'?2:1)) throw new Error('Topic filter returned incorrect count: '+topicCount);
+            if (topicCount !== 2) throw new Error('Topic filter returned incorrect count: '+topicCount);
             await page.getByRole('button',{name:'All topics'}).click();
             if (colorScheme==='light' && [320,390,1440].includes(width)) await capture(prefix+'-directory');
           }
@@ -534,7 +542,40 @@ try {
             if (!(await help.evaluate(element=>element.open))) throw new Error('Plain-language tool help did not expand');
             if (!(await help.innerText()).includes('Try it:')) throw new Error('Tool example is missing');
           }
+          if (route === '/guides/rap-vs-ibr/') {
+            const income=page.getByLabel('Annual AGI (USD)');
+            await income.fill('60000');
+            await page.getByLabel('RAP tax dependents').fill('2');
+            await page.getByText('$150.00',{exact:true}).first().waitFor();
+            await page.getByLabel('Confirmed monthly IBR cap (USD)').fill('');
+            await page.getByText('Enter valid scenario values, including the IBR cap.',{exact:true}).waitFor();
+          }
+          if (route === '/guides/compare-college-financial-aid-offers/') {
+            await page.getByLabel('School A first-year cost (USD)').fill('10000');
+            await page.getByLabel('School A annual gift aid (USD)').fill('0');
+            await page.getByLabel('School A annual cost increase (%)').fill('0');
+            await page.getByText('$40,000.00',{exact:true}).first().waitFor();
+            await page.getByLabel('School A first-year cost (USD)').fill('');
+            await page.getByText('Enter valid costs, gift aid and renewal assumptions for both schools.',{exact:true}).waitFor();
+          }
+          if (route === '/tools/student-loan-payoff-calculator/') {
+            await page.getByLabel('Outstanding balance (USD)').fill('1200');
+            await page.getByLabel('Annual fixed interest rate (%)').fill('0');
+            await page.getByLabel('Remaining repayment months').fill('12');
+            await page.getByLabel('Extra monthly payment (USD)').fill('100');
+            await page.getByText('6 months',{exact:true}).first().waitFor();
+            await page.getByLabel('Outstanding balance (USD)').fill('');
+            await page.getByText('Enter valid values in all four fields.',{exact:true}).waitFor();
+          }
           if (route === '/guides/student-loan-interest-explained/') {
+            const principal=page.getByLabel('Outstanding principal (USD)');
+            await principal.fill('10000');
+            await page.getByLabel('Annual interest rate (%)').fill('6');
+            await page.getByLabel('Days without a principal change').fill('30');
+            await page.getByText('$49.28',{exact:true}).first().waitFor();
+            await principal.fill('');
+            await page.getByText('Enter valid values in all three fields.',{exact:true}).waitFor();
+            await principal.fill('10000');
             const nav=page.getByRole('navigation',{name:'On this page'});
             await nav.getByRole('link').first().click();
             if (!new URL(page.url()).hash) throw new Error('Article on-page contents did not navigate to a heading');

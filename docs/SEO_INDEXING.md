@@ -51,6 +51,14 @@ A `site:myloanlens.vercel.app` search can give a rough clue but is not proof of 
 
 Each page needs a specific intent, unique headings, useful examples and links to the relevant calculator or guide. Do not create multiple nearly identical keyword pages, fake testimonials, invented author credentials or promises about approval. Especially for financial topics, source currency and honest limitations matter.
 
+## SEO V2: search intent and measurement
+
+Keep existing URLs and canonicals. `/tools/student-loan-payoff-calculator/` is a distinct fixed-rate loan amortization and extra-payment comparison, not another federal eligibility simulator. It targets payoff, extra-payment and amortization queries in one useful page. Home targets the planning toolkit, `/calculator/` the full federal repayment comparison, `/rap-payment-by-income/` the quick RAP monthly payment and bracket table, `/guides/rap-payment-calculation/` the formula, and `/guides/rap-vs-ibr/` the plan comparison explanation. Do not create duplicate calculator landing pages solely for keywords. The RAP vs IBR guide now compares modeled starting payments for a single borrower with a known IBR cap; the college aid guide now compares four-year net price under explicit cost growth and award renewal assumptions. The existing interest guide now also targets daily student loan interest calculations with an interactive, constant-principal estimate using Federal Student Aid’s 365.25-day convention. It is distinct from monthly repayment projections. The RAP calculator uses the existing `rapPayment` engine, with no formula changes, and assumes no eligible spouse debt; joint filing scenarios remain in the married RAP tool.
+
+In Search Console, filter Web search to United States. Track non-brand queries such as `RAP payment calculator`, `RAP payment by income`, `RAP vs IBR`, `SAVE plan ended`, `PSLF payment tracker`, and `compare college financial aid offers`. These are hypotheses, not measured search volumes. Compare impressions, clicks, CTR and average position by query and landing page over comparable 28-day periods once data is available. Check whether home and `/calculator/` overlap before making further structural changes. Avoid promising rankings or repeatedly requesting indexing.
+
+References: [Google Search Essentials](https://developers.google.com/search/docs/essentials), [title links](https://developers.google.com/search/docs/appearance/title-link), [helpful content](https://developers.google.com/search/docs/fundamentals/creating-helpful-content), [Federal Student Aid IDR FAQs](https://studentaid.gov/articles/faqs-idr-plan/).
+
 ## 4. What we can and cannot measure
 
 **Code-level pass** means the build generated valid HTML and links, sitemap, robots, headings and metadata.

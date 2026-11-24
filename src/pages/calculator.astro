@@ -2,13 +2,14 @@
 import Base from '../layouts/Base.astro';
 import CalculatorPage from '../components/CalculatorPage.astro';
 const title='Federal Student Loan Repayment Calculator';
-const description='Estimate federal student loan monthly payments and compare projected total repayment costs, timelines, and forgiveness assumptions with LoanLens.';
+const description='Free federal student loan repayment calculator. Compare modeled monthly payments, total costs and timelines for RAP, IBR, Standard and Tiered Standard plans.';
 ---
 <Base {title} {description} kind="WebApplication" og="calculator">
   <CalculatorPage {title} {description}/>
   <section class="home-note" aria-labelledby="calculator-context">
     <div>
-      <h2 id="calculator-context">What to check after you compare</h2>
+      <h2 id="calculator-context">Compare federal student loan repayment plans</h2>
+      <p>Explore modeled monthly payments and repayment timelines for the Repayment Assistance Plan (RAP), Income-Based Repayment (IBR), Standard and Tiered Standard plans. For a quick starting payment without a loan balance, try the <a href="/rap-payment-by-income/">RAP payment calculator</a>. For differences in how income and repayment periods are handled, read <a href="/guides/rap-vs-ibr/">RAP vs. IBR</a>.</p>
       <p>Use the same balances and interest rates to compare scenarios. These are estimates, not eligibility decisions or official payment quotes. Confirm your available repayment options and any required actions with <a href="https://studentaid.gov/articles/repayment-calculator/">Federal Student Aid's Repayment Calculator</a> and your loan servicer.</p>
     </div>
   </section>
