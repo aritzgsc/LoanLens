@@ -1,18 +1,28 @@
 ---
-title: "How Student Loan Interest Works: A Simple Example"
-description: "Understand student loan APR, daily interest, principal, unpaid interest and why a payoff estimate can differ from a servicer bill."
+title: "Student Loan Interest Calculator: Daily Interest Explained"
+description: "Calculate estimated daily and period interest on student loan principal using the annual rate and number of days. Includes the formula, examples and limitations."
 category: guide
 status: reviewed
 reviewed: "2026-11-22"
 verified: "2026-11-22"
-updated: "2026-11-22"
+updated: "2026-11-24"
 shortAnswer: "Interest is the cost of borrowing. Federal student loan interest generally accrues daily on the outstanding principal; a monthly calculator can estimate costs, but timing and servicing rules affect the actual statement."
 related: [compare-student-loan-repayment, prepare-for-student-loan-repayment]
 ---
 
+import DailyInterest from '../../components/DailyInterest';
+
 When you see a student loan interest rate of 6%, that is an **annual** rate, not a charge of 6% each month. Your balance, the number of days between payments and your loan's rules all affect the actual interest charged.
 
 Understanding the difference between **principal**, **interest** and **total paid** makes repayment comparisons far more useful.
+
+## Calculate your student loan interest
+
+Enter one loan's outstanding principal, annual interest rate and the number of days during which that principal stays unchanged. This illustrates simple daily interest, not the amount due on a bill.
+
+<DailyInterest client:load />
+
+The calculator uses the 365.25-day convention described by [Federal Student Aid](https://studentaid.gov/understand-aid/types/loans/interest-rates). It does not model subsidies, capitalization, payment allocation, fees or changing principal.
 
 ## Three terms that do most of the work
 
@@ -28,13 +38,13 @@ Imagine a hypothetical loan with:
 
 - Outstanding principal: **$10,000**
 - Annual interest rate: **6%**
-- A 365-day year for this illustration
+- A 365.25-day year for this illustration
 
 The approximate calculation is:
 
-**$10,000 × 0.06 ÷ 365 = $1.64 per day.**
+**$10,000 × 0.06 ÷ 365.25 ≈ $1.64 per day.**
 
-If the principal stayed unchanged for 30 days, that would be roughly **$49.32** in interest over the period. The actual amount can differ because the principal changes as payments are applied, the period may be longer or shorter, and the servicer uses its applicable calculation rules.
+If the principal stayed unchanged for 30 days, that would be roughly **$49.28** in interest over the period. The actual amount can differ because the principal changes as payments are applied, the period may be longer or shorter, and the servicer uses its applicable calculation rules.
 
 This is an illustration, **not a payment quote** and not a claim about the amount a specific loan will accrue.
 

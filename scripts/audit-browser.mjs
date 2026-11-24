@@ -543,6 +543,14 @@ try {
             if (!(await help.innerText()).includes('Try it:')) throw new Error('Tool example is missing');
           }
           if (route === '/guides/student-loan-interest-explained/') {
+            const principal=page.getByLabel('Outstanding principal (USD)');
+            await principal.fill('10000');
+            await page.getByLabel('Annual interest rate (%)').fill('6');
+            await page.getByLabel('Days without a principal change').fill('30');
+            await page.getByText('$49.28',{exact:true}).first().waitFor();
+            await principal.fill('');
+            await page.getByText('Enter valid values in all three fields.',{exact:true}).waitFor();
+            await principal.fill('10000');
             const nav=page.getByRole('navigation',{name:'On this page'});
             await nav.getByRole('link').first().click();
             if (!new URL(page.url()).hash) throw new Error('Article on-page contents did not navigate to a heading');
